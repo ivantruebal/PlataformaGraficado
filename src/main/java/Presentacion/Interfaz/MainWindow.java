@@ -3,7 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.plataformagraficadomaven;
+package Presentacion.Interfaz;
+
+import Presentacion.CandlestickChart;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.Timer;
+import java.util.TimerTask;
+import org.jfree.ui.RefineryUtilities;
 
 /**
  *
@@ -11,11 +20,16 @@ package com.mycompany.plataformagraficadomaven;
  */
 public class MainWindow extends javax.swing.JFrame {
 
+    private boolean isAlreadyOneClick;
+
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
         initComponents();
+        printChart();
+        testAboutResizing();
+
     }
 
     /**
@@ -35,11 +49,10 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel_Graficos = new javax.swing.JPanel();
         jTabbedPane_Tools = new javax.swing.JTabbedPane();
         jTabbedPane_Graficos = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        jPanel_Analisis = new javax.swing.JPanel();
+        jPanel_HerramientasDeDibujado = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        jPanel_Grafico = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -49,6 +62,11 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu4 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowStateListener(new java.awt.event.WindowStateListener() {
+            public void windowStateChanged(java.awt.event.WindowEvent evt) {
+                formWindowStateChanged(evt);
+            }
+        });
 
         jComboBox_selectorListas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Forex" }));
 
@@ -63,6 +81,11 @@ public class MainWindow extends javax.swing.JFrame {
                 "Ticker", "Cotizacion"
             }
         ));
+        jTable_listaActivos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable_listaActivosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable_listaActivos);
 
         javax.swing.GroupLayout jPanel_ActivosLayout = new javax.swing.GroupLayout(jPanel_Activos);
@@ -81,64 +104,59 @@ public class MainWindow extends javax.swing.JFrame {
         );
 
         jTabbedPane_Graficos.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
+        jTabbedPane_Graficos.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTabbedPane_GraficosFocusGained(evt);
+            }
+        });
+        jTabbedPane_Graficos.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jTabbedPane_GraficosComponentShown(evt);
+            }
+        });
 
         jLabel1.setText("Linea");
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 10, Short.MAX_VALUE)
-                .addComponent(jLabel1))
+        javax.swing.GroupLayout jPanel_HerramientasDeDibujadoLayout = new javax.swing.GroupLayout(jPanel_HerramientasDeDibujado);
+        jPanel_HerramientasDeDibujado.setLayout(jPanel_HerramientasDeDibujadoLayout);
+        jPanel_HerramientasDeDibujadoLayout.setHorizontalGroup(
+            jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        jPanel_HerramientasDeDibujadoLayout.setVerticalGroup(
+            jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addGap(0, 629, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel_GraficoLayout = new javax.swing.GroupLayout(jPanel_Grafico);
+        jPanel_Grafico.setLayout(jPanel_GraficoLayout);
+        jPanel_GraficoLayout.setHorizontalGroup(
+            jPanel_GraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 1035, Short.MAX_VALUE)
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel_GraficoLayout.setVerticalGroup(
+            jPanel_GraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout jPanel_AnalisisLayout = new javax.swing.GroupLayout(jPanel_Analisis);
+        jPanel_Analisis.setLayout(jPanel_AnalisisLayout);
+        jPanel_AnalisisLayout.setHorizontalGroup(
+            jPanel_AnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_AnalisisLayout.createSequentialGroup()
+                .addComponent(jPanel_HerramientasDeDibujado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        jTabbedPane_Graficos.addTab("EUR/USD", jPanel1);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1076, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 643, Short.MAX_VALUE)
+        jPanel_AnalisisLayout.setVerticalGroup(
+            jPanel_AnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel_HerramientasDeDibujado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jTabbedPane_Graficos.addTab("USD/CAD", jPanel3);
+        jTabbedPane_Graficos.addTab("EUR/USD", jPanel_Analisis);
 
         jTabbedPane_Tools.addTab("Graficos", jTabbedPane_Graficos);
 
@@ -225,6 +243,24 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void jTabbedPane_GraficosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosFocusGained
+
+    }//GEN-LAST:event_jTabbedPane_GraficosFocusGained
+
+    private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
+
+    }//GEN-LAST:event_jTabbedPane_GraficosComponentShown
+
+    private void jTable_listaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_listaActivosMouseClicked
+        // TODO add your handling code here:
+        openChartOnDoubleClick();
+    }//GEN-LAST:event_jTable_listaActivosMouseClicked
+
+    private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_formWindowStateChanged
+
     /**
      * @param args the command line arguments
      */
@@ -257,6 +293,7 @@ public class MainWindow extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainWindow().setVisible(true);
+
             }
         });
     }
@@ -270,17 +307,60 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel_Activos;
+    private javax.swing.JPanel jPanel_Analisis;
     private javax.swing.JPanel jPanel_General;
+    private javax.swing.JPanel jPanel_Grafico;
     private javax.swing.JPanel jPanel_Graficos;
+    private javax.swing.JPanel jPanel_HerramientasDeDibujado;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane_Graficos;
     private javax.swing.JTabbedPane jTabbedPane_Tools;
     private javax.swing.JTable jTable_listaActivos;
     // End of variables declaration//GEN-END:variables
+
+    private void printChart() {
+        
+        CandlestickChart chart = new CandlestickChart(fixedDimensions(), null);
+        System.out.println(jPanel_Grafico.getSize());
+        jPanel_Grafico.setLayout(new BorderLayout());
+        jPanel_Grafico.add(chart, BorderLayout.CENTER);        
+
+    }
+
+    private void testAboutResizing() {
+        jPanel_Analisis.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                jPanel_Grafico.setSize(fixedDimensions());
+                jPanel_Grafico.validate();
+                jPanel_Grafico.repaint();
+            }
+        });
+
+    }
+
+    private void openChartOnDoubleClick() {
+        if (isAlreadyOneClick) {            
+            isAlreadyOneClick = false;
+        } else {
+            isAlreadyOneClick = true;
+            //Añadir el CandlestickChart al JtabbedPane_graficos
+            //jTabbedPane_Graficos.add(new)
+            Timer t = new Timer("doubleclickTimer", false);
+            t.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    isAlreadyOneClick = false;
+                }
+            }, 300);
+        }
+    }
+
+    private Dimension fixedDimensions() {
+        Dimension parentSize = jPanel_Analisis.getSize();
+        Dimension childSize = jPanel_HerramientasDeDibujado.getSize();
+        return new Dimension(parentSize.width-childSize.width, parentSize.height);
+    }
 }
