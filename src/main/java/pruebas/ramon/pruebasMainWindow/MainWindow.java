@@ -3,15 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Presentacion.Interfaz;
+package pruebas.ramon.pruebasMainWindow;
 
+import Presentacion.Interfaz.*;
 import Presentacion.CandlestickChart;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import org.jfree.ui.RefineryUtilities;
 import pruebas.ramon.resize.Resizable;
 
 /**
@@ -288,6 +296,8 @@ public class MainWindow extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -323,7 +333,6 @@ public class MainWindow extends javax.swing.JFrame {
     private void printResizableChart() {
 
         Resizable res = new Resizable(new CandlestickChart(fixedDimensions(), null));
-        
         res.setSize(fixedDimensions());
         System.out.println(jPanel_Grafico.getSize());
         //jPanel_Grafico.setLayout(new BorderLayout());
