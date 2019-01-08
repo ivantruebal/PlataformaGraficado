@@ -47,7 +47,7 @@ public class CandlestickChart extends JPanel {
         chartPanel.setMouseWheelEnabled(true);
         chartPanel.setFillZoomRectangle(false);
         chartPanel.setPreferredSize(dimension);
-        chartPanel.setVisible(true);
+        chartPanel.setVisible(true);      
         super.add(chartPanel, BorderLayout.CENTER);
     }
 

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pruebas.resize2;
+package pruebas.ramon.resize2;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
