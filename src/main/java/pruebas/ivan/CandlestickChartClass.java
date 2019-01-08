@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Presentacion;
+package pruebas.ivan;
 
+import Presentacion.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -22,25 +23,25 @@ import org.jfree.data.xy.DefaultHighLowDataset;
  *
  * @author LacorZ
  */
-public class CandlestickChart extends JPanel {
+public class CandlestickChartClass extends JPanel {
 
     final private DefaultHighLowDataset dataset = null;
     final private JFreeChart chart;
     final private ChartPanel chartPanel;
 
-    public CandlestickChart(Dimension dimension) {
+    public CandlestickChartClass(Dimension dimension) {
         this(dimension, createDataset());
     }
 
-    public CandlestickChart() {
+    public CandlestickChartClass() {
         this(new Dimension(1280, 720), createDataset());
     }
 
-    public CandlestickChart(DefaultHighLowDataset dataset) {
+    public CandlestickChartClass(DefaultHighLowDataset dataset) {
         this(new Dimension(1280, 720), dataset);
     }
 
-    public CandlestickChart(Dimension dimension, DefaultHighLowDataset dataset) {
+    public CandlestickChartClass(Dimension dimension, DefaultHighLowDataset dataset) {
         chart = ChartFactory.createCandlestickChart("", "", "", dataset, false);
         chart.getXYPlot().setDomainPannable(true);
         chartPanel = new ChartPanel(chart);
@@ -101,6 +102,8 @@ public class CandlestickChart extends JPanel {
         chartPanel.setVerticalAxisTrace(activar);
         chartPanel.setHorizontalAxisTrace(activar);
     }
+    
+    
 
 //    public static void main(String args[]) {
 //        CandlestickChart chart = new CandlestickChart("Candle Stick Chart");
@@ -108,4 +111,9 @@ public class CandlestickChart extends JPanel {
 //        RefineryUtilities.centerFrameOnScreen(chart);
 //        chart.setVisible(true);
 //    }
+
+    @Override
+    public void setSize(Dimension dmnsn) {
+        super.setSize(dmnsn); //To change body of generated methods, choose Tools | Templates.
+    }
 }
