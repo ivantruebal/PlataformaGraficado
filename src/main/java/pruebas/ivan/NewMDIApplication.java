@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.beans.PropertyVetoException;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,8 @@ import org.jfree.chart.ChartPanel;
 public class NewMDIApplication extends javax.swing.JFrame {
 
     private boolean enableTrace;
+    private boolean verGraficoClicado;
+    private boolean verTablaClicado;
     private CandlestickChartClass candlestickChart;
     /**
      * Creates new form NewMDIApplication
@@ -30,6 +33,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         initComponents();
         this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
         this.enableTrace=false;  
+        this.verGraficoClicado=false;
+        this.verTablaClicado=false;
         metodo();
         enablePanelGraficoAutoSize();
         TrayIconDemo tid=new TrayIconDemo();
@@ -65,6 +70,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jPanel_Grafico = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        jToolBarPestañas = new javax.swing.JToolBar();
+        jButtonTabla = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        javax.swing.JButton jButtonGrafica = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -79,6 +88,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
         helpMenu = new javax.swing.JMenu();
         contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
+        jMenuView = new javax.swing.JMenu();
+        jRadioButtonMenuItemGrafica = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItemTabla = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -138,15 +150,33 @@ public class NewMDIApplication extends javax.swing.JFrame {
             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                 .addComponent(jComboBox_selectorListas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 629, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41))
         );
 
         desktopPane.add(jInternalFrame1);
-        jInternalFrame1.setBounds(0, 0, 210, 700);
+        jInternalFrame1.setBounds(0, 0, 210, 660);
 
         jInternalFrame2.setIconifiable(true);
         jInternalFrame2.setResizable(true);
         jInternalFrame2.setVisible(true);
+        jInternalFrame2.addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+                jInternalFrame2InternalFrameIconified(evt);
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jTabbedPane_Graficos.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
         jTabbedPane_Graficos.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -218,7 +248,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 642, Short.MAX_VALUE)
+            .addGap(0, 594, Short.MAX_VALUE)
         );
 
         jTabbedPane_Tools.addTab("Noticias", jPanel2);
@@ -235,7 +265,37 @@ public class NewMDIApplication extends javax.swing.JFrame {
         );
 
         desktopPane.add(jInternalFrame2);
-        jInternalFrame2.setBounds(210, 0, 1070, 700);
+        jInternalFrame2.setBounds(210, 0, 1070, 660);
+
+        jToolBarPestañas.setBackground(new java.awt.Color(0, 51, 51));
+        jToolBarPestañas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, null, new java.awt.Color(0, 0, 0), null, null));
+        jToolBarPestañas.setRollover(true);
+
+        jButtonTabla.setText("Tabla");
+        jButtonTabla.setFocusable(false);
+        jButtonTabla.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonTabla.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButtonTabla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonTablaActionPerformed(evt);
+            }
+        });
+        jToolBarPestañas.add(jButtonTabla);
+        jToolBarPestañas.add(jSeparator1);
+
+        jButtonGrafica.setText("Grafica");
+        jButtonGrafica.setFocusable(false);
+        jButtonGrafica.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonGrafica.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButtonGrafica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGraficaActionPerformed(evt);
+            }
+        });
+        jToolBarPestañas.add(jButtonGrafica);
+
+        desktopPane.add(jToolBarPestañas);
+        jToolBarPestañas.setBounds(3, 660, 1280, 40);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -298,6 +358,26 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         menuBar.add(helpMenu);
 
+        jMenuView.setText("View");
+
+        jRadioButtonMenuItemGrafica.setText("Grafica");
+        jRadioButtonMenuItemGrafica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonMenuItemGraficaActionPerformed(evt);
+            }
+        });
+        jMenuView.add(jRadioButtonMenuItemGrafica);
+
+        jRadioButtonMenuItemTabla.setText("Tabla");
+        jRadioButtonMenuItemTabla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonMenuItemTablaActionPerformed(evt);
+            }
+        });
+        jMenuView.add(jRadioButtonMenuItemTabla);
+
+        menuBar.add(jMenuView);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -323,9 +403,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable_listaActivosMouseClicked
 
     private void jInternalFrame1InternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_jInternalFrame1InternalFrameIconified
-        /*JInternalFrame.JDesktopIcon icon = jInternalFrame1.getDesktopIcon();
-        icon.setSize(new Dimension(200,icon.getSize().height)); //Change icon width to 200
-        icon.setLocation(1,2); //You can calculate its position as you wish (not implemented here).*/
+        minimizarTabla();
     }//GEN-LAST:event_jInternalFrame1InternalFrameIconified
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -339,6 +417,26 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
 
     }//GEN-LAST:event_jTabbedPane_GraficosComponentShown
+
+    private void jRadioButtonMenuItemGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemGraficaActionPerformed
+        mostrarSoloGráfica();
+    }//GEN-LAST:event_jRadioButtonMenuItemGraficaActionPerformed
+
+    private void jRadioButtonMenuItemTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemTablaActionPerformed
+        mostrarSoloTabla();
+    }//GEN-LAST:event_jRadioButtonMenuItemTablaActionPerformed
+
+    private void jButtonTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTablaActionPerformed
+        botonTabla();
+    }//GEN-LAST:event_jButtonTablaActionPerformed
+
+    private void jButtonGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGraficaActionPerformed
+        botonGrafica();
+    }//GEN-LAST:event_jButtonGraficaActionPerformed
+
+    private void jInternalFrame2InternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_jInternalFrame2InternalFrameIconified
+        minimizarGrafica();
+    }//GEN-LAST:event_jInternalFrame2InternalFrameIconified
 
     /**
      * @param args the command line arguments
@@ -388,25 +486,31 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonTabla;
     private javax.swing.JComboBox<String> jComboBox_selectorListas;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JInternalFrame jInternalFrame2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenuView;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel_Analisis;
     public javax.swing.JPanel jPanel_Grafico;
     private javax.swing.JPanel jPanel_HerramientasDeDibujado;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemGrafica;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemTabla;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane_Graficos;
     private javax.swing.JTabbedPane jTabbedPane_Tools;
     private javax.swing.JTable jTable_listaActivos;
+    private javax.swing.JToolBar jToolBarPestañas;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
-private void metodo() {
+    private void metodo() {
         jPanel_Grafico.setLayout(new BorderLayout());
         jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
     }
@@ -417,6 +521,86 @@ private void metodo() {
             enableTrace=true;
         candlestickChart.AxisTrace(enableTrace);
         jPanel_Grafico.repaint();
+    }
+    /**
+     * Método que hace solo visible y a pantalla completa el frame de la grafica
+     */
+    private void mostrarSoloGráfica()
+    {
+        verGraficoClicado=!jRadioButtonMenuItemGrafica.isSelected();
+        verTablaClicado=false;
+        jRadioButtonMenuItemTabla.setSelected(false);
+        if(verGraficoClicado){
+            jInternalFrame1.setVisible(true);
+            jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
+        }
+        else{
+            jInternalFrame1.setVisible(false);
+            jInternalFrame2.setVisible(true);
+            jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
+            jInternalFrame2.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
+            
+        }    
+    }
+    /**
+     * Método que hace solo visible y a pantalla completa el frame de la tabla
+     */
+    private void mostrarSoloTabla(){
+        verTablaClicado=!jRadioButtonMenuItemTabla.isSelected();
+        verGraficoClicado=false;
+        jRadioButtonMenuItemGrafica.setSelected(false);
+        if(verTablaClicado){
+            jInternalFrame2.setVisible(true);
+            jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
+        }
+        else{
+            jInternalFrame2.setVisible(false);
+            jInternalFrame1.setVisible(true);
+            jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
+            jInternalFrame1.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
+        }
+    }
+    private void botonTabla(){
+        if(!jInternalFrame1.isVisible()){
+            jInternalFrame1.setVisible(true);
+            try {
+                jInternalFrame1.setIcon(false);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(jInternalFrame2.isVisible()){
+                jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
+                jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
+            }
+            else
+                jInternalFrame1.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
+        }
+    }
+    private void botonGrafica(){
+        if(!jInternalFrame2.isVisible()){
+            jInternalFrame2.setVisible(true);
+            try {
+                jInternalFrame2.setIcon(false);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(jInternalFrame1.isVisible()){
+                jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
+                jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
+            }
+            else
+                jInternalFrame2.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
+        }
+    }
+    private void minimizarTabla(){
+        jInternalFrame1.setVisible(false);
+        if(jInternalFrame2.isVisible())
+            jInternalFrame2.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
+    }
+    private void minimizarGrafica(){
+        jInternalFrame2.setVisible(false);
+        if(jInternalFrame1.isVisible())
+            jInternalFrame1.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
     }
     /**
      * Añade un componentListener al jPanel_grafico para que se redimension cada vez que cambiamos el tamaño de la ventana
@@ -479,11 +663,11 @@ private void metodo() {
     private Dimension fixedDimensionsInternal2() {
         Dimension parentSize = desktopPane.getSize();
         Dimension childSize = jInternalFrame1.getSize();
-        return new Dimension(parentSize.width-childSize.width, parentSize.height);
+        return new Dimension(parentSize.width-childSize.width, parentSize.height-jToolBarPestañas.getSize().height);
     }
     private Dimension fixedDimensionsInternal1() {
         Dimension parentSize = desktopPane.getSize();
         Dimension childSize = jInternalFrame2.getSize();
-        return new Dimension(parentSize.width-childSize.width, parentSize.height);
+        return new Dimension(parentSize.width-childSize.width, parentSize.height-jToolBarPestañas.getSize().height);
     }
 }
