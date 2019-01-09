@@ -530,6 +530,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
         verGraficoClicado=!jRadioButtonMenuItemGrafica.isSelected();
         verTablaClicado=false;
         jRadioButtonMenuItemTabla.setSelected(false);
+        try {
+            jInternalFrame2.setIcon(false);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if(verGraficoClicado){
             jInternalFrame1.setVisible(true);
             jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
@@ -549,6 +554,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
         verTablaClicado=!jRadioButtonMenuItemTabla.isSelected();
         verGraficoClicado=false;
         jRadioButtonMenuItemGrafica.setSelected(false);
+        try {
+            jInternalFrame1.setIcon(false);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if(verTablaClicado){
             jInternalFrame2.setVisible(true);
             jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
@@ -568,10 +578,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if(jInternalFrame2.isVisible()){
-                jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
+            jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
+            if(jInternalFrame2.isVisible())
                 jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
-            }
             else
                 jInternalFrame1.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
         }
@@ -584,10 +593,9 @@ public class NewMDIApplication extends javax.swing.JFrame {
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if(jInternalFrame1.isVisible()){
-                jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
+            jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
+            if(jInternalFrame1.isVisible())
                 jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
-            }
             else
                 jInternalFrame2.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
         }
