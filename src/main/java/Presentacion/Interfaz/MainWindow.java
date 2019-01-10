@@ -8,10 +8,13 @@ package Presentacion.Interfaz;
 import Presentacion.CandlestickChart;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.jfree.chart.ChartPanel;
 import pruebas.ramon.resize.Resizable;
 
 /**
@@ -28,7 +31,6 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
         initComponents();
         printResizableChart();
-        
 
     }
 
@@ -321,26 +323,34 @@ public class MainWindow extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void printResizableChart() {
+        CandlestickChart candlestickChart = new CandlestickChart(fixedDimensions(), null);
+        Resizable res = new Resizable(candlestickChart);
 
-        Resizable res = new Resizable(new CandlestickChart(fixedDimensions(), null));
-        
         res.setSize(fixedDimensions());
-        System.out.println(jPanel_Grafico.getSize());
         //jPanel_Grafico.setLayout(new BorderLayout());
         jPanel_Grafico.add(res);  //, BorderLayout.CENTER
-        jPanel_Grafico.addMouseListener(new MouseAdapter() {
+        res.addComponentListener(new ComponentListener() {
             @Override
-            public void mousePressed(MouseEvent me) {
+            public void componentResized(ComponentEvent ce) {
+                ChartPanel cp = (ChartPanel)candlestickChart.getComponent(0);
+                cp.setPreferredSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
+                cp.setSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));                
+                jPanel_Grafico.validate();
+            }
 
-                requestFocus();
-                res.repaint();
-                Component[] components = res.getComponents();
-                for (Component component : components) {
-                    component.setPreferredSize(new java.awt.Dimension(res.getWidth(), res.getHeight()));                    
-                    component.setSize(new java.awt.Dimension(res.getWidth(), res.getHeight()));
-                    validate();
-                }
-                
+            @Override
+            public void componentMoved(ComponentEvent ce) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent ce) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent ce) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
 
@@ -361,8 +371,7 @@ public class MainWindow extends javax.swing.JFrame {
             isAlreadyOneClick = false;
         } else {
             isAlreadyOneClick = true;
-            //Añadir el CandlestickChart al JtabbedPane_graficos
-            //jTabbedPane_Graficos.add(new)
+            openChartOnDoubleClick();
             Timer t = new Timer("doubleclickTimer", false);
             t.schedule(new TimerTask() {
 
