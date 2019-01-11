@@ -38,13 +38,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         metodo();
         enablePanelGraficoAutoSize();
         TrayIconDemo tid=new TrayIconDemo();
-        try {
-            tid.displayTray();
-        } catch (AWTException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        tid.displayTray();
+        
     }
 
     /**
