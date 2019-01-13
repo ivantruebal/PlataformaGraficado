@@ -5,13 +5,20 @@
  */
 package pruebas.ivan;
 
+import Presentacion.api.KrakenApi;
+import Presentacion.api.KrakenApi.Method;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.ChartPanel;
@@ -672,5 +679,37 @@ public class NewMDIApplication extends javax.swing.JFrame {
         Dimension parentSize = desktopPane.getSize();
         Dimension childSize = jInternalFrame2.getSize();
         return new Dimension(parentSize.width-childSize.width, parentSize.height-jToolBarPestañas.getSize().height);
+    }
+    private void peticionKrakenApi()
+    {
+        try {
+            KrakenApi api = new KrakenApi();
+            api.setKey("Your API Key"); // FIXME
+            api.setSecret("Your API Secret"); // FIXME
+
+            String response;
+            Map<String, String> input = new HashMap<>();
+
+            input.put("pair", "XBTEUR");
+            response = api.queryPublic(Method.TICKER, input);
+            System.out.println(response);
+
+            input.clear();
+            input.put("pair", "XBTEUR,XBTLTC");
+            response = api.queryPublic(Method.ASSET_PAIRS, input);
+            System.out.println(response);
+
+            input.clear();
+            input.put("asset", "ZEUR");
+            response = api.queryPrivate(Method.BALANCE, input);
+            System.out.println(response);
+        } catch (IOException ex) {
+            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeyException ex) {
+            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 }
