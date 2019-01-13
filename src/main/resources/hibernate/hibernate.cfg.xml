@@ -40,12 +40,17 @@ made subject to such option by the copyright holder.
 Contributor(s):
 -->
 <hibernate-configuration>
-    <session-factory>
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://35.189.119.82:3306/plataforma-graficado?zeroDateTimeBehavior=convertToNull</property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">Usuario@1</property>
-        <property name="hibernate.hbm2ddl.auto">update</property>
-    </session-factory>
+  <session-factory>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/plataforma-graficado?zeroDateTimeBehavior=CONVERT_TO_NULL&amp;useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">Usuario@1</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <mapping class="servicios.modelos.Candlestick"/>
+    <mapping class="servicios.modelos.Activo"/>
+    <mapping class="servicios.modelos.Usuario"/>
+    <mapping class="servicios.modelos.Analisis"/>
+    <mapping class="servicios.modelos.Operaciones"/>
+    <mapping class="servicios.modelos.ListaDeActivos"/>
+  </session-factory>
 </hibernate-configuration>

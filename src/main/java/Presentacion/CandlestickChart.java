@@ -47,7 +47,7 @@ public class CandlestickChart extends JPanel {
         chartPanel.setMouseWheelEnabled(true);
         chartPanel.setFillZoomRectangle(false);
         chartPanel.setPreferredSize(dimension);
-        chartPanel.setVisible(true);      
+        chartPanel.setVisible(true);
         super.add(chartPanel, BorderLayout.CENTER);
     }
 
@@ -65,14 +65,7 @@ public class CandlestickChart extends JPanel {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2008, 5, 1);
 
-        date[0] = createData(2009, 8, 0 + 1);
-        high[0] = 25;
-        low[0] = 5;
-        open[0] = 10;
-        close[0] = 20;
-        volume[0] = 0.0;
-
-        for (int i = 1; i < serice; i++) {
+        for (int i = 0; i < serice; i++) {
             date[i] = createData(2008, 8, i + 1);
             high[i] = 30 + Math.round(10) + new Double(Math.random() * 20.0);
             low[i] = 30 + Math.round(10) + new Double(Math.random() * 20.0);

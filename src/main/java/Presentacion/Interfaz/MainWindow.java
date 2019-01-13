@@ -14,8 +14,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.jfree.chart.ChartPanel;
 import pruebas.ramon.resize.Resizable;
+import servicios.database.HibernateUtil;
 
 /**
  *
@@ -31,6 +34,7 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
         initComponents();
         printResizableChart();
+        crearBBDDsiNoExiste(); 
         //Centra en medio de la pantalla
         this.setLocationRelativeTo(null);
     }
@@ -376,7 +380,7 @@ public class MainWindow extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainWindow().setVisible(true);
-
+                
             }
         });
     }
@@ -413,7 +417,7 @@ public class MainWindow extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void printResizableChart() {
-        CandlestickChart candlestickChart = new CandlestickChart(fixedDimensions(), null);
+        CandlestickChart candlestickChart = new CandlestickChart(fixedDimensions());
         Resizable res = new Resizable(candlestickChart);
 
         res.setSize(fixedDimensions());
@@ -481,5 +485,10 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void nuevoActivo() {
         new CSVImportWindow().setVisible(true);
+    }
+
+    private Session crearBBDDsiNoExiste() {
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        return sessionFactory.openSession();        
     }
 }
