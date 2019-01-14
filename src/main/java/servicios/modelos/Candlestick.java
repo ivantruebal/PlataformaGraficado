@@ -42,6 +42,7 @@ public class Candlestick implements Serializable {
     @JoinColumn(name = "idActivo", nullable = false)
     private Activo activo;
 
+    
     public Candlestick() {
     }
 

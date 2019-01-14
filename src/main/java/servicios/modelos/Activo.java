@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -22,9 +23,11 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "activo", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "nombre"),
-		@UniqueConstraint(columnNames = "simbolo") })
-public class Activo implements Serializable{
+    @UniqueConstraint(columnNames = "nombre")
+    ,
+		@UniqueConstraint(columnNames = "simbolo")})
+public class Activo implements Serializable {
+
     @Id
     @Column
     private int idActivo;
@@ -34,8 +37,14 @@ public class Activo implements Serializable{
     private String simbolo;
     @Column
     private String notas;
-    @OneToMany(cascade=ALL, fetch = FetchType.LAZY, mappedBy = "activo")
+    @OneToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activo")
     private Set<Candlestick> candlestickSet;
+    @ManyToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activos")
+    private Set<Analisis> analisis;
+    @ManyToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activos")
+    private Set<ListaDeActivos> listasDeActivos;
+    @OneToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activo")
+    private Set<Operaciones> operaciones;
 
     public Activo() {
     }
@@ -87,8 +96,5 @@ public class Activo implements Serializable{
     public void setCandlestickSet(Set<Candlestick> candlestickSet) {
         this.candlestickSet = candlestickSet;
     }
-    
-    
+
 }
-
-

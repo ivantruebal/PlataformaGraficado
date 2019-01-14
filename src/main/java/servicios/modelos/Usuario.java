@@ -24,9 +24,11 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "usuario", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "nombre"),
-		@UniqueConstraint(columnNames = "email") })
+    @UniqueConstraint(columnNames = "nombre")
+    ,
+		@UniqueConstraint(columnNames = "email")})
 public class Usuario implements Serializable {
+
     @Id
     @Column
     private int idUsuario;
@@ -36,11 +38,13 @@ public class Usuario implements Serializable {
     private String email;
     @Column(nullable = false)
     private String password;
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
-        name = "lista_de_activos_has_usuario", 
-        joinColumns = { @JoinColumn(name = "idUsuario") }, 
-        inverseJoinColumns = { @JoinColumn(name = "idListaDeActivos") }
+            name = "lista_de_activos_has_usuario",
+            joinColumns = {
+                @JoinColumn(name = "idUsuario")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "idListaDeActivos")}
     )
     Set<ListaDeActivos> listaDeActivos = new HashSet<>();
 

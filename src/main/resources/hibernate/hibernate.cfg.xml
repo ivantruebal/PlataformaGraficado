@@ -46,6 +46,8 @@ Contributor(s):
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">Usuario@1</property>
     <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">true</property>
     <mapping class="servicios.modelos.Candlestick"/>
     <mapping class="servicios.modelos.Activo"/>
     <mapping class="servicios.modelos.Usuario"/>

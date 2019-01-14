@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -24,17 +25,27 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "lista_de_activos", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "nombre")})
+    @UniqueConstraint(columnNames = "nombre")})
 public class ListaDeActivos implements Serializable {
+
     @Id
     @Column
     private int idLista;
     @Column(nullable = false)
     private String nombre;
     @Column(nullable = false)
-    private boolean esPrivada;    
-    @ManyToMany(mappedBy = "listaDeActivos")
-    Set<Usuario> usuarios = new HashSet<>(); 
+    private boolean esPrivada;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "listaDeActivos")
+    Set<Usuario> usuarios = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "lista_de_activos_has_activos",
+            joinColumns = {
+                @JoinColumn(name = "idLista")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "idActivo")}
+    )
+    Set<Activo> activos = new HashSet<>();
 
     public ListaDeActivos() {
     }
@@ -77,4 +88,3 @@ public class ListaDeActivos implements Serializable {
         this.usuarios = usuarios;
     }
 }
-
