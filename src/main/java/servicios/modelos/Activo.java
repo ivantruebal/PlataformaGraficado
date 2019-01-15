@@ -11,6 +11,8 @@ import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -30,6 +32,7 @@ public class Activo implements Serializable {
 
     @Id
     @Column
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int idActivo;
     @Column(nullable = false)
     private String nombre;
