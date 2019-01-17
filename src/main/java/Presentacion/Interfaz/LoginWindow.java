@@ -63,7 +63,6 @@ public class LoginWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Usuario:");
 
-        jTextField_nombreUsuario.setBackground(new java.awt.Color(102, 102, 102));
         jTextField_nombreUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField_nombreUsuarioKeyPressed(evt);
@@ -72,14 +71,13 @@ public class LoginWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Password:");
 
-        jPasswordField_password.setBackground(new java.awt.Color(102, 102, 102));
         jPasswordField_password.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jPasswordField_passwordKeyPressed(evt);
             }
         });
 
-        jButton_login.setBackground(new java.awt.Color(255, 51, 51));
+        jButton_login.setBackground(new java.awt.Color(255, 255, 255));
         jButton_login.setText("Login");
         jButton_login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -87,7 +85,7 @@ public class LoginWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton_registrarse.setBackground(new java.awt.Color(255, 0, 0));
+        jButton_registrarse.setBackground(new java.awt.Color(255, 255, 255));
         jButton_registrarse.setText("Registrarse");
         jButton_registrarse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -95,7 +93,7 @@ public class LoginWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton_exit.setBackground(new java.awt.Color(0, 0, 0));
+        jButton_exit.setBackground(new java.awt.Color(255, 255, 255));
         jButton_exit.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jButton_exit.setText("Salir");
         jButton_exit.addActionListener(new java.awt.event.ActionListener() {
@@ -141,10 +139,10 @@ public class LoginWindow extends javax.swing.JFrame {
                                 .addComponent(jButton_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 56, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(99, 99, 99)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(90, 90, 90))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

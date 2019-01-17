@@ -45,7 +45,8 @@ public class Utils {
         if (e != null) {
             java.util.logging.Logger.getLogger(Utils.class.getName()).log(java.util.logging.Level.FINEST, "Error generico", e.getMessage());
         }
-    }
+    }   
+    
 
     public static Color hex2Rgb(String colorStr) {
         return new Color(

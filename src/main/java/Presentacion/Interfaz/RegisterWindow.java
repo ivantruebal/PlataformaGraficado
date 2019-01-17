@@ -5,9 +5,12 @@
  */
 package Presentacion.Interfaz;
 
+import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
 import servicios.database.BBDD;
+import servicios.utils.Utils;
 
 /**
  *
@@ -18,6 +21,7 @@ public class RegisterWindow extends javax.swing.JFrame {
     /**
      * Creates new form RegisterWindow
      */
+    private Color colorOriginal;
     public RegisterWindow() {
         initComponents();
         settings();
@@ -47,19 +51,68 @@ public class RegisterWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Usuario:");
 
+        jTextField_usuario.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextField_usuarioFocusGained(evt);
+            }
+        });
         jTextField_usuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField_usuarioActionPerformed(evt);
             }
         });
+        jTextField_usuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField_usuarioKeyPressed(evt);
+            }
+        });
 
         jLabel2.setText("Email:");
+
+        jTextField_email.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextField_emailFocusGained(evt);
+            }
+        });
+        jTextField_email.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_emailActionPerformed(evt);
+            }
+        });
+        jTextField_email.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField_emailKeyPressed(evt);
+            }
+        });
 
         jLabel3.setText("Password:");
 
         jLabel4.setText("Confirm password:");
 
+        jPasswordField_password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField_passwordActionPerformed(evt);
+            }
+        });
+        jPasswordField_password.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jPasswordField_passwordKeyReleased(evt);
+            }
+        });
+
+        jPasswordField_confirmPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField_confirmPasswordActionPerformed(evt);
+            }
+        });
+        jPasswordField_confirmPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jPasswordField_confirmPasswordKeyReleased(evt);
+            }
+        });
+
         jButton_registrar.setText("Registrar");
+        jButton_registrar.setEnabled(false);
         jButton_registrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_registrarActionPerformed(evt);
@@ -136,8 +189,8 @@ public class RegisterWindow extends javax.swing.JFrame {
 
     private void jTextField_usuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_usuarioActionPerformed
         // TODO add your handling code here:
-        
-      
+
+
     }//GEN-LAST:event_jTextField_usuarioActionPerformed
 
     private void jButton_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_cancelarActionPerformed
@@ -149,6 +202,51 @@ public class RegisterWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         registrarUsuario();
     }//GEN-LAST:event_jButton_registrarActionPerformed
+
+    private void jTextField_usuarioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_usuarioKeyPressed
+        // TODO add your handling code here:
+        comprobarYactivarBotonRegistro();
+    }//GEN-LAST:event_jTextField_usuarioKeyPressed
+
+    private void jTextField_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_emailActionPerformed
+        // TODO add your handling code here:
+      
+    }//GEN-LAST:event_jTextField_emailActionPerformed
+
+    private void jPasswordField_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_passwordActionPerformed
+        // TODO add your handling code here:
+     
+    }//GEN-LAST:event_jPasswordField_passwordActionPerformed
+
+    private void jPasswordField_confirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_confirmPasswordActionPerformed
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_jPasswordField_confirmPasswordActionPerformed
+
+    private void jTextField_emailKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_emailKeyPressed
+        // TODO add your handling code here:
+        comprobarYactivarBotonRegistro();
+    }//GEN-LAST:event_jTextField_emailKeyPressed
+
+    private void jPasswordField_passwordKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField_passwordKeyReleased
+        // TODO add your handling code here:
+        comprobarYactivarBotonRegistro();
+    }//GEN-LAST:event_jPasswordField_passwordKeyReleased
+
+    private void jPasswordField_confirmPasswordKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField_confirmPasswordKeyReleased
+        // TODO add your handling code here:
+        comprobarYactivarBotonRegistro();
+    }//GEN-LAST:event_jPasswordField_confirmPasswordKeyReleased
+
+    private void jTextField_usuarioFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField_usuarioFocusGained
+        // TODO add your handling code here:
+        fondoNormal(jTextField_usuario);
+    }//GEN-LAST:event_jTextField_usuarioFocusGained
+
+    private void jTextField_emailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField_emailFocusGained
+        // TODO add your handling code here:
+        fondoNormal(jTextField_email);
+    }//GEN-LAST:event_jTextField_emailFocusGained
 
     /**
      * @param args the command line arguments
@@ -199,15 +297,32 @@ public class RegisterWindow extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void settings() {
+        colorOriginal = jTextField_email.getBackground();
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.dispose();
         this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
         this.setLocationRelativeTo(null);
         this.setUndecorated(true);
         this.pack();
+
     }
 
     private void registrarUsuario() {
-        
+        String password = new String(jPasswordField_password.getPassword());
+        if(BBDD.registrarUsuario(jTextField_usuario.getText(), jTextField_email.getText(), password))
+            this.dispose();
+    }
+
+    private void comprobarYactivarBotonRegistro() {
+        String password = String.valueOf(jPasswordField_password.getPassword());
+        String confirmPassword = String.valueOf(jPasswordField_confirmPassword.getPassword());
+        if (password.equals(confirmPassword) && jTextField_usuario.getText().length()>0 && jTextField_email.getText().length()>0) {
+            jButton_registrar.setEnabled(true);            
+        }
+        else jButton_registrar.setEnabled(false); 
+    }
+
+    private void fondoNormal(JTextField jTextField) {
+        jTextField.setBackground(colorOriginal);
     }
 }
