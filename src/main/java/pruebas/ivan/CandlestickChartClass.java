@@ -5,8 +5,9 @@
  */
 package pruebas.ivan;
 
-import Presentacion.*;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import java.util.Calendar;
@@ -14,8 +15,12 @@ import java.util.Date;
 import javafx.scene.layout.Border;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYLineAnnotation;
+import org.jfree.chart.plot.XYPlot;
 
 import org.jfree.data.xy.DefaultHighLowDataset;
 
@@ -28,6 +33,10 @@ public class CandlestickChartClass extends JPanel {
     final private DefaultHighLowDataset dataset = null;
     final private JFreeChart chart;
     final private ChartPanel chartPanel;
+    private double oldxPoint;
+    private double oldyPoint;
+    private double newxPoint;
+    private double newyPoint;
 
     public CandlestickChartClass(Dimension dimension) {
         this(dimension, createDataset());
@@ -51,6 +60,10 @@ public class CandlestickChartClass extends JPanel {
         chartPanel.setVisible(true);
         super.add(chartPanel, BorderLayout.CENTER);
     }
+    public JFreeChart poppop(){
+        return chart;
+    }
+    //public XYPlot getXY(){}
 
     private static DefaultHighLowDataset createDataset() {
 
@@ -101,8 +114,29 @@ public class CandlestickChartClass extends JPanel {
     {
         chartPanel.setVerticalAxisTrace(activar);
         chartPanel.setHorizontalAxisTrace(activar);
+        
     }
-    
+    public void ActivarTrazado(){
+        
+        chartPanel.addChartMouseListener(new ChartMouseListener() {
+            @Override
+            public void chartMouseClicked(ChartMouseEvent cme) {
+                oldxPoint=cme.getTrigger().getX();
+                oldyPoint=cme.getTrigger().getY();
+            }
+
+            @Override
+            public void chartMouseMoved(ChartMouseEvent cme) {
+                newxPoint=cme.getTrigger().getX();
+                newyPoint=cme.getTrigger().getY();
+                XYLineAnnotation xYLineAnnotation = new XYLineAnnotation(oldxPoint, oldyPoint, newxPoint, newyPoint, new BasicStroke(1.0f), Color.blue);
+                chart.getXYPlot().addAnnotation(xYLineAnnotation);
+            }
+        });
+    }
+    public ChartPanel getChartPanel(){
+        return this.chartPanel;
+    }
     
 
 //    public static void main(String args[]) {

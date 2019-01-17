@@ -7,19 +7,16 @@ package pruebas.ivan;
 
 import Presentacion.Interfaz.*;
 import Presentacion.CandlestickChart;
-import java.awt.AWTException;
-import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.net.MalformedURLException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jfree.chart.ChartPanel;
-import org.jfree.ui.RefineryUtilities;
+import pruebas.ramon.resize.Resizable;
 
 /**
  *
@@ -28,22 +25,15 @@ import org.jfree.ui.RefineryUtilities;
 public class MainWindow extends javax.swing.JFrame {
 
     private boolean isAlreadyOneClick;
-    private boolean enableTrace;
-    private CandlestickChartClass candlestickChart;
 
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
         initComponents();
-        //printChart();
-        this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
-        this.enableTrace=false;  
-        metodo();
-        enablePanelGraficoAutoSize();
-        TrayIconDemo tid=new TrayIconDemo();
-        tid.displayTray();
-
+        printResizableChart();
+        //Centra en medio de la pantalla
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -63,11 +53,19 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel_Graficos = new javax.swing.JPanel();
         jTabbedPane_Tools = new javax.swing.JTabbedPane();
         jTabbedPane_Graficos = new javax.swing.JTabbedPane();
-        jPanel_Analisis = new javax.swing.JPanel();
+        jPanel_AreaDeAnalisis = new javax.swing.JPanel();
         jPanel_HerramientasDeDibujado = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jPanel_Grafico = new javax.swing.JPanel();
+        jComboBox_periodo = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jSpinner1 = new javax.swing.JSpinner();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -115,7 +113,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(jPanel_ActivosLayout.createSequentialGroup()
                 .addComponent(jComboBox_selectorListas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
         );
 
         jTabbedPane_Graficos.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
@@ -132,51 +130,107 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Linea");
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        jLabel2.setText("jLabel2");
+
+        jLabel3.setText("jLabel3");
+
+        jLabel4.setText("jLabel4");
 
         javax.swing.GroupLayout jPanel_HerramientasDeDibujadoLayout = new javax.swing.GroupLayout(jPanel_HerramientasDeDibujado);
         jPanel_HerramientasDeDibujado.setLayout(jPanel_HerramientasDeDibujadoLayout);
         jPanel_HerramientasDeDibujadoLayout.setHorizontalGroup(
             jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
             .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel2))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
+                        .addGroup(jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel_HerramientasDeDibujadoLayout.setVerticalGroup(
             jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
+                .addGap(34, 34, 34)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel_Grafico.setAutoscrolls(true);
-        jPanel_Grafico.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jPanel_Grafico.setLayout(new java.awt.BorderLayout());
+        javax.swing.GroupLayout jPanel_GraficoLayout = new javax.swing.GroupLayout(jPanel_Grafico);
+        jPanel_Grafico.setLayout(jPanel_GraficoLayout);
+        jPanel_GraficoLayout.setHorizontalGroup(
+            jPanel_GraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel_GraficoLayout.setVerticalGroup(
+            jPanel_GraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 617, Short.MAX_VALUE)
+        );
 
-        javax.swing.GroupLayout jPanel_AnalisisLayout = new javax.swing.GroupLayout(jPanel_Analisis);
-        jPanel_Analisis.setLayout(jPanel_AnalisisLayout);
-        jPanel_AnalisisLayout.setHorizontalGroup(
-            jPanel_AnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_AnalisisLayout.createSequentialGroup()
+        jComboBox_periodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1m", "5m", "15", "1h", "4h", "1D", "1W", "1M" }));
+        jComboBox_periodo.setSelectedIndex(5);
+
+        jButton1.setText("Venta");
+
+        jButton2.setText("Compra");
+
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setText("0");
+
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField2.setText("0");
+
+        javax.swing.GroupLayout jPanel_AreaDeAnalisisLayout = new javax.swing.GroupLayout(jPanel_AreaDeAnalisis);
+        jPanel_AreaDeAnalisis.setLayout(jPanel_AreaDeAnalisisLayout);
+        jPanel_AreaDeAnalisisLayout.setHorizontalGroup(
+            jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
                 .addComponent(jPanel_HerramientasDeDibujado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
+                        .addComponent(jComboBox_periodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addGap(0, 603, Short.MAX_VALUE))
+                    .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
-        jPanel_AnalisisLayout.setVerticalGroup(
-            jPanel_AnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel_AreaDeAnalisisLayout.setVerticalGroup(
+            jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel_HerramientasDeDibujado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
+                .addGroup(jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox_periodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel_Grafico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jTabbedPane_Graficos.addTab("EUR/USD", jPanel_Analisis);
+        jTabbedPane_Graficos.addTab("EUR/USD", jPanel_AreaDeAnalisis);
 
         jTabbedPane_Tools.addTab("Graficos", jTabbedPane_Graficos);
 
@@ -188,10 +242,10 @@ public class MainWindow extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 671, Short.MAX_VALUE)
+            .addGap(0, 593, Short.MAX_VALUE)
         );
 
-        jTabbedPane_Tools.addTab("Noticias", jPanel2);
+        jTabbedPane_Tools.addTab("Dashboard", jPanel2);
 
         javax.swing.GroupLayout jPanel_GraficosLayout = new javax.swing.GroupLayout(jPanel_Graficos);
         jPanel_Graficos.setLayout(jPanel_GraficosLayout);
@@ -201,7 +255,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         jPanel_GraficosLayout.setVerticalGroup(
             jPanel_GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane_Tools)
+            .addComponent(jTabbedPane_Tools, javax.swing.GroupLayout.PREFERRED_SIZE, 621, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jTabbedPane_Tools.getAccessibleContext().setAccessibleName("Grafico\n");
@@ -218,12 +272,19 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel_GeneralLayout.setVerticalGroup(
             jPanel_GeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel_Activos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel_Graficos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel_GeneralLayout.createSequentialGroup()
+                .addComponent(jPanel_Graficos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jMenu1.setText("Archivo");
 
-        jMenu3.setText("Nuevo activo");
+        jMenu3.setText("Nuevo activo ");
+        jMenu3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu3MouseClicked(evt);
+            }
+        });
         jMenu1.add(jMenu3);
 
         jMenuItem1.setText("Importar datos");
@@ -278,12 +339,13 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_formWindowStateChanged
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        enableAxisTrance();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jMenu3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseClicked
+        // TODO add your handling code here:
+        nuevoActivo();
+    }//GEN-LAST:event_jMenu3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -326,8 +388,13 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBox_periodo;
     private javax.swing.JComboBox<String> jComboBox_selectorListas;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -336,55 +403,39 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel_Activos;
-    private javax.swing.JPanel jPanel_Analisis;
+    private javax.swing.JPanel jPanel_AreaDeAnalisis;
     private javax.swing.JPanel jPanel_General;
-    public javax.swing.JPanel jPanel_Grafico;
+    private javax.swing.JPanel jPanel_Grafico;
     private javax.swing.JPanel jPanel_Graficos;
     private javax.swing.JPanel jPanel_HerramientasDeDibujado;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTabbedPane jTabbedPane_Graficos;
     private javax.swing.JTabbedPane jTabbedPane_Tools;
     private javax.swing.JTable jTable_listaActivos;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
-    private void printChart() {
-        
-        CandlestickChart chart = new CandlestickChart(fixedDimensions(), null);
-        System.out.println(jPanel_Grafico.getSize());
-        jPanel_Grafico.setLayout(new BorderLayout());
-        jPanel_Grafico.add(chart, BorderLayout.CENTER);        
+    private void printResizableChart() {
+        CandlestickChart candlestickChart = new CandlestickChart(fixedDimensions(), null);
+        Resizable res = new Resizable(candlestickChart);
 
-    }
-
-    private void metodo() {
-        jPanel_Grafico.setLayout(new BorderLayout());
-        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-    }
-    private void enableAxisTrance(){
-        if(enableTrace)
-            enableTrace=false;
-        else
-            enableTrace=true;
-        candlestickChart.AxisTrace(enableTrace);
-        jPanel_Grafico.repaint();
-    }
-    /**
-     * Añade un componentListener al jPanel_grafico para que se redimension cada vez que cambiamos el tamaño de la ventana
-     */
-    private void enablePanelGraficoAutoSize(){
-        jPanel_Grafico.addComponentListener(new ComponentListener() {
+        res.setSize(fixedDimensions());
+        //jPanel_Grafico.setLayout(new BorderLayout());
+        jPanel_Grafico.add(res);  //, BorderLayout.CENTER
+        res.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
                 ChartPanel cp = (ChartPanel)candlestickChart.getComponent(0);
                 cp.setPreferredSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
-                cp.setSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
-                // frame.invalidate();
+                cp.setSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));                
                 jPanel_Grafico.validate();
             }
 
             @Override
             public void componentMoved(ComponentEvent ce) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
             }
 
             @Override
@@ -397,14 +448,25 @@ public class MainWindow extends javax.swing.JFrame {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
+
     }
+
+//    private void testAboutResizing() {
+//        jPanel_AreaDeAnalisis.addComponentListener(new ComponentAdapter() {
+//            public void componentResized(ComponentEvent e) {
+//                jPanel_Grafico.setSize(fixedDimensions());
+//                jPanel_Grafico.validate();
+//                jPanel_Grafico.repaint();
+//            }
+//        });
+//
+//    }
     private void openChartOnDoubleClick() {
-        if (isAlreadyOneClick) {            
+        if (isAlreadyOneClick) {
             isAlreadyOneClick = false;
         } else {
             isAlreadyOneClick = true;
-            //Añadir el CandlestickChart al JtabbedPane_graficos
-            //jTabbedPane_Graficos.add(new)
+            openChartOnDoubleClick();
             Timer t = new Timer("doubleclickTimer", false);
             t.schedule(new TimerTask() {
 
@@ -417,8 +479,12 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private Dimension fixedDimensions() {
-        Dimension parentSize = jPanel_Analisis.getSize();
+        Dimension parentSize = jPanel_AreaDeAnalisis.getSize();
         Dimension childSize = jPanel_HerramientasDeDibujado.getSize();
-        return new Dimension(parentSize.width-childSize.width, parentSize.height);
+        return new Dimension(parentSize.width - childSize.width, parentSize.height);
+    }
+
+    private void nuevoActivo() {
+        new CSVImportWindow().setVisible(true);
     }
 }

@@ -8,14 +8,10 @@ package pruebas.ivan;
 import Presentacion.api.KrakenApi;
 import Presentacion.api.KrakenApi.Method;
 import java.awt.AWTException;
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.geom.Rectangle2D;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,48 +21,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import org.jfree.chart.ChartMouseEvent;
-import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.annotations.XYAnnotation;
-import org.jfree.chart.annotations.XYLineAnnotation;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.event.AnnotationChangeListener;
-import org.jfree.chart.plot.PlotRenderingInfo;
-import org.jfree.chart.plot.XYPlot;
 
 /**
  *
  * @author usuario
  */
-public class NewMDIApplication extends javax.swing.JFrame {
+public class Main extends javax.swing.JFrame {
 
     private boolean enableTrace;
     private boolean verGraficoClicado;
     private boolean verTablaClicado;
-    private boolean enableTrazado;
     private CandlestickChartClass candlestickChart;
-    private double oldxPoint;
-    private double oldyPoint;
-    private double newxPoint;
-    private double newyPoint;
     /**
      * Creates new form NewMDIApplication
      */
-    public NewMDIApplication() {
+    public Main() {
         initComponents();
         this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
         this.enableTrace=false;  
         this.verGraficoClicado=false;
         this.verTablaClicado=false;
-        this.enableTrazado=false;
         metodo();
         enablePanelGraficoAutoSize();
         TrayIconDemo tid=new TrayIconDemo();
         tid.displayTray();
-        peticionKrakenApi();
         
     }
 
@@ -81,40 +60,37 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         desktopPane = new javax.swing.JDesktopPane();
         jInternalFrame1 = new javax.swing.JInternalFrame();
+        jPanel_Activos = new javax.swing.JPanel();
         jComboBox_selectorListas = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_listaActivos = new javax.swing.JTable();
         jInternalFrame2 = new javax.swing.JInternalFrame();
+        jPanel_Graficos = new javax.swing.JPanel();
         jTabbedPane_Tools = new javax.swing.JTabbedPane();
         jTabbedPane_Graficos = new javax.swing.JTabbedPane();
-        jPanel_Analisis = new javax.swing.JPanel();
+        jPanel_AreaDeAnalisis = new javax.swing.JPanel();
         jPanel_HerramientasDeDibujado = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel_Grafico = new javax.swing.JPanel();
+        jComboBox_periodo = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jPanel_Grafico = new javax.swing.JPanel();
+        jSpinner1 = new javax.swing.JSpinner();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        jToolBarPestañas = new javax.swing.JToolBar();
-        jButtonTabla = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        javax.swing.JButton jButtonGrafica = new javax.swing.JButton();
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        saveMenuItem = new javax.swing.JMenuItem();
-        openMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
-        exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        contentMenuItem = new javax.swing.JMenuItem();
-        aboutMenuItem = new javax.swing.JMenuItem();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuNuevoActivo = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenuView = new javax.swing.JMenu();
         jRadioButtonMenuItemGrafica = new javax.swing.JRadioButtonMenuItem();
         jRadioButtonMenuItemTabla = new javax.swing.JRadioButtonMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -162,24 +138,44 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable_listaActivos);
 
+        javax.swing.GroupLayout jPanel_ActivosLayout = new javax.swing.GroupLayout(jPanel_Activos);
+        jPanel_Activos.setLayout(jPanel_ActivosLayout);
+        jPanel_ActivosLayout.setHorizontalGroup(
+            jPanel_ActivosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jComboBox_selectorListas, 0, 188, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+        );
+        jPanel_ActivosLayout.setVerticalGroup(
+            jPanel_ActivosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_ActivosLayout.createSequentialGroup()
+                .addComponent(jComboBox_selectorListas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1))
+        );
+
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
         jInternalFrame1Layout.setHorizontalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jComboBox_selectorListas, 0, 194, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGap(0, 201, Short.MAX_VALUE)
+            .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jInternalFrame1Layout.createSequentialGroup()
+                    .addGap(3, 3, 3)
+                    .addComponent(jPanel_Activos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jInternalFrame1Layout.setVerticalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                .addComponent(jComboBox_selectorListas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
+            .addGap(0, 670, Short.MAX_VALUE)
+            .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jInternalFrame1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel_Activos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         desktopPane.add(jInternalFrame1);
-        jInternalFrame1.setBounds(0, 0, 210, 660);
+        jInternalFrame1.setBounds(0, 0, 210, 700);
 
         jInternalFrame2.setIconifiable(true);
         jInternalFrame2.setResizable(true);
@@ -216,62 +212,107 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
         jLabel1.setText("Linea");
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        jLabel2.setText("jLabel2");
 
-        jButton2.setText("jButton1");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        jLabel3.setText("jLabel3");
+
+        jLabel4.setText("jLabel4");
 
         javax.swing.GroupLayout jPanel_HerramientasDeDibujadoLayout = new javax.swing.GroupLayout(jPanel_HerramientasDeDibujado);
         jPanel_HerramientasDeDibujado.setLayout(jPanel_HerramientasDeDibujadoLayout);
         jPanel_HerramientasDeDibujadoLayout.setHorizontalGroup(
             jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
             .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel2))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
+                        .addGroup(jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel_HerramientasDeDibujadoLayout.setVerticalGroup(
             jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
+                .addGap(34, 34, 34)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addGap(0, 497, Short.MAX_VALUE))
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel_Grafico.setAutoscrolls(true);
-        jPanel_Grafico.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jPanel_Grafico.setLayout(new java.awt.BorderLayout());
+        javax.swing.GroupLayout jPanel_GraficoLayout = new javax.swing.GroupLayout(jPanel_Grafico);
+        jPanel_Grafico.setLayout(jPanel_GraficoLayout);
+        jPanel_GraficoLayout.setHorizontalGroup(
+            jPanel_GraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel_GraficoLayout.setVerticalGroup(
+            jPanel_GraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 617, Short.MAX_VALUE)
+        );
 
-        javax.swing.GroupLayout jPanel_AnalisisLayout = new javax.swing.GroupLayout(jPanel_Analisis);
-        jPanel_Analisis.setLayout(jPanel_AnalisisLayout);
-        jPanel_AnalisisLayout.setHorizontalGroup(
-            jPanel_AnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_AnalisisLayout.createSequentialGroup()
+        jComboBox_periodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1m", "5m", "15", "1h", "4h", "1D", "1W", "1M" }));
+        jComboBox_periodo.setSelectedIndex(5);
+
+        jButton1.setText("Venta");
+
+        jButton2.setText("Compra");
+
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setText("0");
+
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField2.setText("0");
+
+        javax.swing.GroupLayout jPanel_AreaDeAnalisisLayout = new javax.swing.GroupLayout(jPanel_AreaDeAnalisis);
+        jPanel_AreaDeAnalisis.setLayout(jPanel_AreaDeAnalisisLayout);
+        jPanel_AreaDeAnalisisLayout.setHorizontalGroup(
+            jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
                 .addComponent(jPanel_HerramientasDeDibujado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
+                        .addComponent(jComboBox_periodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addGap(0, 573, Short.MAX_VALUE))
+                    .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
-        jPanel_AnalisisLayout.setVerticalGroup(
-            jPanel_AnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel_AreaDeAnalisisLayout.setVerticalGroup(
+            jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel_HerramientasDeDibujado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
+                .addGroup(jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox_periodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel_Grafico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jTabbedPane_Graficos.addTab("EUR/USD", jPanel_Analisis);
+        jTabbedPane_Graficos.addTab("EUR/USD", jPanel_AreaDeAnalisis);
 
         jTabbedPane_Tools.addTab("Graficos", jTabbedPane_Graficos);
 
@@ -279,124 +320,67 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1049, Short.MAX_VALUE)
+            .addGap(0, 1051, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 594, Short.MAX_VALUE)
+            .addGap(0, 642, Short.MAX_VALUE)
         );
 
-        jTabbedPane_Tools.addTab("Noticias", jPanel2);
+        jTabbedPane_Tools.addTab("Dashboard", jPanel2);
+
+        javax.swing.GroupLayout jPanel_GraficosLayout = new javax.swing.GroupLayout(jPanel_Graficos);
+        jPanel_Graficos.setLayout(jPanel_GraficosLayout);
+        jPanel_GraficosLayout.setHorizontalGroup(
+            jPanel_GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_GraficosLayout.createSequentialGroup()
+                .addComponent(jTabbedPane_Tools, javax.swing.GroupLayout.PREFERRED_SIZE, 1056, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel_GraficosLayout.setVerticalGroup(
+            jPanel_GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane_Tools, javax.swing.GroupLayout.PREFERRED_SIZE, 670, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jInternalFrame2Layout = new javax.swing.GroupLayout(jInternalFrame2.getContentPane());
         jInternalFrame2.getContentPane().setLayout(jInternalFrame2Layout);
         jInternalFrame2Layout.setHorizontalGroup(
             jInternalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane_Tools)
+            .addGap(0, 1066, Short.MAX_VALUE)
+            .addGroup(jInternalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jInternalFrame2Layout.createSequentialGroup()
+                    .addComponent(jPanel_Graficos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         jInternalFrame2Layout.setVerticalGroup(
             jInternalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane_Tools)
+            .addGap(0, 670, Short.MAX_VALUE)
+            .addGroup(jInternalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel_Graficos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         desktopPane.add(jInternalFrame2);
-        jInternalFrame2.setBounds(210, 0, 1070, 660);
+        jInternalFrame2.setBounds(210, 0, 1070, 700);
 
-        jToolBarPestañas.setBackground(new java.awt.Color(0, 51, 51));
-        jToolBarPestañas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, null, new java.awt.Color(0, 0, 0), null, null));
-        jToolBarPestañas.setRollover(true);
+        jMenu1.setText("Archivo");
 
-        jButtonTabla.setText("Tabla");
-        jButtonTabla.setFocusable(false);
-        jButtonTabla.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonTabla.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonTabla.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonTablaActionPerformed(evt);
+        jMenuNuevoActivo.setText("Nuevo activo ");
+        jMenuNuevoActivo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenuNuevoActivoMouseClicked(evt);
             }
         });
-        jToolBarPestañas.add(jButtonTabla);
-        jToolBarPestañas.add(jSeparator1);
+        jMenu1.add(jMenuNuevoActivo);
 
-        jButtonGrafica.setText("Grafica");
-        jButtonGrafica.setFocusable(false);
-        jButtonGrafica.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonGrafica.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonGrafica.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem1.setText("Importar datos");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonGraficaActionPerformed(evt);
+                jMenuItem1ActionPerformed(evt);
             }
         });
-        jToolBarPestañas.add(jButtonGrafica);
+        jMenu1.add(jMenuItem1);
 
-        desktopPane.add(jToolBarPestañas);
-        jToolBarPestañas.setBounds(3, 660, 1280, 40);
-
-        fileMenu.setMnemonic('f');
-        fileMenu.setText("File");
-
-        saveMenuItem.setMnemonic('s');
-        saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
-
-        openMenuItem.setMnemonic('o');
-        openMenuItem.setText("Open");
-        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(openMenuItem);
-
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Save As ...");
-        saveAsMenuItem.setDisplayedMnemonicIndex(5);
-        fileMenu.add(saveAsMenuItem);
-
-        exitMenuItem.setMnemonic('x');
-        exitMenuItem.setText("Exit");
-        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(exitMenuItem);
-
-        menuBar.add(fileMenu);
-
-        editMenu.setMnemonic('e');
-        editMenu.setText("Edit");
-
-        cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
-
-        copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
-
-        pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText("Paste");
-        editMenu.add(pasteMenuItem);
-
-        deleteMenuItem.setMnemonic('d');
-        deleteMenuItem.setText("Delete");
-        editMenu.add(deleteMenuItem);
-
-        menuBar.add(editMenu);
-
-        helpMenu.setMnemonic('h');
-        helpMenu.setText("Help");
-
-        contentMenuItem.setMnemonic('c');
-        contentMenuItem.setText("Contents");
-        helpMenu.add(contentMenuItem);
-
-        aboutMenuItem.setMnemonic('a');
-        aboutMenuItem.setText("About");
-        helpMenu.add(aboutMenuItem);
-
-        menuBar.add(helpMenu);
+        jMenuBar1.add(jMenu1);
 
         jMenuView.setText("View");
 
@@ -416,9 +400,16 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
         jMenuView.add(jRadioButtonMenuItemTabla);
 
-        menuBar.add(jMenuView);
+        jMenuBar1.add(jMenuView);
 
-        setJMenuBar(menuBar);
+        jMenu2.setText("Ayuda");
+
+        jMenu4.setText("Acerca de...");
+        jMenu2.add(jMenu4);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -434,21 +425,17 @@ public class NewMDIApplication extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_exitMenuItemActionPerformed
-
-    private void jTable_listaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_listaActivosMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTable_listaActivosMouseClicked
-
     private void jInternalFrame1InternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_jInternalFrame1InternalFrameIconified
-        minimizarTabla();
+
     }//GEN-LAST:event_jInternalFrame1InternalFrameIconified
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        enableAxisTrance();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jInternalFrame2InternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_jInternalFrame2InternalFrameIconified
+
+    }//GEN-LAST:event_jInternalFrame2InternalFrameIconified
+
+    private void jTable_listaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_listaActivosMouseClicked
+
+    }//GEN-LAST:event_jTable_listaActivosMouseClicked
 
     private void jTabbedPane_GraficosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosFocusGained
 
@@ -458,6 +445,15 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTabbedPane_GraficosComponentShown
 
+    private void jMenuNuevoActivoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuNuevoActivoMouseClicked
+        // TODO add your handling code here:
+        nuevoActivo();
+    }//GEN-LAST:event_jMenuNuevoActivoMouseClicked
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     private void jRadioButtonMenuItemGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemGraficaActionPerformed
         mostrarSoloGráfica();
     }//GEN-LAST:event_jRadioButtonMenuItemGraficaActionPerformed
@@ -465,27 +461,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private void jRadioButtonMenuItemTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemTablaActionPerformed
         mostrarSoloTabla();
     }//GEN-LAST:event_jRadioButtonMenuItemTablaActionPerformed
-
-    private void jInternalFrame2InternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_jInternalFrame2InternalFrameIconified
-        minimizarGrafica();
-    }//GEN-LAST:event_jInternalFrame2InternalFrameIconified
-
-    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
-        CSVImportWindow csvImp=new CSVImportWindow();
-        csvImp.setVisible(true);
-    }//GEN-LAST:event_openMenuItemActionPerformed
-
-    private void jButtonGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGraficaActionPerformed
-        botonGrafica();
-    }//GEN-LAST:event_jButtonGraficaActionPerformed
-
-    private void jButtonTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTablaActionPerformed
-        botonTabla();
-    }//GEN-LAST:event_jButtonTablaActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        activarTrace();
-    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -504,93 +479,65 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewMDIApplication().setVisible(true);
+                new Main().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JMenuItem contentMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenu editMenu;
-    private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButtonTabla;
+    private javax.swing.JComboBox<String> jComboBox_periodo;
     private javax.swing.JComboBox<String> jComboBox_selectorListas;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JInternalFrame jInternalFrame2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenu jMenuNuevoActivo;
     private javax.swing.JMenu jMenuView;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel_Analisis;
-    public javax.swing.JPanel jPanel_Grafico;
+    private javax.swing.JPanel jPanel_Activos;
+    private javax.swing.JPanel jPanel_AreaDeAnalisis;
+    private javax.swing.JPanel jPanel_Grafico;
+    private javax.swing.JPanel jPanel_Graficos;
     private javax.swing.JPanel jPanel_HerramientasDeDibujado;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemGrafica;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemTabla;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTabbedPane jTabbedPane_Graficos;
     private javax.swing.JTabbedPane jTabbedPane_Tools;
     private javax.swing.JTable jTable_listaActivos;
-    private javax.swing.JToolBar jToolBarPestañas;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
     private void metodo() {
         jPanel_Grafico.setLayout(new BorderLayout());
         jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-    }
-    private void activarTrace(){
- 
-            candlestickChart.getChartPanel().addChartMouseListener(new ChartMouseListener() {
-            @Override
-            public void chartMouseClicked(ChartMouseEvent cme) {
-                if(!enableTrazado){
-                enableTrazado=true;
-                oldxPoint=cme.getTrigger().getX();
-                oldyPoint=cme.getTrigger().getY();
-                }
-                else{
-                    newxPoint=cme.getTrigger().getX();
-                newyPoint=cme.getTrigger().getY();
-                XYLineAnnotation xYLineAnnotation = new XYLineAnnotation(7, 7, 1000, 1000, new BasicStroke(1.0f), Color.blue);
-                candlestickChart.getChartPanel().getChart().getXYPlot().addAnnotation(xYLineAnnotation) ;
-                }
-                
-            }
-
-            @Override
-            public void chartMouseMoved(ChartMouseEvent cme) {
-                
-                
-            }
-            
-        });
-   
     }
     private void enableAxisTrance(){
         if(enableTrace)
@@ -611,7 +558,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         try {
             jInternalFrame2.setIcon(false);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         if(verGraficoClicado){
             jInternalFrame1.setVisible(true);
@@ -621,7 +568,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             jInternalFrame1.setVisible(false);
             jInternalFrame2.setVisible(true);
             jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
-            jInternalFrame2.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
+            jInternalFrame2.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight());
             
         }    
     }
@@ -635,7 +582,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         try {
             jInternalFrame1.setIcon(false);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         if(verTablaClicado){
             jInternalFrame2.setVisible(true);
@@ -645,48 +592,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
             jInternalFrame2.setVisible(false);
             jInternalFrame1.setVisible(true);
             jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
-            jInternalFrame1.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
+            jInternalFrame1.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight());
         }
-    }
-    private void botonTabla(){
-        if(!jInternalFrame1.isVisible()){
-            jInternalFrame1.setVisible(true);
-            try {
-                jInternalFrame1.setIcon(false);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
-            if(jInternalFrame2.isVisible())
-                jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
-            else
-                jInternalFrame1.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
-        }
-    }
-    private void botonGrafica(){
-        if(!jInternalFrame2.isVisible()){
-            jInternalFrame2.setVisible(true);
-            try {
-                jInternalFrame2.setIcon(false);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            jInternalFrame1.reshape(0, 0, (int)fixedDimensionsInternal1().getWidth(), (int)fixedDimensionsInternal1().getHeight());
-            if(jInternalFrame1.isVisible())
-                jInternalFrame2.reshape((int)jInternalFrame1.getSize().getWidth(), 0, (int)fixedDimensionsInternal2().getWidth(), (int)fixedDimensionsInternal2().getHeight());
-            else
-                jInternalFrame2.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
-        }
-    }
-    private void minimizarTabla(){
-        jInternalFrame1.setVisible(false);
-        if(jInternalFrame2.isVisible())
-            jInternalFrame2.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
-    }
-    private void minimizarGrafica(){
-        jInternalFrame2.setVisible(false);
-        if(jInternalFrame1.isVisible())
-            jInternalFrame1.reshape(0, 0, (int)desktopPane.getSize().getWidth(), (int)desktopPane.getSize().getHeight()-jToolBarPestañas.getSize().height);
     }
     /**
      * Añade un componentListener al jPanel_grafico para que se redimension cada vez que cambiamos el tamaño de la ventana
@@ -749,41 +656,46 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private Dimension fixedDimensionsInternal2() {
         Dimension parentSize = desktopPane.getSize();
         Dimension childSize = jInternalFrame1.getSize();
-        return new Dimension(parentSize.width-childSize.width, parentSize.height-jToolBarPestañas.getSize().height);
+        return new Dimension(parentSize.width-childSize.width, parentSize.height);
     }
     private Dimension fixedDimensionsInternal1() {
         Dimension parentSize = desktopPane.getSize();
         Dimension childSize = jInternalFrame2.getSize();
-        return new Dimension(parentSize.width-childSize.width, parentSize.height-jToolBarPestañas.getSize().height);
+        return new Dimension(parentSize.width-childSize.width, parentSize.height);
     }
     private void peticionKrakenApi()
     {
         try {
             KrakenApi api = new KrakenApi();
-            api.setKey("eFdZ+5zMcIda/AIXmxgAQleAY02CQDauk0cmRBdmR1VdN4eoo9HtWraX"); // FIXME
-            api.setSecret("CeLyCF83pNbPz8VjlGjl04RdiulpVVFCS8C/+XeaXT/3Ck8URYGuiJT4BWm3tfm9W4d0vRw/sJrBYveuf5GScg=="); // FIXME
+            api.setKey("Your API Key"); // FIXME
+            api.setSecret("Your API Secret"); // FIXME
 
             String response;
             Map<String, String> input = new HashMap<>();
 
-            /*input.put("pair", "XBTEUR");
+            input.put("pair", "XBTEUR");
             response = api.queryPublic(Method.TICKER, input);
             System.out.println(response);
 
             input.clear();
             input.put("pair", "XBTEUR,XBTLTC");
             response = api.queryPublic(Method.ASSET_PAIRS, input);
-            System.out.println(response);*/
+            System.out.println(response);
 
             input.clear();
-            input.put("pair","EOSETH");
-            input.put("since","0");
-            input.put("interval","30");
-            response = api.queryPublic(Method.OHLC, input);
+            input.put("asset", "ZEUR");
+            response = api.queryPrivate(Method.BALANCE, input);
             System.out.println(response);
         } catch (IOException ex) {
-            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeyException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
+    }
+    private void nuevoActivo() {
+        new Presentacion.Interfaz.CSVImportWindow().setVisible(true);
     }
 }
