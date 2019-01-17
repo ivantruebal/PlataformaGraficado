@@ -14,6 +14,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jfree.chart.ChartPanel;
@@ -33,10 +35,11 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow() {
         initComponents();
+        settings();
         printResizableChart();
-        crearBBDDsiNoExiste(); 
+        crearBBDDsiNoExiste();
         //Centra en medio de la pantalla
-        this.setLocationRelativeTo(null);
+
     }
 
     /**
@@ -380,7 +383,7 @@ public class MainWindow extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainWindow().setVisible(true);
-                
+
             }
         });
     }
@@ -426,9 +429,9 @@ public class MainWindow extends javax.swing.JFrame {
         res.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-                ChartPanel cp = (ChartPanel)candlestickChart.getComponent(0);
+                ChartPanel cp = (ChartPanel) candlestickChart.getComponent(0);
                 cp.setPreferredSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
-                cp.setSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));                
+                cp.setSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
                 jPanel_Grafico.validate();
             }
 
@@ -489,6 +492,13 @@ public class MainWindow extends javax.swing.JFrame {
 
     private Session crearBBDDsiNoExiste() {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        return sessionFactory.openSession();        
+        return sessionFactory.openSession();
+    }
+
+    private void settings() {
+        this.dispose();
+        this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
+        this.setLocationRelativeTo(null);
+        this.pack();
     }
 }

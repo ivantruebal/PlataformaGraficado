@@ -9,6 +9,7 @@ import Presentacion.Interfaz.ActiveListWindow;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +26,7 @@ import servicios.utils.Utils;
  */
 public class BBDD {
 
-    public static boolean comprobarCredencialesDeUsuario(String username, String password) {
+    public static boolean comprobarCredencialesDeUsuario(String username, String password) throws NoResultException{
 
         password = Utils.hashToMD5(password);
         try {
@@ -46,5 +47,9 @@ public class BBDD {
             throw  e;
         }
 
+    }
+
+    public static void añadirCargaInicial() {
+        
     }
 }

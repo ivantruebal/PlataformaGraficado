@@ -5,11 +5,15 @@
  */
 package servicios.utils;
 
+import java.awt.Color;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import servicios.database.BBDD;
 
 /**
  *
@@ -30,4 +34,24 @@ public class Utils {
         }
         return null;
     }
+
+    public static void mostrarErrorGenerico() {
+        mostrarErrorGenerico(null);
+    }
+
+    public static void mostrarErrorGenerico(Exception e) {
+        JOptionPane.showMessageDialog(new JFrame(), "ERROR: Contacte con el administrador", "ERROR",
+                JOptionPane.ERROR_MESSAGE);
+        if (e != null) {
+            java.util.logging.Logger.getLogger(Utils.class.getName()).log(java.util.logging.Level.FINEST, "Error generico", e.getMessage());
+        }
+    }
+
+    public static Color hex2Rgb(String colorStr) {
+        return new Color(
+                Integer.valueOf(colorStr.substring(1, 3), 16),
+                Integer.valueOf(colorStr.substring(3, 5), 16),
+                Integer.valueOf(colorStr.substring(5, 7), 16));
+    }
+
 }

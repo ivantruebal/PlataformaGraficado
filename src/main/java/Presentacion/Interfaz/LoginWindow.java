@@ -5,10 +5,19 @@
  */
 package Presentacion.Interfaz;
 
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import servicios.database.BBDD;
+import servicios.utils.Utils;
 
 /**
  *
@@ -21,8 +30,8 @@ public class LoginWindow extends javax.swing.JFrame {
      */
     public LoginWindow() {
         initComponents();
-        cambiaIcono();
-        this.setLocationRelativeTo(null);
+        settings();
+        BBDD.añadirCargaInicial();
         
     }
 
@@ -39,7 +48,7 @@ public class LoginWindow extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jTextField_nombreUsuario = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        jPasswordField_password = new javax.swing.JPasswordField();
         jButton_login = new javax.swing.JButton();
         jButton_registrarse = new javax.swing.JButton();
         jButton_exit = new javax.swing.JButton();
@@ -47,17 +56,30 @@ public class LoginWindow extends javax.swing.JFrame {
         jLabel_textoLoginIncorrecto = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setText("Usuario:");
 
-        jLabel2.setText("Password:");
-
-        jPasswordField1.addKeyListener(new java.awt.event.KeyAdapter() {
+        jTextField_nombreUsuario.setBackground(new java.awt.Color(102, 102, 102));
+        jTextField_nombreUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                jPasswordField1KeyPressed(evt);
+                jTextField_nombreUsuarioKeyPressed(evt);
             }
         });
 
+        jLabel2.setText("Password:");
+
+        jPasswordField_password.setBackground(new java.awt.Color(102, 102, 102));
+        jPasswordField_password.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jPasswordField_passwordKeyPressed(evt);
+            }
+        });
+
+        jButton_login.setBackground(new java.awt.Color(255, 51, 51));
         jButton_login.setText("Login");
         jButton_login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -65,8 +87,16 @@ public class LoginWindow extends javax.swing.JFrame {
             }
         });
 
+        jButton_registrarse.setBackground(new java.awt.Color(255, 0, 0));
         jButton_registrarse.setText("Registrarse");
+        jButton_registrarse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_registrarseActionPerformed(evt);
+            }
+        });
 
+        jButton_exit.setBackground(new java.awt.Color(0, 0, 0));
+        jButton_exit.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jButton_exit.setText("Salir");
         jButton_exit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -85,57 +115,59 @@ public class LoginWindow extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel_textoLoginIncorrecto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(69, 69, 69)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField_nombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGap(69, 69, 69)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jButton_login)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton_registrarse))
-                                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(169, 169, 169)
-                        .addComponent(jButton_exit)))
-                .addContainerGap(66, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(98, 98, 98))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel_textoLoginIncorrecto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jPasswordField_password, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jButton_login, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(42, 42, 42)
+                                        .addComponent(jButton_registrarse)
+                                        .addGap(27, 27, 27))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jTextField_nombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(154, 154, 154)
+                                .addComponent(jButton_exit, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 56, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(99, 99, 99)
+                .addComponent(jLabel3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(46, 46, 46)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jTextField_nombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPasswordField_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel_textoLoginIncorrecto, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton_login)
-                    .addComponent(jButton_registrarse))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton_registrarse)
+                    .addComponent(jButton_login))
+                .addGap(52, 52, 52)
                 .addComponent(jButton_exit)
-                .addGap(61, 61, 61))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -159,15 +191,25 @@ public class LoginWindow extends javax.swing.JFrame {
         onLogin();
     }//GEN-LAST:event_jButton_loginActionPerformed
 
-    private void jPasswordField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField1KeyPressed
+    private void jPasswordField_passwordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField_passwordKeyPressed
         // TODO add your handling code here:
-        onKeyPressed(evt);
-    }//GEN-LAST:event_jPasswordField1KeyPressed
+        onEnterKeyPressLogin(evt);
+    }//GEN-LAST:event_jPasswordField_passwordKeyPressed
 
     private void jButton_exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_exitActionPerformed
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jButton_exitActionPerformed
+
+    private void jTextField_nombreUsuarioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_nombreUsuarioKeyPressed
+        // TODO add your handling code here:
+        onEnterKeyPressLogin(evt);
+    }//GEN-LAST:event_jTextField_nombreUsuarioKeyPressed
+
+    private void jButton_registrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_registrarseActionPerformed
+        // TODO add your handling code here:
+        onRegister();
+    }//GEN-LAST:event_jButton_registrarseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -200,7 +242,10 @@ public class LoginWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoginWindow().setVisible(true);
+                LoginWindow loginWindow = new LoginWindow();
+                
+                loginWindow.setVisible(true);
+                
             }
         });
     }
@@ -214,32 +259,63 @@ public class LoginWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel_textoLoginIncorrecto;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JPasswordField jPasswordField_password;
     private javax.swing.JTextField jTextField_nombreUsuario;
     // End of variables declaration//GEN-END:variables
 
-    private void cambiaIcono() {
+    private void settings() {
+        //Se liberan los recursos de la ventana para reconstruirse despues con un this.pack(), para poder hacer el this.setUndecorated(true);
+        this.dispose();
         this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
+        this.setLocationRelativeTo(null);
+        this.setUndecorated(true);        
+        this.getRootPane().setBorder(BorderFactory.createLineBorder(Color.BLACK));   
+        this.jPasswordField_password.setOpaque(true);
+        this.jTextField_nombreUsuario.setOpaque(true);
+        this.pack();
     }
     
     private void onLogin() {
         try {
             
-            if (BBDD.comprobarCredencialesDeUsuario(jTextField_nombreUsuario.getText(), new String(jPasswordField1.getPassword()))) {
+            if (BBDD.comprobarCredencialesDeUsuario(jTextField_nombreUsuario.getText(), new String(jPasswordField_password.getPassword()))) {
                 new MainWindow().setVisible(true);
                 this.setVisible(false);
             } else {
-                jLabel_textoLoginIncorrecto.setText("El nombre de usuario o contraseña son incorrectos");
+                jLabel_textoLoginIncorrecto.setText("El nombre de usuario o contraseña son incorrectos");                
+                resaltaCampoPasswordEnRojo();
+                jPasswordField_password.setText("");
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error contacte con el administrador");
+            Utils.mostrarErrorGenerico(e);
         }
         
     }
     
-    private void onKeyPressed(KeyEvent evt) {
+    private void resaltaCampoPasswordEnRojo() {
+        final Color colorBackup = jPasswordField_password.getBackground();
+        jPasswordField_password.setBackground(Color.RED);
+        jPasswordField_password.repaint();
+        int delayTime = 500; // for 500 msecs
+        new Timer(delayTime, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: code to be delayed goes here
+                jPasswordField_password.setBackground(colorBackup);
+                jPasswordField_password.repaint();
+                // stop the timer from repeating
+                ((Timer) e.getSource()).stop();
+            }
+        }).start();
+    }
+    
+    private void onEnterKeyPressLogin(KeyEvent evt) {
         if (evt.getKeyChar() == '\n') {
             onLogin();
         }
+    }
+    
+    private void onRegister() {
+        new RegisterWindow().setVisible(true);
     }
 }
