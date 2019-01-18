@@ -33,7 +33,7 @@ public class Usuario implements Serializable {
 
     @Id
     @Column
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private int idUsuario;
     @Column(nullable = false)
     private String nombre;
@@ -54,8 +54,7 @@ public class Usuario implements Serializable {
     public Usuario() {
     }
 
-    public Usuario(int idUsuario, String nombre, String email, String password) {
-        this.idUsuario = idUsuario;
+    public Usuario(String nombre, String email, String password) {
         this.nombre = nombre;
         this.email = email;
         this.password = password;
@@ -100,4 +99,10 @@ public class Usuario implements Serializable {
     public void setListaDeActivos(Set<ListaDeActivos> listaDeActivos) {
         this.listaDeActivos = listaDeActivos;
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "idUsuario=" + idUsuario + ", nombre=" + nombre + ", email=" + email + ", password=" + password + ", listaDeActivos=" + listaDeActivos + '}';
+    }
+    
 }

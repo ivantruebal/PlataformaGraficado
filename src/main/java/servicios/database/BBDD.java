@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Query;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import servicios.modelos.Usuario;
 import servicios.utils.Utils;
 
@@ -56,19 +57,27 @@ public class BBDD {
     public static boolean registrarUsuario(String username, String email, String password) {
         password = Utils.hashToMD5(password);
 
-        Session openSession = HibernateUtil.getSessionFactory().openSession();
-        Query createQuery = openSession.createQuery("insert into Usuario u set u.nombre = :nombre, u.email = :email, password = :password");
-        createQuery.setParameter("nombre", username);
-        createQuery.setParameter("email", email);
-        createQuery.setParameter("password", password);
-        int executeUpdate = createQuery.executeUpdate();
-        if (executeUpdate == 1) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Usuario usuario = new Usuario(username, email, password);
+            session.save(usuario);
+            session.flush();
+            tx.commit();
             java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINEST, "Usuario {0} se ha registrado correctamente", username);
             return true;
-        } else {
-            java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Usuario {0} no se ha registrado, algun campo esta repetido", username);
-            return false;
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Usuario {0} no se ha registrado, algun campo esta repetido", username);
+                return false;
+            }
+            throw e;
+        } finally {
+            session.close();
         }
 
     }
+
 }
