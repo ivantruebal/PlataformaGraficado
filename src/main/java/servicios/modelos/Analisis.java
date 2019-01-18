@@ -30,7 +30,7 @@ public class Analisis implements Serializable {
     
     @Id
     @Column
-    @GeneratedValue(strategy=GenerationType.TABLE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int idAnalisis;
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinTable(

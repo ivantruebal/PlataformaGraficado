@@ -29,7 +29,7 @@ public class Operaciones implements Serializable {
 
     @Id
     @Column(nullable = false)
-    @GeneratedValue(strategy=GenerationType.TABLE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int idOperacion;
     @Column(nullable = false)
     private Date fechaApertura;

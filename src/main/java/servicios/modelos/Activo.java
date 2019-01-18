@@ -32,7 +32,7 @@ public class Activo implements Serializable {
 
     @Id
     @Column
-    @GeneratedValue(strategy=GenerationType.TABLE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int idActivo;
     @Column(nullable = false)
     private String nombre;

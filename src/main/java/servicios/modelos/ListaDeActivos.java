@@ -32,7 +32,7 @@ public class ListaDeActivos implements Serializable {
 
     @Id
     @Column
-    @GeneratedValue(strategy=GenerationType.TABLE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int idLista;
     @Column(nullable = false)
     private String nombre;
