@@ -29,7 +29,7 @@ import javax.persistence.Table;
 public class Candlestick implements Serializable {
     @Id
     @Column(nullable = false)
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.TABLE)
     private int idCandlestick;
     @Column(nullable = false)   
     private BigDecimal open;

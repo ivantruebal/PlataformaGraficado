@@ -311,6 +311,7 @@ public class RegisterWindow extends javax.swing.JFrame {
         String password = new String(jPasswordField_password.getPassword());
         if(BBDD.registrarUsuario(jTextField_usuario.getText(), jTextField_email.getText(), password))
             this.dispose();
+        
     }
 
     private void comprobarYactivarBotonRegistro() {

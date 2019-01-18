@@ -26,6 +26,6 @@ import javax.persistence.UniqueConstraint;
 public class forma2D implements Serializable {
     @Id
     @Column
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.TABLE)
     private int idForma2D;
 }
