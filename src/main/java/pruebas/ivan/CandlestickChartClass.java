@@ -23,6 +23,7 @@ import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.plot.XYPlot;
 
 import org.jfree.data.xy.DefaultHighLowDataset;
+import org.jfree.data.xy.OHLCDataItem;
 
 /**
  *
@@ -69,6 +70,8 @@ public class CandlestickChartClass extends JPanel {
 
         int serice = 150;
 
+        
+        
         Date[] date = new Date[serice];
         double[] high = new double[serice];
         double[] low = new double[serice];
@@ -94,6 +97,7 @@ public class CandlestickChartClass extends JPanel {
             close[i] = 10 + Math.round(10) + new Double(Math.random() * 20.0);
             volume[i] = 10.0 + new Double(Math.random() * 20.0);
         }
+        
 
         DefaultHighLowDataset data = new DefaultHighLowDataset(
                 "", date, high, low, open, close, volume);

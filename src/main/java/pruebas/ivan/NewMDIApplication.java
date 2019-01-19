@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +39,9 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.event.AnnotationChangeListener;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.DefaultHighLowDataset;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -62,7 +68,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         this.verGraficoClicado=false;
         this.verTablaClicado=false;
         this.enableTrazado=false;
-        metodo();
+        //metodo();
         enablePanelGraficoAutoSize();
         TrayIconDemo tid=new TrayIconDemo();
         tid.displayTray();
@@ -766,21 +772,48 @@ public class NewMDIApplication extends javax.swing.JFrame {
             String response;
             Map<String, String> input = new HashMap<>();
 
-            /*input.put("pair", "XBTEUR");
-            response = api.queryPublic(Method.TICKER, input);
-            System.out.println(response);
-
-            input.clear();
-            input.put("pair", "XBTEUR,XBTLTC");
-            response = api.queryPublic(Method.ASSET_PAIRS, input);
-            System.out.println(response);*/
-
             input.clear();
             input.put("pair","EOSETH");
             input.put("since","0");
             input.put("interval","30");
             response = api.queryPublic(Method.OHLC, input);
             System.out.println(response);
+            JSONObject job=new JSONObject(response);
+            JSONObject jobResult=job.getJSONObject("result");
+            JSONArray ja=jobResult.getJSONArray("EOSETH");
+            JSONArray ja2;
+            Date[] date = new Date[ja.length()];
+            double[] high = new double[ja.length()];
+            double[] low = new double[ja.length()];
+            double[] open = new double[ja.length()];
+            double[] close = new double[ja.length()];
+            double[] volume = new double[ja.length()];
+            for(int i=0;i<ja.length();i++){
+                ja2=ja.getJSONArray(i);
+                date[i]=new Date(ja2.getLong(0));
+                open[i]=ja2.getDouble(1);
+                high[i]=ja2.getDouble(2);
+                low[i]=ja2.getDouble(3);
+                close[i]=ja2.getDouble(4);
+                volume[i]=ja2.getDouble(6);
+                /*for(int j=0;j<ja2.length();j++){
+                    System.out.println(ja2.get(j).toString());
+                }*/
+            }
+            DefaultHighLowDataset data = new DefaultHighLowDataset(
+                "", date, high, low, open, close, volume);
+            candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
+            jPanel_Grafico.setLayout(new BorderLayout());
+            jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
+            /*JsonObject obj = new JsonParser().parse(response).getAsJsonObject();
+            JsonElement jresult= obj.get("result");
+            JsonObject gsonObj = jresult.getAsJsonObject();
+            JsonArray ja=gsonObj.get("EOSETH").getAsJsonArray();
+            Iterator<JsonElement> it=ja.iterator();
+            while(it.hasNext()){
+                
+            }
+            System.out.println(gsonObj.get("EOSETH").isJsonArray());*/
         } catch (IOException ex) {
             Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
         } 
