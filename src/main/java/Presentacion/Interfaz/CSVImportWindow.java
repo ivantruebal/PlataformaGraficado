@@ -8,11 +8,20 @@ package Presentacion.Interfaz;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Toolkit;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import servicios.modelos.Activo;
+import servicios.modelos.Candlestick;
 
 /**
  *
@@ -254,6 +263,45 @@ public class CSVImportWindow extends javax.swing.JFrame {
      */
     private void guardarDatosDeFicheroEnBBDD() {
         
+    }
+    
+    /**
+     * Método que lee el fichero CSV y genera un Set de Candlestick con los datos leidos
+     * @return Set generado a partir de los datos lidos del fichero
+     */
+    private Set<Candlestick> leerFicheroCSV() {
+        Set<Candlestick> candlestcksSet = null;
+        if(jTextField_rutaFicheroCSV.getText().length()>0){
+            BufferedReader br = null;
+            try {
+                br =new BufferedReader(new FileReader(jTextField_rutaFicheroCSV.getText()));
+                String line = br.readLine();
+                while (null!=line) {
+                    String [] fields = line.split(jTextField_caracterDeSeparacion.getText());
+                    Candlestick c=new Candlestick();
+                    c.setTimestamp(new Date(Long.parseLong(fields[0])));
+                    c.setOpen(BigDecimal.valueOf(Double.parseDouble(fields[1])));
+                    c.setHigh(BigDecimal.valueOf(Double.parseDouble(fields[2])));
+                    c.setLow(BigDecimal.valueOf(Double.parseDouble(fields[3])));
+                    c.setClose(BigDecimal.valueOf(Double.parseDouble(fields[4])));
+                    candlestcksSet.add(c);
+                    line = br.readLine();
+                }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(CSVImportWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(CSVImportWindow.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                if (null!=br) {
+                    try {
+                        br.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(CSVImportWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        return candlestcksSet;
     }
 
     /**
