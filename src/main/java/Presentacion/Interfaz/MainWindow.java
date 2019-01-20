@@ -19,6 +19,8 @@ import javax.swing.JFrame;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.xy.DefaultHighLowDataset;
 import pruebas.ramon.resize.Resizable;
 import servicios.database.HibernateUtil;
 
@@ -36,10 +38,7 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
         initComponents();
         settings();
-        printResizableChart();
-        crearBBDDsiNoExiste();
-        //Centra en medio de la pantalla
-
+        printResizableChart(null);
     }
 
     /**
@@ -419,8 +418,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
-    private void printResizableChart() {
-        CandlestickChart candlestickChart = new CandlestickChart(fixedDimensions());
+    public void printResizableChart(DefaultHighLowDataset dataset) {
+        CandlestickChart candlestickChart;
+        if (dataset != null) {
+            candlestickChart = new CandlestickChart(fixedDimensions(), dataset);
+        }
+        else
+            candlestickChart = new CandlestickChart(fixedDimensions());
         Resizable res = new Resizable(candlestickChart);
 
         res.setSize(fixedDimensions());
@@ -450,19 +454,11 @@ public class MainWindow extends javax.swing.JFrame {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-
+        this.dispose();
+        this.pack();
     }
 
-//    private void testAboutResizing() {
-//        jPanel_AreaDeAnalisis.addComponentListener(new ComponentAdapter() {
-//            public void componentResized(ComponentEvent e) {
-//                jPanel_Grafico.setSize(fixedDimensions());
-//                jPanel_Grafico.validate();
-//                jPanel_Grafico.repaint();
-//            }
-//        });
-//
-//    }
+
     private void openChartOnDoubleClick() {
         if (isAlreadyOneClick) {
             isAlreadyOneClick = false;
@@ -488,11 +484,6 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void nuevoActivo() {
         new CSVImportWindow().setVisible(true);
-    }
-
-    private Session crearBBDDsiNoExiste() {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        return sessionFactory.openSession();
     }
 
     private void settings() {

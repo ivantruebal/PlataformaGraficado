@@ -5,16 +5,14 @@
  */
 package Presentacion.Interfaz;
 
-import java.awt.Button;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import javax.persistence.NoResultException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import servicios.database.BBDD;
 import servicios.utils.Utils;
@@ -31,7 +29,6 @@ public class LoginWindow extends javax.swing.JFrame {
     public LoginWindow() {
         initComponents();
         settings();
-        BBDD.añadirCargaInicial();
         
     }
 
@@ -185,7 +182,6 @@ public class LoginWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_loginActionPerformed
-        // TODO add your handling code here:
         onLogin();
     }//GEN-LAST:event_jButton_loginActionPerformed
 
@@ -276,7 +272,6 @@ public class LoginWindow extends javax.swing.JFrame {
     
     private void onLogin() {
         try {
-            
             if (BBDD.comprobarCredencialesDeUsuario(jTextField_nombreUsuario.getText(), new String(jPasswordField_password.getPassword()))) {
                 new MainWindow().setVisible(true);
                 this.setVisible(false);
@@ -285,7 +280,7 @@ public class LoginWindow extends javax.swing.JFrame {
                 resaltaCampoPasswordEnRojo();
                 jPasswordField_password.setText("");
             }
-        } catch (Exception e) {
+        } catch (NoResultException e) {
             Utils.mostrarErrorGenerico(e);
         }
         

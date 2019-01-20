@@ -52,12 +52,10 @@ public class Activo implements Serializable {
     public Activo() {
     }
 
-    public Activo(int idActivo, String nombre, String simbolo, String notas, Set<Candlestick> candlestickSet) {
-        this.idActivo = idActivo;
+    public Activo(String nombre, String simbolo, String notas) {
         this.nombre = nombre;
         this.simbolo = simbolo;
         this.notas = notas;
-        this.candlestickSet = candlestickSet;
     }
 
     public int getIdActivo() {

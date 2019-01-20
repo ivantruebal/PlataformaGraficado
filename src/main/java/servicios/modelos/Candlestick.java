@@ -5,9 +5,9 @@
  */
 package servicios.modelos;
 
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,39 +23,57 @@ import javax.persistence.Table;
  *
  * @author LacorZ
  */
-
 @Entity
 @Table(name = "candlestick")
 public class Candlestick implements Serializable {
+
     @Id
     @Column(nullable = false)
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCandlestick;
-    @Column(nullable = false)   
+    @Column(nullable = false)
     private BigDecimal open;
     @Column(nullable = false)
     private BigDecimal high;
     @Column(nullable = false)
     private BigDecimal low;
     @Column(nullable = false)
-    private BigDecimal close;    
+    private BigDecimal close;
     @Column(nullable = false)
-    private Date timestamp;
+    private BigDecimal volumen;
+    @Column(nullable = false)
+    private Calendar timestamp;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idActivo", nullable = false)
     private Activo activo;
 
-    
     public Candlestick() {
     }
 
-    public Candlestick(int idCandlestick, BigDecimal open, BigDecimal high, BigDecimal low, BigDecimal close, Date timestamp, Activo activo) {
-        this.idCandlestick = idCandlestick;
-        this.open = open;
+    public Candlestick(BigDecimal open, BigDecimal high, BigDecimal low, BigDecimal close, Calendar timestamp, BigDecimal volumen, Activo activo) {
+        if (open != null) {
+            this.open = open;
+        } else {
+            this.open = close;
+        }
+        if (open != null) {
+            this.high = high;
+        } else {
+            this.high = close;
+        }
         this.high = high;
-        this.low = low;
+        if (open != null) {
+            this.low = low;
+        } else {
+            this.low = close;
+        }
         this.close = close;
         this.timestamp = timestamp;
+        if (volumen != null) {
+            this.volumen = volumen;
+        } else {
+            this.volumen = new BigDecimal(0);
+        }
         this.activo = activo;
     }
 
@@ -99,11 +117,11 @@ public class Candlestick implements Serializable {
         this.close = close;
     }
 
-    public Date getTimestamp() {
+    public Calendar getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Calendar timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -114,15 +132,5 @@ public class Candlestick implements Serializable {
     public void setActivo(Activo activo) {
         this.activo = activo;
     }
-    
-    
-    
-    
-    
-    
-    
 
-   
-    
-    
 }
