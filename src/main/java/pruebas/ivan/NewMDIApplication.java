@@ -21,10 +21,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,6 +60,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private double oldyPoint;
     private double newxPoint;
     private double newyPoint;
+    private GestorConexionAPI gcAPI;
     /**
      * Creates new form NewMDIApplication
      */
@@ -68,12 +71,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
         this.verGraficoClicado=false;
         this.verTablaClicado=false;
         this.enableTrazado=false;
+        this.gcAPI=new GestorConexionAPI();
         //metodo();
         enablePanelGraficoAutoSize();
         TrayIconDemo tid=new TrayIconDemo();
         tid.displayTray();
-        peticionKrakenApi();
-        
+        //peticionKrakenApi();
+        inicializarListaActivos();
     }
 
     /**
@@ -149,6 +153,11 @@ public class NewMDIApplication extends javax.swing.JFrame {
         });
 
         jComboBox_selectorListas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Forex" }));
+        jComboBox_selectorListas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox_selectorListasActionPerformed(evt);
+            }
+        });
 
         jTable_listaActivos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -493,6 +502,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
         activarTrace();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
+        peticionKrakenApi(jComboBox_selectorListas.getSelectedItem().toString());
+    }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -757,12 +770,50 @@ public class NewMDIApplication extends javax.swing.JFrame {
         Dimension childSize = jInternalFrame1.getSize();
         return new Dimension(parentSize.width-childSize.width, parentSize.height-jToolBarPestañas.getSize().height);
     }
+    
     private Dimension fixedDimensionsInternal1() {
         Dimension parentSize = desktopPane.getSize();
         Dimension childSize = jInternalFrame2.getSize();
         return new Dimension(parentSize.width-childSize.width, parentSize.height-jToolBarPestañas.getSize().height);
     }
-    private void peticionKrakenApi()
+    private void inicializarListaActivos()
+    {
+        List<String> l=gcAPI.getListaActivos();
+        for(String activo:l){
+            jComboBox_selectorListas.addItem(activo);
+        }
+    }
+    private List<String> obtenerTodasLasListas(){
+        List<String> l=new ArrayList<>();
+        try{
+            KrakenApi api=new KrakenApi();
+            api.setKey("eFdZ+5zMcIda/AIXmxgAQleAY02CQDauk0cmRBdmR1VdN4eoo9HtWraX"); // FIXME
+            api.setSecret("CeLyCF83pNbPz8VjlGjl04RdiulpVVFCS8C/+XeaXT/3Ck8URYGuiJT4BWm3tfm9W4d0vRw/sJrBYveuf5GScg==");
+            String response;
+            response = api.queryPublic(Method.ASSET_PAIRS);
+            //System.out.println(response);
+            JSONObject job=new JSONObject(response);
+            
+            JSONObject jobResult=job.getJSONObject("result");
+            Iterator<String> it=jobResult.keys();
+            String key;
+            JSONArray ja=null;
+            while(it.hasNext()){
+                key=it.next();
+                if(key.substring(key.length()-2, key.length()).equalsIgnoreCase(".d")){
+                    key=key.substring(0, key.length()-2);
+                }
+                l.add(key);
+            }
+            for(String activo:l){
+                System.out.println(activo);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return l;
+    }
+    private void peticionKrakenApi(String pair)
     {
         try {
             KrakenApi api = new KrakenApi();
@@ -773,14 +824,23 @@ public class NewMDIApplication extends javax.swing.JFrame {
             Map<String, String> input = new HashMap<>();
 
             input.clear();
-            input.put("pair","EOSETH");
+            input.put("pair",pair);
             input.put("since","0");
             input.put("interval","30");
             response = api.queryPublic(Method.OHLC, input);
             System.out.println(response);
             JSONObject job=new JSONObject(response);
+            
             JSONObject jobResult=job.getJSONObject("result");
-            JSONArray ja=jobResult.getJSONArray("EOSETH");
+            Iterator<String> it=jobResult.keys();
+            String key;
+            JSONArray ja=null;
+            while(it.hasNext()){
+                key=it.next();
+                if(!key.equalsIgnoreCase("last"))
+                    ja=jobResult.getJSONArray(key);
+            }
+            
             JSONArray ja2;
             Date[] date = new Date[ja.length()];
             double[] high = new double[ja.length()];
@@ -803,17 +863,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
             DefaultHighLowDataset data = new DefaultHighLowDataset(
                 "", date, high, low, open, close, volume);
             candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
+            jPanel_Grafico.removeAll();
             jPanel_Grafico.setLayout(new BorderLayout());
             jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-            /*JsonObject obj = new JsonParser().parse(response).getAsJsonObject();
-            JsonElement jresult= obj.get("result");
-            JsonObject gsonObj = jresult.getAsJsonObject();
-            JsonArray ja=gsonObj.get("EOSETH").getAsJsonArray();
-            Iterator<JsonElement> it=ja.iterator();
-            while(it.hasNext()){
-                
-            }
-            System.out.println(gsonObj.get("EOSETH").isJsonArray());*/
+            jPanel_Grafico.repaint();
         } catch (IOException ex) {
             Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
         } 
