@@ -18,13 +18,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
  * @author LacorZ
  */
 @Entity
-@Table(name = "candlestick")
+@Table(name = "candlestick", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"timestamp", "idActivo"})})
 public class Candlestick implements Serializable {
 
     @Id

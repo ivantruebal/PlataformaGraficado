@@ -40,13 +40,21 @@ public class BBDD {
         OPEN, HIGH, LOW, CLOSE, DATE, VOLUME
     }
 
-    public static Session session;
+    private static Session session;
 
     public static Session getSession() {
         if (session == null) {
             session = HibernateUtil.getSessionFactory().openSession();
+        } else {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
         }
-        return session;
+        if (session.isOpen()) {
+            return session;
+        } else {
+            session.disconnect();
+            session = HibernateUtil.getSessionFactory().openSession();
+            return session;
+        }
     }
 
     public static boolean comprobarCredencialesDeUsuario(String username, String password) throws NoResultException {
@@ -97,6 +105,7 @@ public class BBDD {
         }
 
     }
+
     public static boolean generarColeccionDeCandlestickApartirDeFicheroCSV(String rutaFichero, String caracterDeSeparacion, Activo activo, String patronFecha) throws UnDefinedHeadersException, ParseException {
         Transaction transaction = getSession().beginTransaction();
         File ficheroCSV = new File(rutaFichero);
@@ -169,8 +178,7 @@ public class BBDD {
                 transaction.rollback();
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(BBDD.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            finally {
+            } finally {
                 session.close();
             }
         }
@@ -192,7 +200,7 @@ public class BBDD {
                 java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINEST, "Activo {0} existe", simbolo);
                 transaction.commit();
                 return (Activo) list.get(0);
-                
+
             } else {
                 java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Activo {0} no existe", simbolo);
                 Activo activo = new Activo(nombre, simbolo, notas);
@@ -205,7 +213,7 @@ public class BBDD {
         } catch (javax.persistence.NoResultException e) {
             transaction.rollback();
             throw e;
-            
+
         }
     }
 

@@ -26,13 +26,12 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "activo", uniqueConstraints = {
     @UniqueConstraint(columnNames = "nombre")
-    ,
-		@UniqueConstraint(columnNames = "simbolo")})
+    ,@UniqueConstraint(columnNames = "simbolo")})
 public class Activo implements Serializable {
 
     @Id
     @Column
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idActivo;
     @Column(nullable = false)
     private String nombre;
