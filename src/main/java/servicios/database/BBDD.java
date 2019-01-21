@@ -45,13 +45,12 @@ public class BBDD {
     public static Session getSession() {
         if (session == null) {
             session = HibernateUtil.getSessionFactory().openSession();
-        } else {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
         }
         if (session.isOpen()) {
             return session;
         } else {
             session.disconnect();
+            session = null;
             session = HibernateUtil.getSessionFactory().openSession();
             return session;
         }
@@ -101,7 +100,7 @@ public class BBDD {
             }
             throw e;
         } finally {
-            session.close();
+//            session.close();
         }
 
     }
@@ -113,7 +112,7 @@ public class BBDD {
         String line = "";
         int[] indiceColumnas = new int[6];
         Set<Candlestick> candlestickList = null;
-        candlestickList = new HashSet<Candlestick>();
+        candlestickList = new HashSet<>();
         boolean columnasDefinidas = false, cierreDefinido = false, fechaDefinida = false;
         if (activo != null) {
             try {
@@ -179,7 +178,7 @@ public class BBDD {
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(BBDD.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
-                session.close();
+//                session.close();
             }
         }
 
@@ -215,6 +214,11 @@ public class BBDD {
             throw e;
 
         }
+    }
+
+    public static void cargaInicial() {
+//        getSession().createQuery("ALTER TABLE `plataforma-graficado`.`candlestick` \n"
+//                + "ADD UNIQUE  `idActivo_timestamp_UNIQUE` (`idActivo`, `timestamp`) ;");
     }
 
 }

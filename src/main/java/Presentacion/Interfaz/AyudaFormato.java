@@ -6,6 +6,7 @@
 package Presentacion.Interfaz;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 
 /**
  *
@@ -109,6 +110,7 @@ public class AyudaFormato extends javax.swing.JFrame {
 
     private void settings() {
         this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
+        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
   
