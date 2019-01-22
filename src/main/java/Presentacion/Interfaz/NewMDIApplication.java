@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pruebas.ivan;
+package Presentacion.Interfaz;
 
+import Presentacion.CandlestickChart;
 import Presentacion.api.KrakenApi;
 import Presentacion.api.KrakenApi.Method;
 import java.awt.AWTException;
@@ -44,6 +45,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultHighLowDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import servicios.GestorConexionAPI;
 
 /**
  *
@@ -55,7 +57,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private boolean verGraficoClicado;
     private boolean verTablaClicado;
     private boolean enableTrazado;
-    private CandlestickChartClass candlestickChart;
+    private CandlestickChart candlestickChart;
     private double oldxPoint;
     private double oldyPoint;
     private double newxPoint;
@@ -67,7 +69,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
      */
     public NewMDIApplication() {
         initComponents();
-        this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
+        this.candlestickChart=new CandlestickChart(jPanel_Grafico.getSize());
         this.enableTrace=false;  
         this.verGraficoClicado=false;
         this.verTablaClicado=false;
@@ -540,7 +542,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
 
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
         DefaultHighLowDataset data = gcAPI.getDatosActivo(jComboBox_selectorListas.getSelectedItem().toString(),"30");
-        candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
+        candlestickChart=new CandlestickChart(jPanel_Grafico.getSize(), data);
         jPanel_Grafico.removeAll();
         jPanel_Grafico.setLayout(new BorderLayout());
         jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
@@ -572,6 +574,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -952,7 +956,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
             DefaultHighLowDataset data = new DefaultHighLowDataset(
                 "", date, high, low, open, close, volume);
-            candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
+            candlestickChart=new CandlestickChart(jPanel_Grafico.getSize(), data);
             jPanel_Grafico.removeAll();
             jPanel_Grafico.setLayout(new BorderLayout());
             jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);

@@ -72,7 +72,7 @@ public class GestorConexionAPI {
             input.clear();
             input.put("pair",simboloActivo);
             input.put("since","0");
-            input.put("interval","30");
+            input.put("interval",interval);
             response = api.queryPublic(KrakenApi.Method.OHLC, input);
             
             JSONObject job=new JSONObject(response);

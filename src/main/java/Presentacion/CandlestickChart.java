@@ -95,6 +95,9 @@ public class CandlestickChart extends JPanel {
         chartPanel.setHorizontalAxisTrace(activar);
     }
 
+    public ChartPanel getChartPanel(){
+        return this.chartPanel;
+    }
 //    public static void main(String args[]) {
 //        CandlestickChart chart = new CandlestickChart("Candle Stick Chart");
 //        chart.pack();
