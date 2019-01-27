@@ -31,7 +31,7 @@ import org.jfree.data.xy.OHLCDataItem;
  */
 public class CandlestickChartClass extends JPanel {
 
-    final private DefaultHighLowDataset dataset = null;
+    private DefaultHighLowDataset dataset = null;
     final private JFreeChart chart;
     final private ChartPanel chartPanel;
     private double oldxPoint;
@@ -52,7 +52,8 @@ public class CandlestickChartClass extends JPanel {
     }
 
     public CandlestickChartClass(Dimension dimension, DefaultHighLowDataset dataset) {
-        chart = ChartFactory.createCandlestickChart("", "", "", dataset, false);
+        this.dataset=dataset;
+        chart = ChartFactory.createCandlestickChart("", "", "", this.dataset, false);
         chart.getXYPlot().setDomainPannable(true);
         chartPanel = new ChartPanel(chart);
         chartPanel.setMouseWheelEnabled(true);
@@ -140,6 +141,9 @@ public class CandlestickChartClass extends JPanel {
     }
     public ChartPanel getChartPanel(){
         return this.chartPanel;
+    }
+    public DefaultHighLowDataset getDataset(){
+        return this.dataset;
     }
     
 
