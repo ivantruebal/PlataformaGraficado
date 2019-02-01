@@ -8,7 +8,12 @@ package pruebas.ivan;
 import java.awt.BorderLayout;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
+import org.jfree.data.xy.DefaultHighLowDataset;
 
 /**
  *
@@ -17,7 +22,9 @@ import org.jfree.chart.ChartPanel;
 public class PanelGrafico extends javax.swing.JPanel {
 
     private CandlestickChartClass candlestickChart;
-    private String lista;
+    private GestorConexionAPI gcAPI;
+    private boolean tomarDatos;
+    private boolean enableTrace;
     /**
      * Creates new form PanelGrafico
      */
@@ -25,12 +32,23 @@ public class PanelGrafico extends javax.swing.JPanel {
         initComponents();
         enablePanelGraficoAutoSize();
         this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
+        this.gcAPI=new GestorConexionAPI();
+        this.tomarDatos=false;
+        this.enableTrace=false;
         jPanel_Grafico.removeAll();
         jPanel_Grafico.setLayout(new BorderLayout());
         jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
         jPanel_Grafico.repaint();
         
         
+    }
+
+    public CandlestickChartClass getCandlestickChart() {
+        return candlestickChart;
+    }
+
+    public JPanel getjPanel_Grafico() {
+        return jPanel_Grafico;
     }
 
     /**
@@ -230,7 +248,54 @@ public class PanelGrafico extends javax.swing.JPanel {
             }
         });
     }
-    public void setLista(String lista){
-        this.lista=lista;
+    
+    /**
+     * Pinta un grafico he inicia un hilo en el que va tomando datos
+     * @param lista 
+     */
+    public void pintarGrafico(String lista){
+        DefaultHighLowDataset data = gcAPI.getDatosActivo(lista,"1");
+        //candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
+        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
+        jPanel_Grafico.removeAll();
+        jPanel_Grafico.setLayout(new BorderLayout());
+        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
+        jPanel_Grafico.repaint();
+        tomarDatos=true;
+        //candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
+        /*Executors.newSingleThreadExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        while(true){
+                            
+                        try {
+                            while(tomarDatos){
+                            Thread.sleep(20000);
+                            DefaultHighLowDataset data = gcAPI.getDatosActivo(lista,"1");
+                        //candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
+                        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
+                        //CandlestickRenderer renderer = (CandlestickRenderer) candlestickChart.getChartPanel().getChart().getXYPlot().getRenderer();
+                        jPanel_Grafico.removeAll();
+                        jPanel_Grafico.setLayout(new BorderLayout());
+                        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
+                        jPanel_Grafico.repaint();
+                        } }
+                        catch (InterruptedException ex) {
+                            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        }
+                    }
+                  });*/
+    }
+    /**
+     * Método que activa las lineas de trazao en el gráfico
+     */
+    private void enableAxisTrance(){
+        if(enableTrace)
+            enableTrace=false;
+        else
+            enableTrace=true;
+        candlestickChart.AxisTrace(enableTrace);
+        jPanel_Grafico.repaint();
     }
 }

@@ -68,6 +68,8 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private double newyPoint;
     private String estadoVista;
     private GestorConexionAPI gcAPI;
+    private PanelGrafico PG;
+    private ActualizadorActivo aa;
     /**
      * Creates new form NewMDIApplication
      */
@@ -83,38 +85,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
         enableInternalFrameListaAutoSize();
         enableInternalFrameGraficoAutoSize();
         enableInternalFrameOperacionesAutoSize();
-        enablePanelGraficoAutoSize();
+        enablePlataformaGraficadoAutoSize();
         opcionVista("Todo");
         //TrayIconDemo tid=new TrayIconDemo();
         //tid.displayTray();
         //peticionKrakenApi();
         inicializarListaActivos();
-        /*jPanel_Grafico.removeAll();
-        jPanel_Grafico.setLayout(new BorderLayout());
-        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-        jPanel_Grafico.repaint();
-        candlestickChart.getChartPanel().getChart().addChangeListener(new ChartChangeListener() {
-            @Override
-            public void chartChanged(ChartChangeEvent cce) {
-                new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        DefaultHighLowDataset data = gcAPI.getDatosActivo(jComboBox_selectorListas.getSelectedItem().toString(),"1");
-                        //candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
-                        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
-                        //CandlestickRenderer renderer = (CandlestickRenderer) candlestickChart.getChartPanel().getChart().getXYPlot().getRenderer();
-                        jPanel_Grafico.removeAll();
-                        jPanel_Grafico.setLayout(new BorderLayout());
-                        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-                        jPanel_Grafico.repaint();
-                    }
-                    },
-                20000            
-                );
-                
-            }
-        });*/
+        
         PanelGrafico pg=new PanelGrafico();
         PanelGrafico pg2=new PanelGrafico();
         jTabbedPane_Graficos.addTab("poppop", pg);
@@ -450,38 +427,12 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_jInternalFrameListaInternalFrameIconified
 
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
-        DefaultHighLowDataset data = gcAPI.getDatosActivo(jComboBox_selectorListas.getSelectedItem().toString(),"30");
-        //candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
-        /*candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
-        jPanel_Grafico.removeAll();
-        jPanel_Grafico.setLayout(new BorderLayout());
-        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-        jPanel_Grafico.repaint();
-        tomarDatos=true;
-        //candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        while(true){
-                            
-                        try {
-                            while(tomarDatos){
-                            Thread.sleep(20000);
-                            DefaultHighLowDataset data = gcAPI.getDatosActivo(jComboBox_selectorListas.getSelectedItem().toString(),"1");
-                        //candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
-                        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
-                        //CandlestickRenderer renderer = (CandlestickRenderer) candlestickChart.getChartPanel().getChart().getXYPlot().getRenderer();
-                        jPanel_Grafico.removeAll();
-                        jPanel_Grafico.setLayout(new BorderLayout());
-                        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-                        jPanel_Grafico.repaint();
-                        } }
-                        catch (InterruptedException ex) {
-                            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        }
-                    }
-                  });*/
+        PG=(PanelGrafico)jTabbedPane_Graficos.getSelectedComponent();
+        if(aa!=null)
+            aa.cancel(true);
+        aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
+        aa.execute();
+        //PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
     }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
 
     private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
@@ -586,18 +537,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }*/
     
     /**
-     * Método que activa las lineas de trazao en el gráfico
-     */
-    /*private void enableAxisTrance(){
-        if(enableTrace)
-            enableTrace=false;
-        else
-            enableTrace=true;
-        candlestickChart.AxisTrace(enableTrace);
-        jPanel_Grafico.repaint();
-    }*/
-    
-    /**
      * Método que redimensiona el resto de ventanas cuando redimensionamos la ventana de la lista
      */
     private void enableInternalFrameListaAutoSize(){
@@ -633,14 +572,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jInternalFrameGrafico.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-                /*jTabbedPane_Tools.setPreferredSize(jInternalFrameGrafico.getSize());
-                jTabbedPane_Tools.setSize(jInternalFrameGrafico.getSize());
-                jTabbedPane_Tools.validate();
-                jTabbedPane_Graficos.setPreferredSize(jInternalFrameGrafico.getSize());
-                jTabbedPane_Graficos.setSize(jInternalFrameGrafico.getSize());
-                jTabbedPane_Graficos.validate();
-                
-                jTabbedPane_Tools.validate();*/
                 jInternalFrameLista.reshape(0, 0, desktopPane.getSize().width-jInternalFrameGrafico.getSize().width, jInternalFrameGrafico.getSize().height);
                 jInternalFrameOperaciones.reshape(0, jInternalFrameGrafico.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height-jInternalFrameGrafico.getSize().height);
                 jInternalFrameGrafico.validate();
@@ -695,32 +626,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     /**
      * Añade un componentListener al jPanel_grafico para que se redimension cada vez que cambiamos el tamaño de la ventana
      */
-    private void enablePanelGraficoAutoSize(){
-        /*jPanel_Grafico.addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent ce) {
-                ChartPanel cp = (ChartPanel)candlestickChart.getComponent(0);
-                cp.setPreferredSize(new java.awt.Dimension(jPanel_Grafico.getWidth(), jPanel_Grafico.getHeight()));
-                cp.setSize(new java.awt.Dimension(jPanel_Grafico.getWidth(), jPanel_Grafico.getHeight()));
-                // frame.invalidate();
-                jPanel_Grafico.validate();
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent ce) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void componentShown(ComponentEvent ce) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent ce) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });*/
+    private void enablePlataformaGraficadoAutoSize(){
         desktopPane.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
