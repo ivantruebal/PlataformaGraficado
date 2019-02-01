@@ -5,7 +5,7 @@
  */
 package servicios;
 
-import pruebas.ivan.*;
+import Presentacion.Interfaz.Main;
 import Presentacion.api.KrakenApi;
 import java.awt.BorderLayout;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class GestorConexionAPI {
                 listaActivos.add(key);
             }
         } catch (IOException ex) {
-            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         return listaActivos;
     }
@@ -107,7 +107,7 @@ public class GestorConexionAPI {
             data = new DefaultHighLowDataset("", date, high, low, open, close, volume);
             
         } catch (IOException ex) {
-            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } 
         return data;
     }

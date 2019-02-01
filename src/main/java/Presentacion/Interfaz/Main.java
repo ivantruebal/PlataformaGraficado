@@ -5,7 +5,6 @@
  */
 package Presentacion.Interfaz;
 
-import Presentacion.CandlestickChart;
 import Presentacion.api.KrakenApi;
 import Presentacion.api.KrakenApi.Method;
 import java.awt.AWTException;
@@ -29,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -40,50 +40,64 @@ import org.jfree.chart.annotations.XYAnnotation;
 import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.event.AnnotationChangeListener;
+import org.jfree.chart.event.ChartChangeEvent;
+import org.jfree.chart.event.ChartChangeListener;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.CandlestickRenderer;
+import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.xy.DefaultHighLowDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import servicios.ActualizadorActivo;
 import servicios.GestorConexionAPI;
 
 /**
  *
  * @author usuario
  */
-public class NewMDIApplication extends javax.swing.JFrame {
+public class Main extends javax.swing.JFrame {
 
     private boolean enableTrace;
     private boolean verGraficoClicado;
     private boolean verTablaClicado;
     private boolean enableTrazado;
-    private CandlestickChart candlestickChart;
+    private boolean tomarDatos;
+    //private CandlestickChartClass candlestickChart;
     private double oldxPoint;
     private double oldyPoint;
     private double newxPoint;
     private double newyPoint;
     private String estadoVista;
     private GestorConexionAPI gcAPI;
+    private PanelGrafico PG;
+    private ActualizadorActivo aa;
     /**
      * Creates new form NewMDIApplication
      */
-    public NewMDIApplication() {
+    public Main() {
         initComponents();
-        this.candlestickChart=new CandlestickChart(jPanel_Grafico.getSize());
+        //this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
         this.enableTrace=false;  
         this.verGraficoClicado=false;
         this.verTablaClicado=false;
         this.enableTrazado=false;
+        this.tomarDatos=false;
         this.gcAPI=new GestorConexionAPI();
         enableInternalFrameListaAutoSize();
         enableInternalFrameGraficoAutoSize();
         enableInternalFrameOperacionesAutoSize();
-        enablePanelGraficoAutoSize();
+        enablePlataformaGraficadoAutoSize();
         opcionVista("Todo");
         //TrayIconDemo tid=new TrayIconDemo();
         //tid.displayTray();
         //peticionKrakenApi();
         inicializarListaActivos();
+        
+        PanelGrafico pg=new PanelGrafico();
+        PanelGrafico pg2=new PanelGrafico();
+        jTabbedPane_Graficos.addTab("poppop", pg);
+        jTabbedPane_Graficos.addTab("Poppop2", pg2);
     }
 
     /**
@@ -99,19 +113,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         jInternalFrameGrafico = new javax.swing.JInternalFrame();
         jTabbedPane_Tools = new javax.swing.JTabbedPane();
         jTabbedPane_Graficos = new javax.swing.JTabbedPane();
-        jPanel_AreaDeAnalisis = new javax.swing.JPanel();
-        jPanel_HerramientasDeDibujado = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jPanel_Grafico = new javax.swing.JPanel();
-        jComboBox_periodo = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jSpinner1 = new javax.swing.JSpinner();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jInternalFrameOperaciones = new javax.swing.JInternalFrame();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -169,111 +170,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 jTabbedPane_GraficosComponentShown(evt);
             }
         });
-
-        jLabel1.setText("Linea");
-
-        jLabel2.setText("jLabel2");
-
-        jLabel3.setText("jLabel3");
-
-        jLabel4.setText("jLabel4");
-
-        javax.swing.GroupLayout jPanel_HerramientasDeDibujadoLayout = new javax.swing.GroupLayout(jPanel_HerramientasDeDibujado);
-        jPanel_HerramientasDeDibujado.setLayout(jPanel_HerramientasDeDibujadoLayout);
-        jPanel_HerramientasDeDibujadoLayout.setHorizontalGroup(
-            jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel2))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
-                        .addGroup(jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel_HerramientasDeDibujadoLayout.setVerticalGroup(
-            jPanel_HerramientasDeDibujadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_HerramientasDeDibujadoLayout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addContainerGap(451, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel_GraficoLayout = new javax.swing.GroupLayout(jPanel_Grafico);
-        jPanel_Grafico.setLayout(jPanel_GraficoLayout);
-        jPanel_GraficoLayout.setHorizontalGroup(
-            jPanel_GraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel_GraficoLayout.setVerticalGroup(
-            jPanel_GraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jComboBox_periodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1m", "5m", "15", "1h", "4h", "1D", "1W", "1M" }));
-        jComboBox_periodo.setSelectedIndex(5);
-
-        jButton1.setText("Venta");
-
-        jButton2.setText("Compra");
-
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("0");
-
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setText("0");
-
-        javax.swing.GroupLayout jPanel_AreaDeAnalisisLayout = new javax.swing.GroupLayout(jPanel_AreaDeAnalisis);
-        jPanel_AreaDeAnalisis.setLayout(jPanel_AreaDeAnalisisLayout);
-        jPanel_AreaDeAnalisisLayout.setHorizontalGroup(
-            jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
-                .addComponent(jPanel_HerramientasDeDibujado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
-                        .addComponent(jComboBox_periodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addGap(0, 571, Short.MAX_VALUE))
-                    .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        jPanel_AreaDeAnalisisLayout.setVerticalGroup(
-            jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel_HerramientasDeDibujado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel_AreaDeAnalisisLayout.createSequentialGroup()
-                .addGroup(jPanel_AreaDeAnalisisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox_periodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jTabbedPane_Graficos.addTab("EUR/USD", jPanel_AreaDeAnalisis);
-
         jTabbedPane_Tools.addTab("Graficos", jTabbedPane_Graficos);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -284,7 +180,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 674, Short.MAX_VALUE)
+            .addGap(0, 602, Short.MAX_VALUE)
         );
 
         jTabbedPane_Tools.addTab("Dashboard", jPanel2);
@@ -297,7 +193,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         );
         jInternalFrameGraficoLayout.setVerticalGroup(
             jInternalFrameGraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane_Tools, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
+            .addComponent(jTabbedPane_Tools)
         );
 
         desktopPane.add(jInternalFrameGrafico);
@@ -520,14 +416,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
         opcionVista(jMenuItemGrafList.getText());
     }//GEN-LAST:event_jMenuItemGrafListActionPerformed
 
-    private void jTabbedPane_GraficosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosFocusGained
-
-    }//GEN-LAST:event_jTabbedPane_GraficosFocusGained
-
-    private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
-
-    }//GEN-LAST:event_jTabbedPane_GraficosComponentShown
-
     private void jMenuItemNuevoActivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNuevoActivoActionPerformed
         nuevoActivo();
     }//GEN-LAST:event_jMenuItemNuevoActivoActionPerformed
@@ -541,13 +429,21 @@ public class NewMDIApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_jInternalFrameListaInternalFrameIconified
 
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
-        DefaultHighLowDataset data = gcAPI.getDatosActivo(jComboBox_selectorListas.getSelectedItem().toString(),"30");
-        candlestickChart=new CandlestickChart(jPanel_Grafico.getSize(), data);
-        jPanel_Grafico.removeAll();
-        jPanel_Grafico.setLayout(new BorderLayout());
-        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-        jPanel_Grafico.repaint();
+        PG=(PanelGrafico)jTabbedPane_Graficos.getSelectedComponent();
+        if(aa!=null)
+            aa.cancel(true);
+        aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
+        aa.execute();
+        //PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
     }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
+
+    private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
+
+    }//GEN-LAST:event_jTabbedPane_GraficosComponentShown
+
+    private void jTabbedPane_GraficosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosFocusGained
+
+    }//GEN-LAST:event_jTabbedPane_GraficosFocusGained
 
     /**
      * @param args the command line arguments
@@ -566,14 +462,18 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewMDIApplication.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -582,24 +482,17 @@ public class NewMDIApplication extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewMDIApplication().setVisible(true);
+                new Main().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox_periodo;
     private javax.swing.JComboBox<String> jComboBox_selectorListas;
     private javax.swing.JInternalFrame jInternalFrameGrafico;
     private javax.swing.JInternalFrame jInternalFrameLista;
     private javax.swing.JInternalFrame jInternalFrameOperaciones;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenuArchivo;
@@ -613,22 +506,16 @@ public class NewMDIApplication extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuViewTodo;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel_Activos;
-    private javax.swing.JPanel jPanel_AreaDeAnalisis;
-    private javax.swing.JPanel jPanel_Grafico;
-    private javax.swing.JPanel jPanel_HerramientasDeDibujado;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTabbedPane jTabbedPane_Graficos;
     private javax.swing.JTabbedPane jTabbedPane_Tools;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable_listaActivos;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 
-    private void activarTrace(){
+    /*private void activarTrace(){
  
             candlestickChart.getChartPanel().addChartMouseListener(new ChartMouseListener() {
             @Override
@@ -655,19 +542,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
             
         });
    
-    }
-    
-    /**
-     * Método que activa las lineas de trazao en el gráfico
-     */
-    private void enableAxisTrance(){
-        if(enableTrace)
-            enableTrace=false;
-        else
-            enableTrace=true;
-        candlestickChart.AxisTrace(enableTrace);
-        jPanel_Grafico.repaint();
-    }
+    }*/
     
     /**
      * Método que redimensiona el resto de ventanas cuando redimensionamos la ventana de la lista
@@ -759,32 +634,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
     /**
      * Añade un componentListener al jPanel_grafico para que se redimension cada vez que cambiamos el tamaño de la ventana
      */
-    private void enablePanelGraficoAutoSize(){
-        jPanel_Grafico.addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent ce) {
-                ChartPanel cp = (ChartPanel)candlestickChart.getComponent(0);
-                cp.setPreferredSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
-                cp.setSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
-                // frame.invalidate();
-                jPanel_Grafico.validate();
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent ce) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void componentShown(ComponentEvent ce) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent ce) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
+    private void enablePlataformaGraficadoAutoSize(){
         desktopPane.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
@@ -817,6 +667,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
+        
     }
     
     /**
@@ -956,13 +807,13 @@ public class NewMDIApplication extends javax.swing.JFrame {
             }
             DefaultHighLowDataset data = new DefaultHighLowDataset(
                 "", date, high, low, open, close, volume);
-            candlestickChart=new CandlestickChart(jPanel_Grafico.getSize(), data);
+            /*candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
             jPanel_Grafico.removeAll();
             jPanel_Grafico.setLayout(new BorderLayout());
             jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-            jPanel_Grafico.repaint();
+            jPanel_Grafico.repaint();*/
         } catch (IOException ex) {
-            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } 
         
     }
