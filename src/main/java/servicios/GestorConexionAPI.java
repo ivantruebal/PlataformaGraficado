@@ -73,7 +73,7 @@ public class GestorConexionAPI {
             input.clear();
             input.put("pair",simboloActivo);
             input.put("since","0");
-            input.put("interval","30");
+            input.put("interval",interval);
             response = api.queryPublic(KrakenApi.Method.OHLC, input);
             
             JSONObject job=new JSONObject(response);
@@ -110,5 +110,126 @@ public class GestorConexionAPI {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } 
         return data;
+    }
+    /*public DefaultHighLowDataset getUltimoDato(DefaultHighLowDataset data, String simboloActivo, String interval){
+        DefaultHighLowDataset dataSet=null;
+        try {
+            input.clear();
+            input.put("pair",simboloActivo);
+            input.put("since","0");
+            input.put("interval",interval);
+            response = api.queryPublic(KrakenApi.Method.OHLC, input);
+            
+            JSONObject job=new JSONObject(response);
+            
+            JSONObject jobResult=job.getJSONObject("result");
+            Iterator<String> it=jobResult.keys();
+            String key;
+            JSONArray jaResult=null;
+            while(it.hasNext()){
+                key=it.next();
+                if(!key.equalsIgnoreCase("last"))
+                    jaResult=jobResult.getJSONArray(key);
+            }
+            JSONArray jaResult2;
+            
+            Date[] date = new Date[data.getItemCount(0)];
+            double[] high = new double[data.getItemCount(0)];
+            double[] low = new double[data.getItemCount(0)];
+            double[] open = new double[data.getItemCount(0)];
+            double[] close = new double[data.getItemCount(0)];
+            double[] volume = new double[data.getItemCount(0)];
+            for(int i=0;i<data.getItemCount(0);i++){
+                if(i!=(data.getItemCount(0)-1)){
+                    date[i]=data.getXDate(0, i);
+                    high[i]=data.getHighValue(0, i);
+                    open[i]=data.getOpenValue(0, i);
+                    low[i]=data.getLowValue(0, i);
+                    close[i]=data.getCloseValue(0, i);
+                    volume[i]=data.getVolumeValue(0, i);
+                }
+                else{
+                    jaResult2=jaResult.getJSONArray(i);
+                    date[i]=new Date(jaResult2.getLong(0));
+                    open[i]=jaResult2.getDouble(1);
+                    high[i]=jaResult2.getDouble(2);
+                    low[i]=jaResult2.getDouble(3);
+                    close[i]=jaResult2.getDouble(4);
+                    volume[i]=jaResult2.getDouble(6);
+                }
+            }
+            dataSet = new DefaultHighLowDataset("", date, high, low, open, close, volume);
+        }
+        catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        return dataSet;
+    }*/
+    public DefaultHighLowDataset getUltimoDato(DefaultHighLowDataset data, String simboloActivo, String interval){
+        DefaultHighLowDataset dataSet=null;
+        try {
+            input.clear();
+            input.put("pair",simboloActivo);
+            input.put("since","0");
+            input.put("interval",interval);
+            response = api.queryPublic(KrakenApi.Method.OHLC, input);
+            
+            JSONObject job=new JSONObject(response);
+            
+            JSONObject jobResult=job.getJSONObject("result");
+            Iterator<String> it=jobResult.keys();
+            String key;
+            JSONArray jaResult=null;
+            while(it.hasNext()){
+                key=it.next();
+                if(!key.equalsIgnoreCase("last"))
+                    jaResult=jobResult.getJSONArray(key);
+            }
+            JSONArray jaResult2;
+            
+            Date[] date = new Date[data.getItemCount(0)];
+            double[] high = new double[data.getItemCount(0)];
+            double[] low = new double[data.getItemCount(0)];
+            double[] open = new double[data.getItemCount(0)];
+            double[] close = new double[data.getItemCount(0)];
+            double[] volume = new double[data.getItemCount(0)];
+            Date fechaActualizar=new Date();
+            int indice=-1;
+            for(int i=0;i<data.getItemCount(0);i++){
+                date[i]=data.getXDate(0, i);
+                high[i]=data.getHighValue(0, i);
+                open[i]=data.getOpenValue(0, i);
+                low[i]=data.getLowValue(0, i);
+                close[i]=data.getCloseValue(0, i);
+                volume[i]=data.getVolumeValue(0, i);
+                if(i==0){
+                    fechaActualizar=date[i];
+                    indice=i;
+                }
+                else{
+                    if(fechaActualizar.getTime()<date[i].getTime()){
+                        fechaActualizar=date[i];
+                        indice=i;
+                    }
+                }
+                
+            }
+            for(int i=0;i<jaResult.length();i++){
+                jaResult2=jaResult.getJSONArray(i);
+                if(fechaActualizar.getTime()==jaResult2.getLong(0)){
+                    date[indice]=new Date(jaResult2.getLong(0));
+                    open[indice]=jaResult2.getDouble(1);
+                    high[indice]=jaResult2.getDouble(2);
+                    low[indice]=jaResult2.getDouble(3);
+                    close[indice]=jaResult2.getDouble(4);
+                    volume[indice]=jaResult2.getDouble(6);
+                }
+            }
+            dataSet = new DefaultHighLowDataset("", date, high, low, open, close, volume);
+        }
+        catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        return dataSet;
     }
 }

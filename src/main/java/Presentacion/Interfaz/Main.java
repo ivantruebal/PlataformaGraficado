@@ -430,6 +430,7 @@ public class Main extends javax.swing.JFrame {
 
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
         PG=(PanelGrafico)jTabbedPane_Graficos.getSelectedComponent();
+        PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
         if(aa!=null)
             aa.cancel(true);
         aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());

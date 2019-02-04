@@ -60,7 +60,7 @@
                           <Component id="jTextField2" min="-2" pref="74" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton2" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="571" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="567" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jPanel_Grafico" alignment="0" max="32767" attributes="0"/>
                   </Group>
@@ -179,16 +179,18 @@
               <StringArray count="8">
                 <StringItem index="0" value="1m"/>
                 <StringItem index="1" value="5m"/>
-                <StringItem index="2" value="15"/>
+                <StringItem index="2" value="15m"/>
                 <StringItem index="3" value="1h"/>
                 <StringItem index="4" value="4h"/>
                 <StringItem index="5" value="1D"/>
-                <StringItem index="6" value="1W"/>
-                <StringItem index="7" value="1M"/>
+                <StringItem index="6" value="7D"/>
+                <StringItem index="7" value="15D"/>
               </StringArray>
             </Property>
-            <Property name="selectedIndex" type="int" value="5"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox_periodoActionPerformed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>

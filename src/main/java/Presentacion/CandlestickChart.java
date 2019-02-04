@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import java.util.Calendar;
 import java.util.Date;
 import javafx.scene.layout.Border;
+import javax.swing.JScrollPane;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -27,6 +28,7 @@ public class CandlestickChart extends JPanel {
     final private DefaultHighLowDataset dataset = null;
     final private JFreeChart chart;
     final private ChartPanel chartPanel;
+    private JScrollPane jScrollPane;
 
     public CandlestickChart(Dimension dimension) {
         this(dimension, createDataset());
