@@ -5,6 +5,7 @@
  */
 package pruebas.ivan;
 
+import Presentacion.Interfaz.PanelGrafico;
 import Presentacion.api.KrakenApi;
 import Presentacion.api.KrakenApi.Method;
 import java.awt.AWTException;
@@ -49,6 +50,8 @@ import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.xy.DefaultHighLowDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import servicios.ActualizadorActivo;
+import servicios.GestorConexionAPI;
 
 /**
  *
@@ -432,7 +435,6 @@ public class NewMDIApplication extends javax.swing.JFrame {
             aa.cancel(true);
         aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
         aa.execute();
-        //PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
     }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
 
     private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown

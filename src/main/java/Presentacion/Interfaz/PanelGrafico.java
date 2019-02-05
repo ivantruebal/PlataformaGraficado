@@ -5,16 +5,19 @@
  */
 package Presentacion.Interfaz;
 
-import pruebas.ivan.*;
+import Presentacion.CandlestickChart;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.labels.CrosshairLabelGenerator;
+import org.jfree.chart.panel.CrosshairOverlay;
+import org.jfree.chart.plot.Crosshair;
 import org.jfree.data.xy.DefaultHighLowDataset;
+import servicios.GestorConexionAPI;
 
 /**
  *
@@ -22,34 +25,112 @@ import org.jfree.data.xy.DefaultHighLowDataset;
  */
 public class PanelGrafico extends javax.swing.JPanel {
 
-    private CandlestickChartClass candlestickChart;
+    private CandlestickChart candlestickChart;
     private GestorConexionAPI gcAPI;
-    private boolean tomarDatos;
+    private DefaultHighLowDataset data;
     private boolean enableTrace;
+    private String periodo;
+    final CrosshairOverlay crosshairOverlay;
+    final Crosshair yCrosshair;
     /**
      * Creates new form PanelGrafico
      */
     public PanelGrafico() {
         initComponents();
         enablePanelGraficoAutoSize();
-        this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
+        this.candlestickChart=new CandlestickChart(jPanel_Grafico.getSize());
         this.gcAPI=new GestorConexionAPI();
-        this.tomarDatos=false;
         this.enableTrace=false;
         jPanel_Grafico.removeAll();
         jPanel_Grafico.setLayout(new BorderLayout());
         jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
         jPanel_Grafico.repaint();
-        
-        
+        this.crosshairOverlay=new CrosshairOverlay();
+        this.yCrosshair = new Crosshair(Double.NaN, Color.DARK_GRAY, new BasicStroke(0f));
+        this.yCrosshair.setLabelVisible(true);
+        this.crosshairOverlay.addRangeCrosshair(yCrosshair);
+        this.candlestickChart.getChartPanel().addOverlay(crosshairOverlay);
+        seleccionPeriodo();     
+    }
+    private double getLowestLow(){
+        double lowest;
+        lowest = data.getLowValue(0,0);
+        for(int i=1;i<data.getItemCount(0);i++){
+            if(data.getLowValue(0,i) < lowest){
+                lowest = data.getLowValue(0,i);
+            }
+        }
+        return lowest;
     }
 
-    public CandlestickChartClass getCandlestickChart() {
+    private double getHighestHigh(){
+        double highest;
+        highest = data.getHighValue(0,0);
+        for(int i=1;i<data.getItemCount(0);i++){
+            if(data.getLowValue(0,i) > highest){
+                highest = data.getHighValue(0,i);
+            }
+        }
+
+        return highest;
+    } 
+    
+    /**
+     * Método que segun el valor indicado en el jComboBox_periodo le da un palor al atributo periodo
+     */
+    private void seleccionPeriodo(){
+        switch(jComboBox_periodo.getSelectedIndex()){
+            case 0:
+                this.periodo="1";
+                break;
+            case 1:
+                this.periodo="5";
+                break;
+            case 2:
+                this.periodo="15";
+                break;
+            case 3:
+                this.periodo="60";
+                break;
+            case 4:
+                this.periodo="240";
+                break;
+            case 5:
+                this.periodo="1440";
+                break;
+            case 6:
+                this.periodo="10080";
+                break;
+            case 7:
+                this.periodo="21600";
+                break;
+        }
+    }
+    
+    /**
+     * Método que devuelve el valor del periodo en formato String
+     * @return cadena de texto que indica los segundos del periodo
+     */
+    public String getPeriodo(){
+        return this.periodo;
+    }
+
+    public CandlestickChart getCandlestickChart() {
         return candlestickChart;
     }
-
+    /**
+     * Método que devuelve el panel grafico del componente
+     * @return 
+     */
     public JPanel getjPanel_Grafico() {
         return jPanel_Grafico;
+    }
+    private void autoScale(){
+        double low=getLowestLow();
+        double high=getHighestHigh();
+        double range=high-low;
+        range*=0.1;
+        candlestickChart.getChart().getXYPlot().getRangeAxis().setRange(low-range, high+range);
     }
     
 
@@ -127,8 +208,12 @@ public class PanelGrafico extends javax.swing.JPanel {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jComboBox_periodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1m", "5m", "15", "1h", "4h", "1D", "1W", "1M" }));
-        jComboBox_periodo.setSelectedIndex(5);
+        jComboBox_periodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1m", "5m", "15m", "1h", "4h", "1D", "7D", "15D" }));
+        jComboBox_periodo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox_periodoActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("Venta");
 
@@ -160,7 +245,7 @@ public class PanelGrafico extends javax.swing.JPanel {
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
-                        .addGap(0, 571, Short.MAX_VALUE))
+                        .addGap(0, 567, Short.MAX_VALUE))
                     .addComponent(jPanel_Grafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel_AreaDeAnalisisLayout.setVerticalGroup(
@@ -203,6 +288,10 @@ public class PanelGrafico extends javax.swing.JPanel {
                     .addComponent(jPanel_AreaDeAnalisis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jComboBox_periodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_periodoActionPerformed
+        seleccionPeriodo();
+    }//GEN-LAST:event_jComboBox_periodoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -256,42 +345,44 @@ public class PanelGrafico extends javax.swing.JPanel {
      * @param lista 
      */
     public void pintarGrafico(String lista){
-        DefaultHighLowDataset data = gcAPI.getDatosActivo(lista,"1");
-        System.out.println(data.getItemCount(0));
-        //candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
+        data = gcAPI.getDatosActivo(lista,periodo);
         candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
+        crosshair();
         jPanel_Grafico.removeAll();
         jPanel_Grafico.setLayout(new BorderLayout());
         jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
         jPanel_Grafico.repaint();
-        tomarDatos=true;
-        //candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
-        /*Executors.newSingleThreadExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        while(true){
-                            
-                        try {
-                            while(tomarDatos){
-                            Thread.sleep(20000);
-                            DefaultHighLowDataset data = gcAPI.getDatosActivo(lista,"1");
-                        //candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
-                        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
-                        //CandlestickRenderer renderer = (CandlestickRenderer) candlestickChart.getChartPanel().getChart().getXYPlot().getRenderer();
-                        jPanel_Grafico.removeAll();
-                        jPanel_Grafico.setLayout(new BorderLayout());
-                        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-                        jPanel_Grafico.repaint();
-                        } }
-                        catch (InterruptedException ex) {
-                            Logger.getLogger(NewMDIApplication.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        }
-                    }
-                  });*/
+        autoScale();
     }
     /**
-     * Método que activa las lineas de trazao en el gráfico
+     * Método que se encarga de modificar el ultimo dato, si la api devulve un nuevo valor, este es agregado.
+     * @param lista 
+     */
+    public void pintarUltimoDato(String lista){
+        DefaultHighLowDataset d=data;
+        data = gcAPI.getUltimoDato(d, lista,periodo);
+        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
+        crosshair();
+        jPanel_Grafico.removeAll();
+        jPanel_Grafico.setLayout(new BorderLayout());
+        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
+        jPanel_Grafico.repaint();
+        //autoScale();
+    }
+    /**
+     * Método que pinta una linea en el eje y que que coincide con el valor close del ultimo candlestick.
+     */
+    private void crosshair(){
+        yCrosshair.setValue(data.getCloseValue(0, data.getItemCount(0)-1));
+        yCrosshair.setLabelGenerator(new CrosshairLabelGenerator() {
+            @Override
+            public String generateLabel(Crosshair crshr) {
+                return data.getCloseValue(0, data.getItemCount(0)-1)+"";
+            }
+        });
+    }
+    /**
+     * Método que activa las lineas de trazao en el gráfico.
      */
     private void enableAxisTrance(){
         if(enableTrace)

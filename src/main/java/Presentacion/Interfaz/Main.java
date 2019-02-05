@@ -7,47 +7,18 @@ package Presentacion.Interfaz;
 
 import Presentacion.api.KrakenApi;
 import Presentacion.api.KrakenApi.Method;
-import java.awt.AWTException;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.geom.Rectangle2D;
-import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import org.jfree.chart.ChartMouseEvent;
-import org.jfree.chart.ChartMouseListener;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.annotations.XYAnnotation;
-import org.jfree.chart.annotations.XYLineAnnotation;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.event.AnnotationChangeListener;
-import org.jfree.chart.event.ChartChangeEvent;
-import org.jfree.chart.event.ChartChangeListener;
-import org.jfree.chart.plot.PlotRenderingInfo;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.CandlestickRenderer;
-import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.xy.DefaultHighLowDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -456,6 +427,7 @@ public class Main extends javax.swing.JFrame {
 
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
         PG=(PanelGrafico)jTabbedPane_Graficos.getSelectedComponent();
+        PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
         if(aa!=null)
             aa.cancel(true);
         aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());

@@ -7,14 +7,22 @@ package Presentacion;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import javax.swing.JPanel;
 import java.util.Calendar;
 import java.util.Date;
 import javafx.scene.layout.Border;
+import javax.swing.JScrollPane;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.event.AxisChangeEvent;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.PlotChangeListener;
 
 import org.jfree.data.xy.DefaultHighLowDataset;
 
@@ -24,7 +32,7 @@ import org.jfree.data.xy.DefaultHighLowDataset;
  */
 public class CandlestickChart extends JPanel {
 
-    final private DefaultHighLowDataset dataset = null;
+    private DefaultHighLowDataset data = null;
     final private JFreeChart chart;
     final private ChartPanel chartPanel;
 
@@ -41,13 +49,17 @@ public class CandlestickChart extends JPanel {
     }
 
     public CandlestickChart(Dimension dimension, DefaultHighLowDataset dataset) {
+        this.data=dataset;
         chart = ChartFactory.createCandlestickChart("", "", "", dataset, false);
-        chart.getXYPlot().setDomainPannable(true);
+        chart.getXYPlot().setDomainPannable(false);
         chartPanel = new ChartPanel(chart);
+        autorange();
         chartPanel.setMouseWheelEnabled(true);
+        chartPanel.setMouseZoomable(true);
         chartPanel.setFillZoomRectangle(false);
         chartPanel.setPreferredSize(dimension);
         chartPanel.setVisible(true);
+        
         super.add(chartPanel, BorderLayout.CENTER);
     }
 
@@ -97,6 +109,47 @@ public class CandlestickChart extends JPanel {
 
     public ChartPanel getChartPanel(){
         return this.chartPanel;
+    }
+    public JFreeChart getChart(){
+        return this.chart;
+    }
+    private void autorange(){
+        chartPanel.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent mwe) {
+                autoScale();
+            }
+        });
+    }
+    private double getLowestLow(){
+        data=(DefaultHighLowDataset)chartPanel.getChart().getXYPlot().getDataset();
+        double lowest;
+        lowest = data.getLowValue(0,0);
+        for(int i=1;i<data.getItemCount(0);i++){
+            if(data.getLowValue(0,i) < lowest){
+                lowest = data.getLowValue(0,i);
+            }
+        }
+        return lowest;
+    }
+
+    private double getHighestHigh(){
+        data=(DefaultHighLowDataset)chartPanel.getChart().getXYPlot().getDataset();
+        double highest;
+        highest = data.getHighValue(0,0);
+        for(int i=1;i<data.getItemCount(0);i++){
+            if(data.getLowValue(0,i) > highest){
+                highest = data.getHighValue(0,i);
+            }
+        }
+        return highest;
+    }
+    private void autoScale(){
+        double low=getLowestLow();
+        double high=getHighestHigh();
+        double range=high-low;
+        range*=0.1;
+        chartPanel.getChart().getXYPlot().getRangeAxis().setRange(low-range, high+range);
     }
 //    public static void main(String args[]) {
 //        CandlestickChart chart = new CandlestickChart("Candle Stick Chart");
