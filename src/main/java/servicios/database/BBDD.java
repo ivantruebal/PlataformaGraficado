@@ -10,16 +10,25 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
+import javax.persistence.Persistence;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 
@@ -27,8 +36,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import servicios.modelos.Activo;
 import servicios.modelos.Candlestick;
+import servicios.modelos.ListaDeActivos;
 import servicios.modelos.Usuario;
 import servicios.utils.Utils;
+import servicios.modelos.HibernateEntity;
 
 /**
  *
@@ -36,11 +47,123 @@ import servicios.utils.Utils;
  */
 public class BBDD {
 
+    private static Session session;
+    private static Usuario usuarioActual;
+
+    /**
+     * Recibe el tipo de entidad a mostrar, y la tabla para llenarla con los
+     * datos de la base de datos devolviendo el modelo a mostrar bloqueando la
+     * edición.
+     *
+     * @param entityType
+     * @param jTable
+     */
+    public static List putDataInTableCRUD(String entityType, JTable jTable) {
+        Query query = null;
+        List list = null;
+        Iterator consulta;
+        DefaultTableModel tabla = null;
+        String[] columNames;
+        switch (entityType) {
+            case "Activos":
+                query = getSession().createQuery("from Activo");
+                list = query.list();
+                consulta = list.iterator();
+                columNames = new String[3];
+                columNames[0] = "ID";
+                columNames[1] = "Nombre";
+                columNames[2] = "Símbolo";
+                tabla = new DefaultTableModel(new String[0][3], columNames) {
+                    public boolean isCellEditable(int rowIndex, int mColIndex) {
+                        return false;
+                    }
+                };
+                while (consulta.hasNext()) {
+                    String[] datos = new String[3];
+                    Activo fila = (Activo) consulta.next();
+                    datos[0] = (String.valueOf(fila.getId()));
+                    datos[1] = (fila.getNombre());
+                    datos[2] = (fila.getSimbolo());
+                    tabla.addRow(datos);
+                }
+
+                break;
+            case "Lista De Activos":
+                query = getSession().createQuery("from ListaDeActivos");
+                list = query.list();
+                consulta = list.iterator();
+                columNames = new String[3];
+                columNames[0] = "ID";
+                columNames[1] = "Nombre";
+                columNames[2] = "Privacidad";
+                tabla = new DefaultTableModel(new String[0][3], columNames) {
+                    public boolean isCellEditable(int rowIndex, int mColIndex) {
+                        return false;
+                    }
+                };
+                while (consulta.hasNext()) {
+                    Vector<String> datos = new Vector();
+                    ListaDeActivos fila = (ListaDeActivos) consulta.next();
+                    datos.add(String.valueOf(fila.getIdLista()));
+                    datos.add(fila.getNombre());
+                    if (fila.EsPrivada()) {
+                        datos.add("Privada");
+                    } else {
+                        datos.add("Pública");
+                    }
+                    tabla.addRow(datos);
+                }
+                break;
+        }
+//        Vector dataVector = tabla.getDataVector();
+//        for (Iterator iterator1 = dataVector.iterator(); iterator1.hasNext();) {
+//            Object next = iterator1.next();
+//            System.out.println(next);
+//        }
+        jTable.setModel(tabla);
+
+        return list;
+    }
+
+    public static void borradoEntidadDeTabla(HibernateEntity entidad) {
+        if (compruebaSiExisteEntidadPorID(entidad)) {
+            getSession().beginTransaction();
+            getSession().delete(entidad);
+            getSession().getTransaction().commit();
+            java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Borrada la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
+            
+        }
+        else java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "No se puede borrada la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
+            
+
+    }
+
+    /**
+     * Metodo que devuelve true si existe dicha entidad en BBDD
+     *
+     * @param entidad
+     * @return true si existe
+     */
+    public static boolean compruebaSiExisteEntidadPorID(HibernateEntity entidad) {
+        try {
+            Object entidadBBDD = getSession().get(entidad.getClass(), entidad.getId());
+            if (entidadBBDD != null) {
+                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Existe la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
+                return true;
+            } else {
+                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "NO Existe la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
+                return false;
+            }
+
+        } catch (HibernateException e) {
+            java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, e.getMessage());
+            return false;
+        }
+    }
+
     public enum Indice {
         OPEN, HIGH, LOW, CLOSE, DATE, VOLUME
     }
-
-    private static Session session;
 
     public static Session getSession() {
         if (session == null) {
@@ -67,6 +190,7 @@ public class BBDD {
             List list = createQuery.list();
             if (list.size() > 0) {
                 java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINEST, "Usuario {0} se ha logueado correctamente", username);
+                usuarioActual = (Usuario) list.get(0);
                 return true;
             } else {
                 java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Usuario {0} no se ha logueado, credenciales incorrectas", username);
@@ -111,6 +235,12 @@ public class BBDD {
         BufferedReader br = null;
         String line = "";
         int[] indiceColumnas = new int[6];
+        indiceColumnas[0] = -1;
+        indiceColumnas[1] = -1;
+        indiceColumnas[2] = -1;
+        indiceColumnas[3] = -1;
+        indiceColumnas[4] = -1;
+        indiceColumnas[5] = -1;
         Set<Candlestick> candlestickList = null;
         candlestickList = new HashSet<>();
         boolean columnasDefinidas = false, cierreDefinido = false, fechaDefinida = false;
@@ -119,12 +249,13 @@ public class BBDD {
                 br = new BufferedReader(new FileReader(ficheroCSV));
                 while ((line = br.readLine()) != null) {
                     String[] data;
+                    //Saltamos las lineas vacias
                     if (!line.equalsIgnoreCase("")) {
                         data = line.split(caracterDeSeparacion);
                         //Obtenemos el orden de las columnas is estas estan nombradas como espera el software
                         if (!columnasDefinidas) {
                             for (int indice = 0; indice < data.length; indice++) {
-                                String columna = data[indice];
+                                String columna = data[indice].trim();
                                 if (columna.equalsIgnoreCase(Indice.OPEN.name())) {
                                     indiceColumnas[Indice.OPEN.ordinal()] = indice;
                                 }
@@ -154,11 +285,34 @@ public class BBDD {
                             }
 
                         } else {
-                            BigDecimal open = new BigDecimal(data[indiceColumnas[Indice.OPEN.ordinal()]]);
-                            BigDecimal high = new BigDecimal(data[indiceColumnas[Indice.HIGH.ordinal()]]);
-                            BigDecimal low = new BigDecimal(data[indiceColumnas[Indice.LOW.ordinal()]]);
-                            BigDecimal close = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
-                            BigDecimal volumen = new BigDecimal(data[indiceColumnas[Indice.VOLUME.ordinal()]]);
+
+                            BigDecimal open;
+                            if (indiceColumnas[Indice.OPEN.ordinal()] != -1) {
+                                open = new BigDecimal(data[indiceColumnas[Indice.OPEN.ordinal()]]);
+                            } else {
+                                open = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
+                            }
+                            BigDecimal high;
+                            if (indiceColumnas[Indice.HIGH.ordinal()] != -1) {
+                                high = new BigDecimal(data[indiceColumnas[Indice.HIGH.ordinal()]]);
+                            } else {
+                                high = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
+                            }
+                            BigDecimal low;
+                            if (indiceColumnas[Indice.LOW.ordinal()] != -1) {
+                                low = new BigDecimal(data[indiceColumnas[Indice.LOW.ordinal()]]);
+                            } else {
+                                low = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
+                            }
+                            BigDecimal close;
+                            close = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
+                            BigDecimal volumen;
+                            if (indiceColumnas[Indice.VOLUME.ordinal()] != -1) {
+                                volumen = new BigDecimal(data[indiceColumnas[Indice.VOLUME.ordinal()]]);
+                            } else {
+                                volumen = new BigDecimal(0);
+                            }
+
                             Calendar calendar = Calendar.getInstance();
                             SimpleDateFormat sdf = new SimpleDateFormat(patronFecha);
                             calendar.setTime(sdf.parse(data[indiceColumnas[Indice.DATE.ordinal()]]));
@@ -189,7 +343,6 @@ public class BBDD {
     public static Activo compruebaSiExisteActivoYcrealo(String nombre, String simbolo, String notas) {
         Transaction transaction = null;
         try {
-
             Session openSession = getSession();
             transaction = openSession.beginTransaction();
             Query createQuery = openSession.createQuery("from Activo a where a.simbolo = :simbolo");
@@ -199,7 +352,6 @@ public class BBDD {
                 java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINEST, "Activo {0} existe", simbolo);
                 transaction.commit();
                 return (Activo) list.get(0);
-
             } else {
                 java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Activo {0} no existe", simbolo);
                 Activo activo = new Activo(nombre, simbolo, notas);
@@ -212,7 +364,6 @@ public class BBDD {
         } catch (javax.persistence.NoResultException e) {
             transaction.rollback();
             throw e;
-
         }
     }
 

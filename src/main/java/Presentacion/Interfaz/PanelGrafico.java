@@ -51,6 +51,7 @@ public class PanelGrafico extends javax.swing.JPanel {
     public JPanel getjPanel_Grafico() {
         return jPanel_Grafico;
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

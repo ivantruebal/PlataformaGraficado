@@ -5,6 +5,22 @@
  */
 package Presentacion.Interfaz;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.ListModel;
+import org.hibernate.HibernateException;
+import org.hibernate.Transaction;
+import servicios.database.BBDD;
+import servicios.modelos.Activo;
+import servicios.modelos.ListaDeActivos;
+import servicios.utils.Utils;
+
 /**
  *
  * @author LacorZ
@@ -14,8 +30,33 @@ public class ActiveListWindow extends javax.swing.JFrame {
     /**
      * Creates new form ActiveListWindow
      */
-    public ActiveListWindow() {
+    private ListaDeActivos listaDeActivos;
+    private final CRUDWindow crudWindowParent;
+    private boolean esCreacion = true;
+
+    ActiveListWindow(ListaDeActivos listaDeActivos, CRUDWindow crudWindow) {
         initComponents();
+        Utils.generalSettings(this);
+        estableceEntidad(listaDeActivos);
+        this.crudWindowParent = crudWindow;
+        if (this.listaDeActivos != null) {
+            this.esCreacion = false;
+            jTextField_nombre.setText(this.listaDeActivos.getNombre());
+            if (this.listaDeActivos.EsPrivada()) {
+                jComboBox_privacidad.setSelectedIndex(0);
+            } else {
+                jComboBox_privacidad.setSelectedIndex(1);
+            }
+        }
+        llenaListas();
+    }
+
+    private void estableceEntidad(ListaDeActivos entidad) {
+        if (entidad == null) {
+            this.listaDeActivos = new ListaDeActivos();
+        } else {
+            this.listaDeActivos = (ListaDeActivos) entidad;
+        }
     }
 
     /**
@@ -28,31 +69,57 @@ public class ActiveListWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        jList_ActivosNoAñadidos = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jList_ActivosAñadidos = new javax.swing.JList<>();
+        jButton_AñadirActivo = new javax.swing.JButton();
+        jButton_RetirarActivo = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jTextField_nombre = new javax.swing.JTextField();
+        jComboBox_privacidad = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
+        jButton_guardar = new javax.swing.JButton();
+        jButton_cancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(jList_ActivosNoAñadidos);
 
-        jScrollPane2.setViewportView(jList2);
+        jScrollPane2.setViewportView(jList_ActivosAñadidos);
 
-        jButton1.setText(">");
+        jButton_AñadirActivo.setText(">");
+        jButton_AñadirActivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_AñadirActivoActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("<");
+        jButton_RetirarActivo.setText("<");
+        jButton_RetirarActivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_RetirarActivoActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Nombre:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Privada", "Publica" }));
+        jComboBox_privacidad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Privada", "Publica" }));
 
         jLabel2.setText("Privacidad:");
+
+        jButton_guardar.setText("Guardar");
+        jButton_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_guardarActionPerformed(evt);
+            }
+        });
+
+        jButton_cancelar.setText("Cancelar");
+        jButton_cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_cancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -64,22 +131,28 @@ public class ActiveListWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextField_nombre))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(61, 61, 61))
+                        .addComponent(jComboBox_privacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(61, 61, 61))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton_AñadirActivo, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton_RetirarActivo, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(37, 37, 37)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(100, 100, 100)
+                .addComponent(jButton_guardar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton_cancelar)
+                .addGap(93, 93, 93))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -87,71 +160,146 @@ public class ActiveListWindow extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox_privacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
+                .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(57, 57, 57))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(52, 52, 52)
-                        .addComponent(jButton2)
-                        .addGap(111, 111, 111))))
+                        .addComponent(jButton_AñadirActivo)
+                        .addGap(51, 51, 51)
+                        .addComponent(jButton_RetirarActivo)
+                        .addGap(55, 55, 55)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton_guardar)
+                    .addComponent(jButton_cancelar))
+                .addGap(33, 33, 33))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton_AñadirActivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AñadirActivoActionPerformed
+        // TODO add your handling code here:
+        mueveActivoDeLista(jList_ActivosNoAñadidos, jList_ActivosAñadidos);
+    }//GEN-LAST:event_jButton_AñadirActivoActionPerformed
+
+    private void jButton_RetirarActivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RetirarActivoActionPerformed
+        // TODO add your handling code here:
+        mueveActivoDeLista(jList_ActivosAñadidos, jList_ActivosNoAñadidos);
+    }//GEN-LAST:event_jButton_RetirarActivoActionPerformed
+
+    private void jButton_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_cancelarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton_cancelarActionPerformed
+
+    private void jButton_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_guardarActionPerformed
+        // TODO add your handling code here:
+        guardarListaEnBBDD();
+
+    }//GEN-LAST:event_jButton_guardarActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ActiveListWindow().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new ActiveListWindow().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton jButton_AñadirActivo;
+    private javax.swing.JButton jButton_RetirarActivo;
+    private javax.swing.JButton jButton_cancelar;
+    private javax.swing.JButton jButton_guardar;
+    private javax.swing.JComboBox<String> jComboBox_privacidad;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
+    private javax.swing.JList<String> jList_ActivosAñadidos;
+    private javax.swing.JList<String> jList_ActivosNoAñadidos;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField_nombre;
     // End of variables declaration//GEN-END:variables
+
+    private void llenaListas() {
+        Set<Activo> activosActualesEnLaLista = this.listaDeActivos.getActivos();
+        List listaActivosTotales = BBDD.getSession().createQuery("from Activo").list();
+        Iterator<Activo> iteratorActivosActualesEnLaLista = activosActualesEnLaLista.iterator();
+        jList_ActivosAñadidos.setModel(new DefaultListModel<>());
+        jList_ActivosNoAñadidos.setModel(new DefaultListModel<>());
+        while (iteratorActivosActualesEnLaLista.hasNext()) {
+            Activo activo = iteratorActivosActualesEnLaLista.next();
+            listaActivosTotales.remove(activo);
+            ((DefaultListModel) jList_ActivosAñadidos.getModel()).addElement(activo);
+        }
+        for (Object activo : listaActivosTotales) {
+            ((DefaultListModel) jList_ActivosNoAñadidos.getModel()).addElement(activo);
+        }
+    }
+
+    private void mueveActivoDeLista(JList listaDeSustraccion, JList listaDeAdicion) {
+        if (listaDeSustraccion.getSelectedIndices().length == 0) {
+            listaDeSustraccion.setSelectedIndex(0);
+        }
+        ((DefaultListModel) listaDeAdicion.getModel()).addElement(listaDeSustraccion.getSelectedValue());
+        ((DefaultListModel) listaDeSustraccion.getModel()).remove(listaDeSustraccion.getSelectedIndex());
+    }
+
+    private void guardarListaEnBBDD() {
+
+        this.listaDeActivos.setNombre(jTextField_nombre.getText());
+        if (jComboBox_privacidad.getSelectedIndex() == 0) {
+            this.listaDeActivos.setEsPrivada(true);
+        }else this.listaDeActivos.setEsPrivada(false);
+        Transaction tx = BBDD.getSession().beginTransaction();
+        try {
+            if (esCreacion) {
+                BBDD.getSession().save(this.listaDeActivos);
+            } else {
+                BBDD.getSession().saveOrUpdate(this.listaDeActivos);
+            }
+            tx.commit();
+            crudWindowParent.loadContentOnTable();
+            this.dispose();
+        } catch (HibernateException e) {
+            tx.rollback();
+            JOptionPane.showMessageDialog(this, "Ya existe un activo con ese");
+            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe el activo con id: " + this.listaDeActivos.getNombre(), "");
+        }
+
+    }
+
 }

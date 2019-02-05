@@ -29,6 +29,7 @@ import servicios.database.BBDD;
 import servicios.database.UnDefinedHeadersException;
 import servicios.modelos.Activo;
 import servicios.modelos.Candlestick;
+import servicios.utils.Utils;
 
 /**
  *
@@ -41,8 +42,7 @@ public class CSVImportWindow extends javax.swing.JFrame {
      */
     public CSVImportWindow() {
         initComponents();
-        this.setResizable(false);
-        this.setLocationRelativeTo(null);
+        Utils.generalSettings(this);
 
     }
 
@@ -72,6 +72,7 @@ public class CSVImportWindow extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton_abrirAyuda = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton_Cancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -193,6 +194,13 @@ public class CSVImportWindow extends javax.swing.JFrame {
             }
         });
 
+        jButton_Cancelar.setText("Cancelar");
+        jButton_Cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CancelarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -201,16 +209,20 @@ public class CSVImportWindow extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(279, 279, 279)
+                .addGap(19, 19, 19)
                 .addComponent(jButton2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton_Cancelar)
+                .addGap(22, 22, 22))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton_Cancelar))
                 .addContainerGap())
         );
 
@@ -239,6 +251,11 @@ public class CSVImportWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         abrirAyuda();
     }//GEN-LAST:event_jButton_abrirAyudaActionPerformed
+
+    private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton_CancelarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -277,6 +294,7 @@ public class CSVImportWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton_Cancelar;
     private javax.swing.JButton jButton_abrirAyuda;
     private javax.swing.JButton jButton_explorarArchivos;
     private javax.swing.JLabel jLabel1;

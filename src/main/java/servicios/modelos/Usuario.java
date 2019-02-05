@@ -29,7 +29,7 @@ import javax.persistence.UniqueConstraint;
     @UniqueConstraint(columnNames = "nombre")
     ,
 		@UniqueConstraint(columnNames = "email")})
-public class Usuario implements Serializable {
+public class Usuario extends HibernateEntity implements Serializable {
 
     @Id
     @Column
@@ -103,6 +103,10 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "Usuario{" + "idUsuario=" + idUsuario + ", nombre=" + nombre + ", email=" + email + ", password=" + password + ", listaDeActivos=" + listaDeActivos + '}';
+    }
+    @Override
+    public int getId() {
+        return getIdUsuario();
     }
     
 }

@@ -25,14 +25,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "analisis")
-public class Analisis implements Serializable {
+public class Analisis extends HibernateEntity implements Serializable {
 
     
     @Id
     @Column
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int idAnalisis;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "Analisis_has_activos",
             joinColumns = {
@@ -64,6 +64,11 @@ public class Analisis implements Serializable {
 
     public void setActivos(Set<Activo> activos) {
         this.activos = activos;
+    }
+
+    @Override
+    public int getId() {
+        return getIdAnalisis();
     }
 
 }

@@ -7,6 +7,7 @@ package servicios.modelos;
 
 import java.io.Serializable;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "activo", uniqueConstraints = {
     @UniqueConstraint(columnNames = "nombre")
     ,@UniqueConstraint(columnNames = "simbolo")})
-public class Activo implements Serializable {
+public class Activo extends HibernateEntity implements Serializable {
 
     @Id
     @Column
@@ -39,14 +40,16 @@ public class Activo implements Serializable {
     private String simbolo;
     @Column
     private String notas;
-    @OneToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activo")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activo")
     private Set<Candlestick> candlestickSet;
-    @ManyToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activos")
+    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activos")
     private Set<Analisis> analisis;
-    @ManyToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activos")
+    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activos")
     private Set<ListaDeActivos> listasDeActivos;
     @OneToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activo")
     private Set<Operaciones> operaciones;
+
+    public static String[] columnasMostrablesEnTablaCRUD = {"ID", "Nombre", "Simbolo", "Nota"};
 
     public Activo() {
     }
@@ -57,12 +60,12 @@ public class Activo implements Serializable {
         this.notas = notas;
     }
 
-    public int getIdActivo() {
+     public int getIdActivo() {
         return idActivo;
     }
-
-    public void setIdActivo(int idActivo) {
-        this.idActivo = idActivo;
+    @Override
+    public int getId() {
+        return getIdActivo();
     }
 
     public String getNombre() {
@@ -95,6 +98,11 @@ public class Activo implements Serializable {
 
     public void setCandlestickSet(Set<Candlestick> candlestickSet) {
         this.candlestickSet = candlestickSet;
+    }
+
+    @Override
+    public String toString() {
+        return simbolo;
     }
 
 }

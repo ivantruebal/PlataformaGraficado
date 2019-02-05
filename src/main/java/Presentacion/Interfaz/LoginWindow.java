@@ -275,7 +275,7 @@ public class LoginWindow extends javax.swing.JFrame {
     private void onLogin() {
         try {
             if (BBDD.comprobarCredencialesDeUsuario(jTextField_nombreUsuario.getText(), new String(jPasswordField_password.getPassword()))) {
-                new MainWindow().setVisible(true);
+                new Main().setVisible(true);
                 this.setVisible(false);
             } else {
                 jLabel_textoLoginIncorrecto.setText("El nombre de usuario o contraseña son incorrectos");                

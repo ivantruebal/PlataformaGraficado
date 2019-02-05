@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,7 +28,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "candlestick", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"timestamp", "idActivo"})})
-public class Candlestick implements Serializable {
+public class Candlestick extends HibernateEntity implements Serializable {
 
     @Id
     @Column(nullable = false)
@@ -45,7 +46,7 @@ public class Candlestick implements Serializable {
     private BigDecimal volumen;
     @Column(nullable = false)
     private Calendar timestamp;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     @JoinColumn(name = "idActivo", nullable = false)
     private Activo activo;
 
@@ -133,6 +134,11 @@ public class Candlestick implements Serializable {
 
     public void setActivo(Activo activo) {
         this.activo = activo;
+    }
+
+    @Override
+    public int getId() {
+        return getIdCandlestick();
     }
 
 }

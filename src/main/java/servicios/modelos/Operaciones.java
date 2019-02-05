@@ -25,7 +25,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "operaciones")
-public class Operaciones implements Serializable {
+public class Operaciones extends HibernateEntity implements Serializable {
 
     @Id
     @Column(nullable = false)
@@ -125,4 +125,8 @@ public class Operaciones implements Serializable {
         this.activo = activo;
     }
 
+    @Override
+    public int getId() {
+        return getIdOperacion();
+    }
 }

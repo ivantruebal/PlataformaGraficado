@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.geom.Rectangle2D;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -77,6 +79,7 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
+        settings();
         //this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
         this.enableTrace=false;  
         this.verGraficoClicado=false;
@@ -126,6 +129,9 @@ public class Main extends javax.swing.JFrame {
         jMenuArchivo = new javax.swing.JMenu();
         jMenuItemNuevoActivo = new javax.swing.JMenuItem();
         jMenuItemImportarDatos = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem_Inventario_Activos = new javax.swing.JMenuItem();
+        jMenuItem_Inventario_listaDeActivos = new javax.swing.JMenuItem();
         jMenuViewTodo = new javax.swing.JMenu();
         jMenuItemTodo = new javax.swing.JMenuItem();
         jMenuItemGrafico = new javax.swing.JMenuItem();
@@ -325,7 +331,27 @@ public class Main extends javax.swing.JFrame {
 
         menuBar.add(jMenuArchivo);
 
-        jMenuViewTodo.setText("View");
+        jMenu1.setText(" Inventario");
+
+        jMenuItem_Inventario_Activos.setText("Activos");
+        jMenuItem_Inventario_Activos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_Inventario_ActivosActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem_Inventario_Activos);
+
+        jMenuItem_Inventario_listaDeActivos.setText("Lista de Activos");
+        jMenuItem_Inventario_listaDeActivos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_Inventario_listaDeActivosActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem_Inventario_listaDeActivos);
+
+        menuBar.add(jMenu1);
+
+        jMenuViewTodo.setText("Vista");
 
         jMenuItemTodo.setText("Todo");
         jMenuItemTodo.addActionListener(new java.awt.event.ActionListener() {
@@ -445,6 +471,16 @@ public class Main extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTabbedPane_GraficosFocusGained
 
+    private void jMenuItem_Inventario_ActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_Inventario_ActivosActionPerformed
+        // TODO add your handling code here:
+        new CRUDWindow("Activos").setVisible(true);
+    }//GEN-LAST:event_jMenuItem_Inventario_ActivosActionPerformed
+
+    private void jMenuItem_Inventario_listaDeActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
+        // TODO add your handling code here:
+        new CRUDWindow("Lista De Activos").setVisible(true);
+    }//GEN-LAST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -493,6 +529,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JInternalFrame jInternalFrameGrafico;
     private javax.swing.JInternalFrame jInternalFrameLista;
     private javax.swing.JInternalFrame jInternalFrameOperaciones;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenuArchivo;
@@ -503,6 +540,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemNuevoActivo;
     private javax.swing.JMenuItem jMenuItemOperaciones;
     private javax.swing.JMenuItem jMenuItemTodo;
+    private javax.swing.JMenuItem jMenuItem_Inventario_Activos;
+    private javax.swing.JMenuItem jMenuItem_Inventario_listaDeActivos;
     private javax.swing.JMenu jMenuViewTodo;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel_Activos;
@@ -741,7 +780,7 @@ public class Main extends javax.swing.JFrame {
         }
     }
     /**
-     * Metodo que habre un panel para realizar la importacion de un nuevo activo
+     * Metodo que abre un panel para realizar la importacion de un nuevo activo
      */
     private void nuevoActivo() {
         new Presentacion.Interfaz.CSVImportWindow().setVisible(true);
@@ -752,10 +791,10 @@ public class Main extends javax.swing.JFrame {
      */
     private void inicializarListaActivos()
     {
-        List<String> l=gcAPI.getListaActivos();
-        for(String activo:l){
-            jComboBox_selectorListas.addItem(activo);
-        }
+//        List<String> l=gcAPI.getListaActivos();
+//        for(String activo:l){
+//            jComboBox_selectorListas.addItem(activo);
+//        }
     }
     
     private void peticionKrakenApi(String pair)
@@ -817,4 +856,11 @@ public class Main extends javax.swing.JFrame {
         } 
         
     }
+
+    private void settings() {
+       this.setLocationRelativeTo(null);
+       this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
+    }
+
+    
 }

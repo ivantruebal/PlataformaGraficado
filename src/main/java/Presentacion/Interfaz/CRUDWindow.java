@@ -5,6 +5,19 @@
  */
 package Presentacion.Interfaz;
 
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
+import servicios.database.BBDD;
+import static servicios.database.BBDD.getSession;
+import servicios.modelos.Activo;
+import servicios.modelos.HibernateEntity;
+import servicios.modelos.ListaDeActivos;
+import servicios.utils.Utils;
+
 /**
  *
  * @author LacorZ
@@ -13,9 +26,20 @@ public class CRUDWindow extends javax.swing.JFrame {
 
     /**
      * Creates new form CrudActivoWindow
+     *
+     * @param entityType "Activos","Lista de Activos" son las posibilidades
+     * actuales
      */
-    public CRUDWindow() {
+    private String tipoEntidad;
+    public List listaEntidades;
+
+    public CRUDWindow(String entityType) {
+
         initComponents();
+        Utils.generalSettings(this);
+        this.tipoEntidad = entityType;
+        loadContentOnTable();
+
     }
 
     /**
@@ -29,11 +53,21 @@ public class CRUDWindow extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable_entidades = new javax.swing.JTable();
+        jLabel_tituloCRUD = new javax.swing.JLabel();
+        jButton_Borrar = new javax.swing.JButton();
+        jButton_Modificar = new javax.swing.JButton();
+        jButton_Crear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jScrollPane1.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                jScrollPane1MouseWheelMoved(evt);
+            }
+        });
+
+        jTable_entidades.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -44,7 +78,38 @@ public class CRUDWindow extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jTable_entidades.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTable_entidadesKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTable_entidadesKeyTyped(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable_entidades);
+
+        jLabel_tituloCRUD.setText("jLabel1");
+
+        jButton_Borrar.setText("Borrar");
+        jButton_Borrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_BorrarActionPerformed(evt);
+            }
+        });
+
+        jButton_Modificar.setText("Modificar");
+        jButton_Modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ModificarActionPerformed(evt);
+            }
+        });
+
+        jButton_Crear.setText("Crear");
+        jButton_Crear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CrearActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -52,21 +117,36 @@ public class CRUDWindow extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(53, 53, 53)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 846, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 812, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel_tituloCRUD, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton_Crear, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_Modificar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_Borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 77, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_tituloCRUD, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_Modificar)
+                    .addComponent(jButton_Crear)
+                    .addComponent(jButton_Borrar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -74,11 +154,43 @@ public class CRUDWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 41, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jScrollPane1MouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_jScrollPane1MouseWheelMoved
+    }//GEN-LAST:event_jScrollPane1MouseWheelMoved
+
+    private void jTable_entidadesKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable_entidadesKeyTyped
+        // TODO add your handling code here:
+
+
+    }//GEN-LAST:event_jTable_entidadesKeyTyped
+
+    private void jTable_entidadesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable_entidadesKeyPressed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jTable_entidadesKeyPressed
+
+    private void jButton_CrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearActionPerformed
+        // TODO add your handling code here:
+        abrirVistaDetalleEntidad(null);
+    }//GEN-LAST:event_jButton_CrearActionPerformed
+
+    
+
+    private void jButton_BorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_BorrarActionPerformed
+        // TODO add your handling code here:
+        borradoEntidadDeTabla();
+    }//GEN-LAST:event_jButton_BorrarActionPerformed
+
+    private void jButton_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ModificarActionPerformed
+        // TODO add your handling code here:
+        abrirVistaDetalleEntidad(getEntidadSeleccionada());
+
+    }//GEN-LAST:event_jButton_ModificarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -116,8 +228,52 @@ public class CRUDWindow extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_Borrar;
+    private javax.swing.JButton jButton_Crear;
+    private javax.swing.JButton jButton_Modificar;
+    private javax.swing.JLabel jLabel_tituloCRUD;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable_entidades;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * Carga los datos en la tabla y el resto de controles de la ventana.
+     *
+     * @param entityType Recibe una string con el nombre del tipo de entidad.
+     * Puede ser "Activos" o "Lista de activos"
+     */
+    public void loadContentOnTable() {
+        listaEntidades = BBDD.putDataInTableCRUD(tipoEntidad, jTable_entidades);
+        jLabel_tituloCRUD.setText(tipoEntidad);
+        this.setTitle(tipoEntidad);
+    }
+
+    private void borradoEntidadDeTabla() {
+        final Object entidad = getEntidadSeleccionada();
+        BBDD.borradoEntidadDeTabla((HibernateEntity) entidad);
+        ((DefaultTableModel)this.jTable_entidades.getModel()).removeRow(jTable_entidades.getSelectedRow());
+        listaEntidades.remove(entidad);
+        
+    }
+
+    private void abrirVistaDetalleEntidad(Object entidad) {
+        switch (tipoEntidad) {
+            case "Activos":
+                new AssetWindow((Activo)entidad, this).setVisible(true);
+                break;
+            case "Lista De Activos":
+                new ActiveListWindow((ListaDeActivos)entidad, this).setVisible(true);
+                break;
+        }
+    }
+    
+    private Object getEntidadSeleccionada() {
+        try {
+            return listaEntidades.get(jTable_entidades.getSelectedRow());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
 }

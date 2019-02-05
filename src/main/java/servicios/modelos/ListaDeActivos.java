@@ -28,7 +28,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "lista_de_activos", uniqueConstraints = {
     @UniqueConstraint(columnNames = "nombre")})
-public class ListaDeActivos implements Serializable {
+public class ListaDeActivos extends HibernateEntity implements Serializable {
 
     @Id
     @Column
@@ -40,7 +40,7 @@ public class ListaDeActivos implements Serializable {
     private boolean esPrivada;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "listaDeActivos")
     Set<Usuario> usuarios = new HashSet<>();
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     @JoinTable(
             name = "lista_de_activos_has_activos",
             joinColumns = {
@@ -50,6 +50,8 @@ public class ListaDeActivos implements Serializable {
     )
     Set<Activo> activos = new HashSet<>();
 
+    public static String [] columnasMostrablesEnTablaCRUD = {"ID","Nombre", "Privacidad"};
+    
     public ListaDeActivos() {
     }
 
@@ -75,7 +77,7 @@ public class ListaDeActivos implements Serializable {
         this.nombre = nombre;
     }
 
-    public boolean isEsPrivada() {
+    public boolean EsPrivada() {
         return esPrivada;
     }
 
@@ -89,5 +91,18 @@ public class ListaDeActivos implements Serializable {
 
     public void setUsuarios(Set<Usuario> usuarios) {
         this.usuarios = usuarios;
+    }
+
+    public Set<Activo> getActivos() {
+        return activos;
+    }
+
+    public void setActivos(Set<Activo> activos) {
+        this.activos = activos;
+    }
+    
+    @Override
+    public int getId() {
+        return getIdLista();
     }
 }
