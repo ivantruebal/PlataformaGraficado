@@ -106,6 +106,7 @@ public class AssetWindow extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea_Notas);
 
         jButton_Guardar.setText("Guardar");
+        jButton_Guardar.setEnabled(false);
         jButton_Guardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_GuardarActionPerformed(evt);
@@ -268,10 +269,11 @@ public class AssetWindow extends javax.swing.JFrame {
             tx.commit();
             crudWindowParent.loadContentOnTable();
             this.dispose();
-        } catch (HibernateException e) {
-            tx.rollback();
-            JOptionPane.showMessageDialog(this, "Ya existe un activo con ese");
-            java.util.logging.Logger.getLogger(AssetWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe el activo con id: " + this.activo.getSimbolo(), "");
+        } catch (Exception e) {
+            tx.rollback();       
+            BBDD.getSession().clear();
+            JOptionPane.showMessageDialog(this, "Ya existe un activo con esos datos");
+            java.util.logging.Logger.getLogger(AssetWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe un activo con estos datos: " + this.activo.toStringFull(), "");
         }
 
     }

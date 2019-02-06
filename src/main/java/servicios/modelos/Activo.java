@@ -104,5 +104,8 @@ public class Activo extends HibernateEntity implements Serializable {
     public String toString() {
         return simbolo;
     }
+    public String toStringFull() {
+        return nombre+" "+simbolo+" "+idActivo;
+    }
 
 }

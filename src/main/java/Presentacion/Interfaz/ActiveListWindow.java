@@ -5,6 +5,7 @@
  */
 package Presentacion.Interfaz;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -103,11 +104,18 @@ public class ActiveListWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Nombre:");
 
+        jTextField_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField_nombreKeyReleased(evt);
+            }
+        });
+
         jComboBox_privacidad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Privada", "Publica" }));
 
         jLabel2.setText("Privacidad:");
 
         jButton_guardar.setText("Guardar");
+        jButton_guardar.setEnabled(false);
         jButton_guardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_guardarActionPerformed(evt);
@@ -204,6 +212,11 @@ public class ActiveListWindow extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton_guardarActionPerformed
 
+    private void jTextField_nombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_nombreKeyReleased
+        // TODO add your handling code here:
+        activaBotonGuardado();
+    }//GEN-LAST:event_jTextField_nombreKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -254,18 +267,31 @@ public class ActiveListWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField_nombre;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Metood que rellena las lista de la vista detalle de lista de activos
+     */
     private void llenaListas() {
+        //Obtengo los activos que ya están en la lista
         Set<Activo> activosActualesEnLaLista = this.listaDeActivos.getActivos();
+        //Obtengo todos los activos en la BBDD
         List listaActivosTotales = BBDD.getSession().createQuery("from Activo").list();
+        //Obtengo un iterador de la coleccion de activos en la lista
         Iterator<Activo> iteratorActivosActualesEnLaLista = activosActualesEnLaLista.iterator();
+        //Añado nuevos modelos a las listas
         jList_ActivosAñadidos.setModel(new DefaultListModel<>());
         jList_ActivosNoAñadidos.setModel(new DefaultListModel<>());
+        //Siempre que haya otro activo mas en la coleccion de activos de la lista...
         while (iteratorActivosActualesEnLaLista.hasNext()) {
+            //Obtengo el siguiente activo en la coleccion
             Activo activo = iteratorActivosActualesEnLaLista.next();
+            //Elimino ese activo de la coleccion de activos de la lista de la lista de activos totales
             listaActivosTotales.remove(activo);
+            //Añado el activo eliminado de la lista de activos totales al modelo de la Jlist que representa la coleccion de activos en la lista de activos
             ((DefaultListModel) jList_ActivosAñadidos.getModel()).addElement(activo);
         }
+        //Recorro la lista de activos totales... 
         for (Object activo : listaActivosTotales) {
+            //Y lo añado al modelo de la Jlista que represeta los activos que no estan añadidos a la lista actual
             ((DefaultListModel) jList_ActivosNoAñadidos.getModel()).addElement(activo);
         }
     }
@@ -284,6 +310,14 @@ public class ActiveListWindow extends javax.swing.JFrame {
         if (jComboBox_privacidad.getSelectedIndex() == 0) {
             this.listaDeActivos.setEsPrivada(true);
         }else this.listaDeActivos.setEsPrivada(false);
+        ListModel<String> model = jList_ActivosAñadidos.getModel();
+        Set<Activo> nuevoSet = new HashSet<Activo>();
+        
+        for (int i = 0; i < model.getSize(); i++) {
+            Object o = model.getElementAt(i);
+            nuevoSet.add((Activo) o);
+        }
+        this.listaDeActivos.setActivos(nuevoSet);
         Transaction tx = BBDD.getSession().beginTransaction();
         try {
             if (esCreacion) {
@@ -294,12 +328,19 @@ public class ActiveListWindow extends javax.swing.JFrame {
             tx.commit();
             crudWindowParent.loadContentOnTable();
             this.dispose();
-        } catch (HibernateException e) {
-            tx.rollback();
-            JOptionPane.showMessageDialog(this, "Ya existe un activo con ese");
-            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe el activo con id: " + this.listaDeActivos.getNombre(), "");
+        } catch (Exception e) {
+            tx.rollback();       
+            BBDD.getSession().clear();
+            JOptionPane.showMessageDialog(this, "Ya existe una lista con esos datos");
+            java.util.logging.Logger.getLogger(AssetWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe una lista con estos datos: " + this.listaDeActivos, "");
         }
 
+    }
+
+    private void activaBotonGuardado() {
+       if(jTextField_nombre.getText().length() >0)
+           jButton_guardar.setEnabled(true);
+       else jButton_guardar.setEnabled(false);
     }
 
 }

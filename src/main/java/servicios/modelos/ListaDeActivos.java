@@ -105,4 +105,12 @@ public class ListaDeActivos extends HibernateEntity implements Serializable {
     public int getId() {
         return getIdLista();
     }
+
+    @Override
+    public String toString() {
+        return "ListaDeActivos{" + "idLista=" + idLista + ", nombre=" + nombre + ", esPrivada=" + esPrivada + ", usuarios=" + usuarios + ", activos=" + activos + '}';
+    }
+    
+
+    
 }
