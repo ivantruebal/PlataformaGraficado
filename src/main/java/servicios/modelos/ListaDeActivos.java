@@ -108,7 +108,7 @@ public class ListaDeActivos extends HibernateEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "ListaDeActivos{" + "idLista=" + idLista + ", nombre=" + nombre + ", esPrivada=" + esPrivada + ", usuarios=" + usuarios + ", activos=" + activos + '}';
+        return nombre;
     }
     
 

@@ -32,14 +32,14 @@ public class ActiveListWindow extends javax.swing.JFrame {
      * Creates new form ActiveListWindow
      */
     private ListaDeActivos listaDeActivos;
-    private final CRUDWindow crudWindowParent;
+    private final CRUDWindow parentCrudWindow;
     private boolean esCreacion = true;
 
     ActiveListWindow(ListaDeActivos listaDeActivos, CRUDWindow crudWindow) {
         initComponents();
         Utils.generalSettings(this);
         estableceEntidad(listaDeActivos);
-        this.crudWindowParent = crudWindow;
+        this.parentCrudWindow = crudWindow;
         if (this.listaDeActivos != null) {
             this.esCreacion = false;
             jTextField_nombre.setText(this.listaDeActivos.getNombre());
@@ -50,6 +50,7 @@ public class ActiveListWindow extends javax.swing.JFrame {
             }
         }
         llenaListas();
+        activaBotonGuardado();
     }
 
     private void estableceEntidad(ListaDeActivos entidad) {
@@ -326,15 +327,17 @@ public class ActiveListWindow extends javax.swing.JFrame {
                 BBDD.getSession().saveOrUpdate(this.listaDeActivos);
             }
             tx.commit();
-            crudWindowParent.loadContentOnTable();
+            parentCrudWindow.loadContentOnTable();
+            this.parentCrudWindow.parentMainWindow.refrescarComboDeListas();
             this.dispose();
+            
         } catch (Exception e) {
             tx.rollback();       
             BBDD.getSession().clear();
             JOptionPane.showMessageDialog(this, "Ya existe una lista con esos datos");
             java.util.logging.Logger.getLogger(AssetWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe una lista con estos datos: " + this.listaDeActivos, "");
         }
-
+        
     }
 
     private void activaBotonGuardado() {

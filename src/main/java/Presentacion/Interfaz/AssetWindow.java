@@ -25,13 +25,13 @@ public class AssetWindow extends javax.swing.JFrame {
      */
     private Activo activo = null;
     private boolean esCreacion;
-    private final CRUDWindow crudWindowParent;
+    private final CRUDWindow parentCRUDWindow;
 
     public AssetWindow(Activo entidad, CRUDWindow cRUDWindow) {
         initComponents();
         Utils.generalSettings(this);
         estableceEntidad(entidad);
-        this.crudWindowParent = cRUDWindow;
+        this.parentCRUDWindow = cRUDWindow;
         if(activo != null)
         {
             jTextField_nombreActivo.setText(activo.getNombre());
@@ -267,8 +267,9 @@ public class AssetWindow extends javax.swing.JFrame {
                 BBDD.getSession().saveOrUpdate(this.activo);
             }
             tx.commit();
-            crudWindowParent.loadContentOnTable();
+            parentCRUDWindow.loadContentOnTable();
             this.dispose();
+            
         } catch (Exception e) {
             tx.rollback();       
             BBDD.getSession().clear();

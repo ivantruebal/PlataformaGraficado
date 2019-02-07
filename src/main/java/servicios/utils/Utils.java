@@ -7,6 +7,7 @@ package servicios.utils;
 
 import Presentacion.Interfaz.ActiveListWindow;
 import java.awt.Color;
+import java.awt.Component;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import servicios.database.BBDD;
 
 /**
@@ -68,6 +70,14 @@ public class Utils {
         jframe.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         jframe.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
         jframe.setResizable(false);
+    }
+
+    public static void SetEnableChilds(JPanel jpanel, boolean booleano) {
+        Component[] components = jpanel.getComponents();
+        for (int i = 0; i < components.length; i++) {
+            Component component = components[i];
+            component.setEnabled(booleano);
+        }
     }
 
 }

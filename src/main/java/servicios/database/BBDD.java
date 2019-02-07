@@ -166,6 +166,8 @@ public class BBDD {
     }
 
     public static Session getSession() {
+        
+        
         if (session == null) {
             session = HibernateUtil.getSessionFactory().openSession();
         }
