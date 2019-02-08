@@ -40,7 +40,7 @@ public class ListaDeActivos extends HibernateEntity implements Serializable {
     private boolean esPrivada;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "listaDeActivos")
     Set<Usuario> usuarios = new HashSet<>();
-    @ManyToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.DETACH,fetch = FetchType.LAZY)
     @JoinTable(
             name = "lista_de_activos_has_activos",
             joinColumns = {
@@ -105,4 +105,12 @@ public class ListaDeActivos extends HibernateEntity implements Serializable {
     public int getId() {
         return getIdLista();
     }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
+    
+
+    
 }

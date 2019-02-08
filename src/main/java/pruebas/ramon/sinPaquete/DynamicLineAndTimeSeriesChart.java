@@ -27,22 +27,28 @@ import org.jfree.ui.RefineryUtilities;
 
 /**
  * An example to show how we can create a dynamic chart.
-*/
+ */
 public class DynamicLineAndTimeSeriesChart extends ApplicationFrame implements ActionListener {
 
-    /** The time series data. */
+    /**
+     * The time series data.
+     */
     private TimeSeries series;
 
-    /** The most recent value added. */
+    /**
+     * The most recent value added.
+     */
     private double lastValue = 100.0;
 
-    /** Timer to refresh graph after every 1/4th of a second */
+    /**
+     * Timer to refresh graph after every 1/4th of a second
+     */
     private Timer timer = new Timer(250, this);
 
     /**
      * Constructs a new dynamic chart application.
      *
-     * @param title  the frame title.
+     * @param title the frame title.
      */
     public DynamicLineAndTimeSeriesChart(final String title) {
 
@@ -59,17 +65,16 @@ public class DynamicLineAndTimeSeriesChart extends ApplicationFrame implements A
 
         //Created JPanel to show graph on screen
         final JPanel content = new JPanel(new BorderLayout());
-        
+
         //Created Chartpanel for chart area
         final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setMouseWheelEnabled(true);    
+        chartPanel.setMouseWheelEnabled(true);
         chartPanel.setFillZoomRectangle(false);
         //Added chartpanel to main panel
         content.add(chartPanel);
 
         //Sets the size of whole window (JPanel)
         chartPanel.setPreferredSize(new java.awt.Dimension(800, 500));
-        
 
         //Puts the whole content on a Frame
         setContentPane(content);
@@ -81,19 +86,19 @@ public class DynamicLineAndTimeSeriesChart extends ApplicationFrame implements A
     /**
      * Creates a sample chart.
      *
-     * @param dataset  the dataset.
+     * @param dataset the dataset.
      *
      * @return A sample chart.
      */
     private JFreeChart createChart(final XYDataset dataset) {
         final JFreeChart result = ChartFactory.createTimeSeriesChart(
-            "Dynamic Line And TimeSeries Chart",
-            "Time",
-            "Value",
-            dataset,
-            true,
-            true,
-            false
+                "Dynamic Line And TimeSeries Chart",
+                "Time",
+                "Value",
+                dataset,
+                true,
+                true,
+                false
         );
 
         final XYPlot plot = result.getXYPlot();
@@ -103,7 +108,6 @@ public class DynamicLineAndTimeSeriesChart extends ApplicationFrame implements A
         plot.setDomainGridlinePaint(Color.lightGray);
         plot.setRangeGridlinesVisible(true);
         plot.setRangeGridlinePaint(Color.lightGray);
-        
 
         ValueAxis xaxis = plot.getDomainAxis();
         xaxis.setAutoRange(true);
@@ -121,26 +125,30 @@ public class DynamicLineAndTimeSeriesChart extends ApplicationFrame implements A
 
         return result;
     }
+
     /**
-     * Generates an random entry for a particular call made by time for every 1/4th of a second.
+     * Generates an random entry for a particular call made by time for every
+     * 1/4th of a second.
      *
-     * @param e  the action event.
+     * @param e the action event.
      */
     public void actionPerformed(final ActionEvent e) {
 
-        final double factor = 0.9 + 0.2*Math.random();
+        final double factor = 1 + 0.2 * Math.random();
         this.lastValue = this.lastValue * factor;
 
         final Millisecond now = new Millisecond();
+        if (this.series.getItemCount() > 0) {
+        }
         this.series.add(new Millisecond(), this.lastValue);
 
-        System.out.println("Current Time in Milliseconds = " + now.toString()+", Current Value : "+this.lastValue);
+        System.out.println("Current Time in Milliseconds = " + now.toString() + ", Current Value : " + this.lastValue);
     }
 
     /**
      * Starting point for the dynamic graph application.
      *
-     * @param args  ignored.
+     * @param args ignored.
      */
     public static void main(final String[] args) {
 
@@ -151,4 +159,4 @@ public class DynamicLineAndTimeSeriesChart extends ApplicationFrame implements A
 
     }
 
-}  
+}

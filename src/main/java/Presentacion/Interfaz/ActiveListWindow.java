@@ -5,6 +5,7 @@
  */
 package Presentacion.Interfaz;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -31,24 +32,20 @@ public class ActiveListWindow extends javax.swing.JFrame {
      * Creates new form ActiveListWindow
      */
     private ListaDeActivos listaDeActivos;
-    private final CRUDWindow crudWindowParent;
+    private final CRUDWindow parentCrudWindow;
     private boolean esCreacion = true;
 
     ActiveListWindow(ListaDeActivos listaDeActivos, CRUDWindow crudWindow) {
         initComponents();
         Utils.generalSettings(this);
         estableceEntidad(listaDeActivos);
-        this.crudWindowParent = crudWindow;
+        this.parentCrudWindow = crudWindow;
         if (this.listaDeActivos != null) {
             this.esCreacion = false;
             jTextField_nombre.setText(this.listaDeActivos.getNombre());
-            if (this.listaDeActivos.EsPrivada()) {
-                jComboBox_privacidad.setSelectedIndex(0);
-            } else {
-                jComboBox_privacidad.setSelectedIndex(1);
-            }
         }
         llenaListas();
+        activaBotonGuardado();
     }
 
     private void estableceEntidad(ListaDeActivos entidad) {
@@ -76,8 +73,6 @@ public class ActiveListWindow extends javax.swing.JFrame {
         jButton_RetirarActivo = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jTextField_nombre = new javax.swing.JTextField();
-        jComboBox_privacidad = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
         jButton_guardar = new javax.swing.JButton();
         jButton_cancelar = new javax.swing.JButton();
 
@@ -103,11 +98,14 @@ public class ActiveListWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Nombre:");
 
-        jComboBox_privacidad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Privada", "Publica" }));
-
-        jLabel2.setText("Privacidad:");
+        jTextField_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField_nombreKeyReleased(evt);
+            }
+        });
 
         jButton_guardar.setText("Guardar");
+        jButton_guardar.setEnabled(false);
         jButton_guardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_guardarActionPerformed(evt);
@@ -135,18 +133,11 @@ public class ActiveListWindow extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox_privacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(61, 61, 61))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton_AñadirActivo, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton_RetirarActivo, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(37, 37, 37)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38))))
+                    .addComponent(jButton_AñadirActivo, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton_RetirarActivo, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(37, 37, 37)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38))
             .addGroup(layout.createSequentialGroup()
                 .addGap(100, 100, 100)
                 .addComponent(jButton_guardar)
@@ -160,9 +151,7 @@ public class ActiveListWindow extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox_privacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jTextField_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -204,6 +193,11 @@ public class ActiveListWindow extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton_guardarActionPerformed
 
+    private void jTextField_nombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_nombreKeyReleased
+        // TODO add your handling code here:
+        activaBotonGuardado();
+    }//GEN-LAST:event_jTextField_nombreKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -244,9 +238,7 @@ public class ActiveListWindow extends javax.swing.JFrame {
     private javax.swing.JButton jButton_RetirarActivo;
     private javax.swing.JButton jButton_cancelar;
     private javax.swing.JButton jButton_guardar;
-    private javax.swing.JComboBox<String> jComboBox_privacidad;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JList<String> jList_ActivosAñadidos;
     private javax.swing.JList<String> jList_ActivosNoAñadidos;
     private javax.swing.JScrollPane jScrollPane1;
@@ -254,36 +246,58 @@ public class ActiveListWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField_nombre;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Metood que rellena las lista de la vista detalle de lista de activos
+     */
     private void llenaListas() {
+        //Obtengo los activos que ya están en la lista
         Set<Activo> activosActualesEnLaLista = this.listaDeActivos.getActivos();
+        //Obtengo todos los activos en la BBDD
         List listaActivosTotales = BBDD.getSession().createQuery("from Activo").list();
+        //Obtengo un iterador de la coleccion de activos en la lista
         Iterator<Activo> iteratorActivosActualesEnLaLista = activosActualesEnLaLista.iterator();
+        //Añado nuevos modelos a las listas
         jList_ActivosAñadidos.setModel(new DefaultListModel<>());
         jList_ActivosNoAñadidos.setModel(new DefaultListModel<>());
+        //Siempre que haya otro activo mas en la coleccion de activos de la lista...
         while (iteratorActivosActualesEnLaLista.hasNext()) {
+            //Obtengo el siguiente activo en la coleccion
             Activo activo = iteratorActivosActualesEnLaLista.next();
+            //Elimino ese activo de la coleccion de activos de la lista de la lista de activos totales
             listaActivosTotales.remove(activo);
+            //Añado el activo eliminado de la lista de activos totales al modelo de la Jlist que representa la coleccion de activos en la lista de activos
             ((DefaultListModel) jList_ActivosAñadidos.getModel()).addElement(activo);
         }
+        //Recorro la lista de activos totales... 
         for (Object activo : listaActivosTotales) {
+            //Y lo añado al modelo de la Jlista que represeta los activos que no estan añadidos a la lista actual
             ((DefaultListModel) jList_ActivosNoAñadidos.getModel()).addElement(activo);
         }
     }
 
     private void mueveActivoDeLista(JList listaDeSustraccion, JList listaDeAdicion) {
-        if (listaDeSustraccion.getSelectedIndices().length == 0) {
-            listaDeSustraccion.setSelectedIndex(0);
+        if (listaDeSustraccion.getModel().getSize() > 0) {
+            if (listaDeSustraccion.getSelectedIndices().length == 0) {
+                listaDeSustraccion.setSelectedIndex(0);
+            }
+            ((DefaultListModel) listaDeAdicion.getModel()).addElement(listaDeSustraccion.getSelectedValue());
+            ((DefaultListModel) listaDeSustraccion.getModel()).remove(listaDeSustraccion.getSelectedIndex());
         }
-        ((DefaultListModel) listaDeAdicion.getModel()).addElement(listaDeSustraccion.getSelectedValue());
-        ((DefaultListModel) listaDeSustraccion.getModel()).remove(listaDeSustraccion.getSelectedIndex());
+
     }
 
     private void guardarListaEnBBDD() {
 
         this.listaDeActivos.setNombre(jTextField_nombre.getText());
-        if (jComboBox_privacidad.getSelectedIndex() == 0) {
-            this.listaDeActivos.setEsPrivada(true);
-        }else this.listaDeActivos.setEsPrivada(false);
+        this.listaDeActivos.setEsPrivada(true);
+        ListModel<String> model = jList_ActivosAñadidos.getModel();
+        Set<Activo> nuevoSet = new HashSet<Activo>();
+
+        for (int i = 0; i < model.getSize(); i++) {
+            Object o = model.getElementAt(i);
+            nuevoSet.add((Activo) o);
+        }
+        this.listaDeActivos.setActivos(nuevoSet);
         Transaction tx = BBDD.getSession().beginTransaction();
         try {
             if (esCreacion) {
@@ -292,14 +306,25 @@ public class ActiveListWindow extends javax.swing.JFrame {
                 BBDD.getSession().saveOrUpdate(this.listaDeActivos);
             }
             tx.commit();
-            crudWindowParent.loadContentOnTable();
+            parentCrudWindow.loadContentOnTable();
+            this.parentCrudWindow.parentMainWindow.refrescarComboDeListas();
             this.dispose();
-        } catch (HibernateException e) {
+
+        } catch (Exception e) {
             tx.rollback();
-            JOptionPane.showMessageDialog(this, "Ya existe un activo con ese");
-            java.util.logging.Logger.getLogger(ActiveListWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe el activo con id: " + this.listaDeActivos.getNombre(), "");
+            BBDD.getSession().clear();
+            JOptionPane.showMessageDialog(this, "Ya existe una lista con esos datos");
+            java.util.logging.Logger.getLogger(AssetWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe una lista con estos datos: " + this.listaDeActivos, "");
         }
 
+    }
+
+    private void activaBotonGuardado() {
+        if (jTextField_nombre.getText().length() > 0) {
+            jButton_guardar.setEnabled(true);
+        } else {
+            jButton_guardar.setEnabled(false);
+        }
     }
 
 }

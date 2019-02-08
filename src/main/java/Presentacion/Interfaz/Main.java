@@ -11,19 +11,29 @@ import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.table.DefaultTableModel;
+import org.hibernate.Query;
 import org.jfree.data.xy.DefaultHighLowDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import servicios.ActualizadorActivo;
 import servicios.GestorConexionAPI;
+import servicios.database.BBDD;
+import servicios.modelos.Activo;
+import servicios.modelos.ListaDeActivos;
+import servicios.utils.Utils;
 
 /**
  *
@@ -45,6 +55,7 @@ public class Main extends javax.swing.JFrame {
     private GestorConexionAPI gcAPI;
     private PanelGrafico PG;
     private ActualizadorActivo aa;
+
     /**
      * Creates new form NewMDIApplication
      */
@@ -52,12 +63,12 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         settings();
         //this.candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize());
-        this.enableTrace=false;  
-        this.verGraficoClicado=false;
-        this.verTablaClicado=false;
-        this.enableTrazado=false;
-        this.tomarDatos=false;
-        this.gcAPI=new GestorConexionAPI();
+        this.enableTrace = false;
+        this.verGraficoClicado = false;
+        this.verTablaClicado = false;
+        this.enableTrazado = false;
+        this.tomarDatos = false;
+        this.gcAPI = new GestorConexionAPI();
         enableInternalFrameListaAutoSize();
         enableInternalFrameGraficoAutoSize();
         enableInternalFrameOperacionesAutoSize();
@@ -66,16 +77,12 @@ public class Main extends javax.swing.JFrame {
         //TrayIconDemo tid=new TrayIconDemo();
         //tid.displayTray();
         //peticionKrakenApi();
-        inicializarListaActivos();
-        //gcAPI.nuevaOrden("poppop");
-        //gcAPI.cancelarOrden("OGCYE4-VOX4P-RUO2MU");
-        PanelGrafico pg=new PanelGrafico();
-        PanelGrafico pg2=new PanelGrafico();
-        jTabbedPane_Graficos.addTab("poppop", pg);
-        jTabbedPane_Graficos.addTab("Poppop2", pg2);
-        //gcAPI.getOpenOrders("pop");
-        gcAPI.cargaInicial();
-        
+        refrescarComboDeListas();
+//
+//        PanelGrafico pg = new PanelGrafico();
+//        PanelGrafico pg2 = new PanelGrafico();
+//        jTabbedPane_Graficos.addTab("poppop", pg);
+//        jTabbedPane_Graficos.addTab("Poppop2", pg2);
     }
 
     /**
@@ -99,7 +106,7 @@ public class Main extends javax.swing.JFrame {
         jPanel_Activos = new javax.swing.JPanel();
         jComboBox_selectorListas = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable_listaActivos = new javax.swing.JTable();
+        jTable_tablaActivos = new javax.swing.JTable();
         menuBar = new javax.swing.JMenuBar();
         jMenuArchivo = new javax.swing.JMenu();
         jMenuItemNuevoActivo = new javax.swing.JMenuItem();
@@ -230,37 +237,147 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jComboBox_selectorListas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Forex" }));
+        jComboBox_selectorListas.setModel(new DefaultComboBoxModel<>());
+        jComboBox_selectorListas.setEnabled(false);
+        jComboBox_selectorListas.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox_selectorListasItemStateChanged(evt);
+            }
+        });
         jComboBox_selectorListas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox_selectorListasActionPerformed(evt);
             }
         });
 
-        jTable_listaActivos.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_tablaActivos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null}
             },
             new String [] {
-                "Ticker", "Cotizacion"
+                "Ticker"
             }
-        ));
-        jTable_listaActivos.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable_listaActivosMouseClicked(evt);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable_listaActivos);
+        jTable_tablaActivos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable_tablaActivosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable_tablaActivos);
 
         javax.swing.GroupLayout jPanel_ActivosLayout = new javax.swing.GroupLayout(jPanel_Activos);
         jPanel_Activos.setLayout(jPanel_ActivosLayout);
         jPanel_ActivosLayout.setHorizontalGroup(
             jPanel_ActivosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(jComboBox_selectorListas, 0, 209, Short.MAX_VALUE)
+            .addComponent(jComboBox_selectorListas, 0, 194, Short.MAX_VALUE)
         );
         jPanel_ActivosLayout.setVerticalGroup(
             jPanel_ActivosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -421,24 +538,14 @@ public class Main extends javax.swing.JFrame {
         nuevoActivo();
     }//GEN-LAST:event_jMenuItemNuevoActivoActionPerformed
 
-    private void jTable_listaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_listaActivosMouseClicked
-
-    }//GEN-LAST:event_jTable_listaActivosMouseClicked
-
     private void jInternalFrameListaInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_jInternalFrameListaInternalFrameIconified
 
     }//GEN-LAST:event_jInternalFrameListaInternalFrameIconified
 
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
-        PG=(PanelGrafico)jTabbedPane_Graficos.getSelectedComponent();
-        PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
-        //gcAPI.getTrade(jComboBox_selectorListas.getSelectedItem().toString());
-        //gcAPI.nuevaOrden(jComboBox_selectorListas.getSelectedItem().toString());
-        if(aa!=null)
-            aa.cancel(true);
-        aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
-        aa.execute();
-        //PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
+
+        refrescarListaDeActivos();
+
     }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
 
     private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
@@ -451,13 +558,22 @@ public class Main extends javax.swing.JFrame {
 
     private void jMenuItem_Inventario_ActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_Inventario_ActivosActionPerformed
         // TODO add your handling code here:
-        new CRUDWindow("Activos").setVisible(true);
+        new CRUDWindow("Activos", this).setVisible(true);
     }//GEN-LAST:event_jMenuItem_Inventario_ActivosActionPerformed
 
     private void jMenuItem_Inventario_listaDeActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
         // TODO add your handling code here:
-        new CRUDWindow("Lista De Activos").setVisible(true);
+        new CRUDWindow("Lista De Activos", this).setVisible(true);
     }//GEN-LAST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
+
+    private void jTable_tablaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_tablaActivosMouseClicked
+
+        onDoubleClick(evt);
+    }//GEN-LAST:event_jTable_tablaActivosMouseClicked
+
+    private void jComboBox_selectorListasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox_selectorListasItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -503,7 +619,7 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JComboBox<String> jComboBox_selectorListas;
+    private javax.swing.JComboBox<ListaDeActivos> jComboBox_selectorListas;
     private javax.swing.JInternalFrame jInternalFrameGrafico;
     private javax.swing.JInternalFrame jInternalFrameLista;
     private javax.swing.JInternalFrame jInternalFrameOperaciones;
@@ -528,7 +644,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane_Graficos;
     private javax.swing.JTabbedPane jTabbedPane_Tools;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable_listaActivos;
+    private javax.swing.JTable jTable_tablaActivos;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 
@@ -560,16 +676,16 @@ public class Main extends javax.swing.JFrame {
         });
    
     }*/
-    
     /**
-     * Método que redimensiona el resto de ventanas cuando redimensionamos la ventana de la lista
+     * Método que redimensiona el resto de ventanas cuando redimensionamos la
+     * ventana de la lista
      */
-    private void enableInternalFrameListaAutoSize(){
+    private void enableInternalFrameListaAutoSize() {
         jInternalFrameLista.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-                jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, desktopPane.getSize().width-jInternalFrameLista.getSize().width, jInternalFrameLista.getSize().height);
-                jInternalFrameOperaciones.reshape(0, jInternalFrameLista.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height-jInternalFrameLista.getSize().height);
+                jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, desktopPane.getSize().width - jInternalFrameLista.getSize().width, jInternalFrameLista.getSize().height);
+                jInternalFrameOperaciones.reshape(0, jInternalFrameLista.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height - jInternalFrameLista.getSize().height);
                 jInternalFrameLista.validate();
             }
 
@@ -589,16 +705,17 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
-    
+
     /**
-     * Método que redimensiona el resto de ventanas cuando redimensionamos la ventana del grafico
+     * Método que redimensiona el resto de ventanas cuando redimensionamos la
+     * ventana del grafico
      */
-    private void enableInternalFrameGraficoAutoSize(){
+    private void enableInternalFrameGraficoAutoSize() {
         jInternalFrameGrafico.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-                jInternalFrameLista.reshape(0, 0, desktopPane.getSize().width-jInternalFrameGrafico.getSize().width, jInternalFrameGrafico.getSize().height);
-                jInternalFrameOperaciones.reshape(0, jInternalFrameGrafico.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height-jInternalFrameGrafico.getSize().height);
+                jInternalFrameLista.reshape(0, 0, desktopPane.getSize().width - jInternalFrameGrafico.getSize().width, jInternalFrameGrafico.getSize().height);
+                jInternalFrameOperaciones.reshape(0, jInternalFrameGrafico.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height - jInternalFrameGrafico.getSize().height);
                 jInternalFrameGrafico.validate();
             }
 
@@ -618,16 +735,17 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
-    
+
     /**
-     * Método que redimensiona el resto de ventanas cuando redimensionamos la ventana de operaciones
+     * Método que redimensiona el resto de ventanas cuando redimensionamos la
+     * ventana de operaciones
      */
-    private void enableInternalFrameOperacionesAutoSize(){
+    private void enableInternalFrameOperacionesAutoSize() {
         jInternalFrameOperaciones.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-                jInternalFrameLista.reshape(0, 0, jInternalFrameLista.getSize().width, desktopPane.getSize().height-jInternalFrameOperaciones.getSize().height);
-                jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, jInternalFrameGrafico.getSize().width, desktopPane.getSize().height-jInternalFrameOperaciones.getSize().height);
+                jInternalFrameLista.reshape(0, 0, jInternalFrameLista.getSize().width, desktopPane.getSize().height - jInternalFrameOperaciones.getSize().height);
+                jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, jInternalFrameGrafico.getSize().width, desktopPane.getSize().height - jInternalFrameOperaciones.getSize().height);
                 jInternalFrameOperaciones.validate();
             }
 
@@ -647,25 +765,26 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
-    
+
     /**
-     * Añade un componentListener al jPanel_grafico para que se redimension cada vez que cambiamos el tamaño de la ventana
+     * Añade un componentListener al jPanel_grafico para que se redimension cada
+     * vez que cambiamos el tamaño de la ventana
      */
-    private void enablePlataformaGraficadoAutoSize(){
+    private void enablePlataformaGraficadoAutoSize() {
         desktopPane.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-                
+
                 jInternalFrameGrafico.setPreferredSize(fixedDimensionsInternalGrafico());
                 jInternalFrameGrafico.setSize(fixedDimensionsInternalGrafico());
-               
+
                 jInternalFrameLista.setPreferredSize(fixedDimensionsInternalLista());
                 jInternalFrameLista.setSize(fixedDimensionsInternalLista());
-                
+
                 jInternalFrameOperaciones.setPreferredSize(fixedDimensionsInternalOperaciones());
                 jInternalFrameOperaciones.setSize(fixedDimensionsInternalOperaciones());
                 jInternalFrameOperaciones.setLocation(0, jInternalFrameGrafico.getSize().height);
-                
+
                 desktopPane.validate();
             }
 
@@ -684,51 +803,63 @@ public class Main extends javax.swing.JFrame {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        
+
     }
-    
+
     /**
-     * Método que devuelve las dimensiones que debe tener la ventana del gráfico cuando redimensionamos la ventana principal
-     * @return objeto Dimension con las dimensiones que debe tener la ventana del gráfico
+     * Método que devuelve las dimensiones que debe tener la ventana del gráfico
+     * cuando redimensionamos la ventana principal
+     *
+     * @return objeto Dimension con las dimensiones que debe tener la ventana
+     * del gráfico
      */
     private Dimension fixedDimensionsInternalGrafico() {
         Dimension parentSize = desktopPane.getSize();
         Dimension childSize = jInternalFrameLista.getSize();
-        return new Dimension(parentSize.width-childSize.width, parentSize.height-jInternalFrameOperaciones.getSize().height);
+        return new Dimension(parentSize.width - childSize.width, parentSize.height - jInternalFrameOperaciones.getSize().height);
     }
-    
+
     /**
-     * Método que devuelve las dimensiones que debe tener la ventana de la lista cuando redimensionamos la ventana principal
-     * @return objeto Dimension con las dimensiones que debe tener la ventana de la lista
+     * Método que devuelve las dimensiones que debe tener la ventana de la lista
+     * cuando redimensionamos la ventana principal
+     *
+     * @return objeto Dimension con las dimensiones que debe tener la ventana de
+     * la lista
      */
     private Dimension fixedDimensionsInternalLista() {
         Dimension parentSize = desktopPane.getSize();
         Dimension childSize = jInternalFrameGrafico.getSize();
-        return new Dimension(parentSize.width-childSize.width, parentSize.height-jInternalFrameOperaciones.getSize().height);
-    }
-    
-    /**
-     * Método que devuelve las dimensiones que debe tener la ventana de operaciones cuando redimensionamos la ventana principal
-     * @return objeto Dimension con las dimensiones que debe tener la ventana Operaciones
-     */
-    private Dimension fixedDimensionsInternalOperaciones(){
-        Dimension parentSize = desktopPane.getSize();
-        Dimension childSize2 = jInternalFrameGrafico.getSize();
-        return new Dimension(parentSize.width, parentSize.height-childSize2.height);
+        return new Dimension(parentSize.width - childSize.width, parentSize.height - jInternalFrameOperaciones.getSize().height);
     }
 
     /**
-     * Método que a partir de una variable pasada como parámetro cambia la distribución de las ventanas de la aplicación
-     * @param vista variable string que indica como se van a distribuir las ventanas
+     * Método que devuelve las dimensiones que debe tener la ventana de
+     * operaciones cuando redimensionamos la ventana principal
+     *
+     * @return objeto Dimension con las dimensiones que debe tener la ventana
+     * Operaciones
      */
-    private void opcionVista(String vista){
+    private Dimension fixedDimensionsInternalOperaciones() {
+        Dimension parentSize = desktopPane.getSize();
+        Dimension childSize2 = jInternalFrameGrafico.getSize();
+        return new Dimension(parentSize.width, parentSize.height - childSize2.height);
+    }
+
+    /**
+     * Método que a partir de una variable pasada como parámetro cambia la
+     * distribución de las ventanas de la aplicación
+     *
+     * @param vista variable string que indica como se van a distribuir las
+     * ventanas
+     */
+    private void opcionVista(String vista) {
         jInternalFrameLista.setVisible(true);
         jInternalFrameGrafico.setVisible(true);
         jInternalFrameOperaciones.setVisible(true);
-        jInternalFrameLista.reshape(0, 0, (desktopPane.getSize().width/10)*2, (desktopPane.getSize().height/10)*7);
-        jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, (desktopPane.getSize().width/10)*8, (desktopPane.getSize().height/10)*7);
-        jInternalFrameOperaciones.reshape(0, jInternalFrameLista.getSize().height, desktopPane.getSize().width, (desktopPane.getSize().height/10)*3);
-        switch(vista){
+        jInternalFrameLista.reshape(0, 0, (desktopPane.getSize().width / 10) * 2, (desktopPane.getSize().height / 10) * 7);
+        jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, (desktopPane.getSize().width / 10) * 8, (desktopPane.getSize().height / 10) * 7);
+        jInternalFrameOperaciones.reshape(0, jInternalFrameLista.getSize().height, desktopPane.getSize().width, (desktopPane.getSize().height / 10) * 3);
+        switch (vista) {
             case "Grafico":
                 jInternalFrameLista.setVisible(false);
                 jInternalFrameOperaciones.setVisible(false);
@@ -746,39 +877,171 @@ public class Main extends javax.swing.JFrame {
             case "Grafico+Operaciones":
                 jInternalFrameLista.setVisible(false);
                 jInternalFrameLista.reshape(0, 0, 0, jInternalFrameLista.getSize().height);
-                jInternalFrameGrafico.reshape(0, 0, desktopPane.getSize().width, (desktopPane.getSize().height/10)*7);
-                jInternalFrameOperaciones.reshape(0, jInternalFrameGrafico.getSize().height, desktopPane.getSize().width, (desktopPane.getSize().height/10)*3);
+                jInternalFrameGrafico.reshape(0, 0, desktopPane.getSize().width, (desktopPane.getSize().height / 10) * 7);
+                jInternalFrameOperaciones.reshape(0, jInternalFrameGrafico.getSize().height, desktopPane.getSize().width, (desktopPane.getSize().height / 10) * 3);
                 break;
             case "Grafico+Lista":
                 jInternalFrameOperaciones.setVisible(false);
                 jInternalFrameOperaciones.reshape(0, desktopPane.getSize().height, desktopPane.getSize().width, 0);
-                jInternalFrameLista.reshape(0, 0, (desktopPane.getSize().width/10)*2, desktopPane.getSize().height);
-                jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, (desktopPane.getSize().width/10)*8, desktopPane.getSize().height);
+                jInternalFrameLista.reshape(0, 0, (desktopPane.getSize().width / 10) * 2, desktopPane.getSize().height);
+                jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, (desktopPane.getSize().width / 10) * 8, desktopPane.getSize().height);
                 break;
         }
     }
+
     /**
      * Metodo que abre un panel para realizar la importacion de un nuevo activo
      */
     private void nuevoActivo() {
         new Presentacion.Interfaz.CSVImportWindow().setVisible(true);
     }
-    
+
     /**
-     * Método que a traves de la api, obtiene un list con todos los activos y loc introduce en un comboBox
+     * Método que a traves de la api, obtiene un list con todos los activos y
+     * loc introduce en un comboBox
      */
-    private void inicializarListaActivos()
-    {
-        List<String> l=gcAPI.getListaActivos();
-        for(String activo:l){
-            jComboBox_selectorListas.addItem(activo);
+    public void refrescarComboDeListas() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                jComboBox_selectorListas.setEnabled(false);
+                jTable_tablaActivos.setEnabled(false);
+                Query query = BBDD.getSession().createQuery("from ListaDeActivos");
+                List<ListaDeActivos> listaDeListasDeActivos = query.list();
+                jComboBox_selectorListas.removeAllItems();
+                for (ListaDeActivos listaDeActivos : listaDeListasDeActivos) {
+                    jComboBox_selectorListas.addItem(listaDeActivos);
+                }
+                if (jComboBox_selectorListas.getSelectedItem() == null && jComboBox_selectorListas.getModel().getSize() > 0) {
+                    jComboBox_selectorListas.setSelectedIndex(0);
+                }
+                refrescarListaDeActivos();
+                jComboBox_selectorListas.setEnabled(true);
+                jTable_tablaActivos.setEnabled(true);
+            }
+        };
+        runnable.run();
+    }
+
+    public void refrescarListaDeActivos() {
+        Runnable runnable;
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                jTable_tablaActivos.setEnabled(false);
+                ListaDeActivos listaSeleccionada = (ListaDeActivos) jComboBox_selectorListas.getSelectedItem();
+                if (listaSeleccionada != null) {
+                    Set<Activo> activos = listaSeleccionada.getActivos();
+                    ArrayList<Activo> arrayListActivos = new ArrayList<>(activos);
+                    String[] header = {"Simbolo"};
+                    Activo[][] datosActivo = new Activo[arrayListActivos.size()][1];
+                    for (int i = 0; i < arrayListActivos.size(); i++) {
+                        Activo activo = arrayListActivos.get(i);
+                        datosActivo[i][0] = activo;
+                    }
+                    DefaultTableModel defaultTableModel = new DefaultTableModel(datosActivo, header) {
+                        public boolean isCellEditable(int rowIndex, int mColIndex) {
+                            return false;
+                        }
+                    };
+
+                    jTable_tablaActivos.setModel(defaultTableModel);
+                } else {
+                    jTable_tablaActivos.setModel(new DefaultTableModel());
+                }
+                jTable_tablaActivos.setEnabled(true);
+            }
+
+        };
+        runnable.run();
+    }
+
+    private void peticionKrakenApi(String pair) {
+        try {
+            KrakenApi api = new KrakenApi();
+            api.setKey("eFdZ+5zMcIda/AIXmxgAQleAY02CQDauk0cmRBdmR1VdN4eoo9HtWraX"); // FIXME
+            api.setSecret("CeLyCF83pNbPz8VjlGjl04RdiulpVVFCS8C/+XeaXT/3Ck8URYGuiJT4BWm3tfm9W4d0vRw/sJrBYveuf5GScg=="); // FIXME
+
+            String response;
+            Map<String, String> input = new HashMap<>();
+
+            input.clear();
+            input.put("pair", pair);
+            input.put("since", "0");
+            input.put("interval", "30");
+            response = api.queryPublic(Method.OHLC, input);
+            System.out.println(response);
+            JSONObject job = new JSONObject(response);
+
+            JSONObject jobResult = job.getJSONObject("result");
+            Iterator<String> it = jobResult.keys();
+            String key;
+            JSONArray ja = null;
+            while (it.hasNext()) {
+                key = it.next();
+                if (!key.equalsIgnoreCase("last")) {
+                    ja = jobResult.getJSONArray(key);
+                }
+            }
+
+            JSONArray ja2;
+            Date[] date = new Date[ja.length()];
+            double[] high = new double[ja.length()];
+            double[] low = new double[ja.length()];
+            double[] open = new double[ja.length()];
+            double[] close = new double[ja.length()];
+            double[] volume = new double[ja.length()];
+            for (int i = 0; i < ja.length(); i++) {
+                ja2 = ja.getJSONArray(i);
+                date[i] = new Date(ja2.getLong(0));
+                open[i] = ja2.getDouble(1);
+                high[i] = ja2.getDouble(2);
+                low[i] = ja2.getDouble(3);
+                close[i] = ja2.getDouble(4);
+                volume[i] = ja2.getDouble(6);
+                /*for(int j=0;j<ja2.length();j++){
+                    System.out.println(ja2.get(j).toString());
+                }*/
+            }
+            DefaultHighLowDataset data = new DefaultHighLowDataset(
+                    "", date, high, low, open, close, volume);
+            /*candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
+            jPanel_Grafico.removeAll();
+            jPanel_Grafico.setLayout(new BorderLayout());
+            jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
+            jPanel_Grafico.repaint();*/
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     private void settings() {
-       this.setLocationRelativeTo(null);
-       this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
+        this.setLocationRelativeTo(null);
+        this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
     }
 
-    
+    private void onDoubleClick(java.awt.event.MouseEvent e) {
+        if (e.getClickCount() == 2 && !e.isConsumed()) {
+            e.consume();
+            //handle double click event.
+            Activo activo = (Activo) jTable_tablaActivos.getValueAt(jTable_tablaActivos.getSelectedRow(), 0);
+            if (activo != null) {
+                PanelGrafico pg = new PanelGrafico();
+                jTabbedPane_Graficos.addTab(activo.getSimbolo(), pg);
+                jTabbedPane_Graficos.setSelectedIndex(jTabbedPane_Graficos.getComponents().length-1);
+                PG = (PanelGrafico) jTabbedPane_Graficos.getSelectedComponent();
+                if (PG != null) {
+                    PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
+                }
+                if (aa != null) {
+                    aa.cancel(true);
+                }
+                aa = new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
+                aa.execute();
+                PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
+            }
+        }
+    }
+
 }

@@ -5,6 +5,7 @@
  */
 package Presentacion.Interfaz;
 
+import java.awt.Container;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Vector;
@@ -32,15 +33,19 @@ public class CRUDWindow extends javax.swing.JFrame {
      */
     private String tipoEntidad;
     public List listaEntidades;
+    public Main parentMainWindow;
 
-    public CRUDWindow(String entityType) {
+    public CRUDWindow(String entityType, Main parent) {
 
         initComponents();
         Utils.generalSettings(this);
         this.tipoEntidad = entityType;
+        this.parentMainWindow = parent;
         loadContentOnTable();
-
+        
     }
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -254,6 +259,7 @@ public class CRUDWindow extends javax.swing.JFrame {
         BBDD.borradoEntidadDeTabla((HibernateEntity) entidad);
         ((DefaultTableModel)this.jTable_entidades.getModel()).removeRow(jTable_entidades.getSelectedRow());
         listaEntidades.remove(entidad);
+        this.parentMainWindow.refrescarComboDeListas();
         
     }
 

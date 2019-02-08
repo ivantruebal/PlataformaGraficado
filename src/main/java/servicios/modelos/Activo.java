@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -44,9 +46,9 @@ public class Activo extends HibernateEntity implements Serializable {
     private Set<Candlestick> candlestickSet;
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activos")
     private Set<Analisis> analisis;
-    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activos")
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY, mappedBy = "activos")    
     private Set<ListaDeActivos> listasDeActivos;
-    @OneToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "activo")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activo")
     private Set<Operaciones> operaciones;
 
     public static String[] columnasMostrablesEnTablaCRUD = {"ID", "Nombre", "Simbolo", "Nota"};
@@ -60,9 +62,10 @@ public class Activo extends HibernateEntity implements Serializable {
         this.notas = notas;
     }
 
-     public int getIdActivo() {
+    public int getIdActivo() {
         return idActivo;
     }
+
     @Override
     public int getId() {
         return getIdActivo();
@@ -103,6 +106,10 @@ public class Activo extends HibernateEntity implements Serializable {
     @Override
     public String toString() {
         return simbolo;
+    }
+
+    public String toStringFull() {
+        return nombre + " " + simbolo + " " + idActivo;
     }
 
 }
