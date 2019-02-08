@@ -567,7 +567,7 @@ public class Main extends javax.swing.JFrame {
 
     private void jMenuItem_Inventario_ActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_Inventario_ActivosActionPerformed
         // TODO add your handling code here:
-        new CRUDWindow("Activos",this).setVisible(true);
+        new CRUDWindow("Activos", this).setVisible(true);
     }//GEN-LAST:event_jMenuItem_Inventario_ActivosActionPerformed
 
     private void jMenuItem_Inventario_listaDeActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
@@ -576,7 +576,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
 
     private void jTable_listaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_listaActivosMouseClicked
-        
+
     }//GEN-LAST:event_jTable_listaActivosMouseClicked
 
     private void jComboBox_selectorListasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasItemStateChanged
@@ -912,15 +912,20 @@ public class Main extends javax.swing.JFrame {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                Utils.SetEnableChilds(jPanel_Activos, false);
+                jComboBox_selectorListas.setEnabled(false);
+                jTable_listaActivos.setEnabled(false);
                 Query query = BBDD.getSession().createQuery("from ListaDeActivos");
                 List<ListaDeActivos> listaDeListasDeActivos = query.list();
                 jComboBox_selectorListas.removeAllItems();
                 for (ListaDeActivos listaDeActivos : listaDeListasDeActivos) {
                     jComboBox_selectorListas.addItem(listaDeActivos);
                 }
+                if (jComboBox_selectorListas.getSelectedItem() == null && jComboBox_selectorListas.getModel().getSize() > 0) {
+                    jComboBox_selectorListas.setSelectedIndex(0);
+                }
                 refrescarListaDeActivos();
-                Utils.SetEnableChilds(jPanel_Activos, true);
+                jComboBox_selectorListas.setEnabled(true);
+                jTable_listaActivos.setEnabled(true);
             }
 
         };
@@ -934,11 +939,25 @@ public class Main extends javax.swing.JFrame {
             public void run() {
                 jTable_listaActivos.setEnabled(false);
                 ListaDeActivos listaSeleccionada = (ListaDeActivos) jComboBox_selectorListas.getSelectedItem();
-                Set<Activo> activos = listaSeleccionada.getActivos();
-                ArrayList<Activo> arrayListActivos = new ArrayList<>(activos);
-                String[] header = {"Simbolo"};
-                Activo [][] datosActivo = new Activo[0][arrayListActivos.size()];
-                DefaultTableModel defaultTableModel = new DefaultTableModel(datosActivo, header);
+                if (listaSeleccionada != null) {
+                    Set<Activo> activos = listaSeleccionada.getActivos();
+                    ArrayList<Activo> arrayListActivos = new ArrayList<>(activos);
+                    String[] header = {"Simbolo"};
+                    Activo[][] datosActivo = new Activo[1][arrayListActivos.size()];
+                    for (int i = 0; i < arrayListActivos.size(); i++) {
+                        Activo activo = arrayListActivos.get(i);
+                        datosActivo[0][i] = activo;
+                    }
+                    DefaultTableModel defaultTableModel = new DefaultTableModel(datosActivo, header) {
+                        public boolean isCellEditable(int rowIndex, int mColIndex) {
+                            return false;
+                        }
+                    };
+                    
+                    jTable_listaActivos.setModel(defaultTableModel);
+                }
+                else
+                    jTable_listaActivos.setModel(new DefaultTableModel());
                 jTable_listaActivos.setEnabled(true);
             }
 

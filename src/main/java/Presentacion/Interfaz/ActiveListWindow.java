@@ -298,11 +298,14 @@ public class ActiveListWindow extends javax.swing.JFrame {
     }
 
     private void mueveActivoDeLista(JList listaDeSustraccion, JList listaDeAdicion) {
-        if (listaDeSustraccion.getSelectedIndices().length == 0) {
-            listaDeSustraccion.setSelectedIndex(0);
+        if (listaDeSustraccion.getModel().getSize() > 0) {
+            if (listaDeSustraccion.getSelectedIndices().length == 0) {
+                listaDeSustraccion.setSelectedIndex(0);
+            }
+            ((DefaultListModel) listaDeAdicion.getModel()).addElement(listaDeSustraccion.getSelectedValue());
+            ((DefaultListModel) listaDeSustraccion.getModel()).remove(listaDeSustraccion.getSelectedIndex());
         }
-        ((DefaultListModel) listaDeAdicion.getModel()).addElement(listaDeSustraccion.getSelectedValue());
-        ((DefaultListModel) listaDeSustraccion.getModel()).remove(listaDeSustraccion.getSelectedIndex());
+
     }
 
     private void guardarListaEnBBDD() {
@@ -310,10 +313,12 @@ public class ActiveListWindow extends javax.swing.JFrame {
         this.listaDeActivos.setNombre(jTextField_nombre.getText());
         if (jComboBox_privacidad.getSelectedIndex() == 0) {
             this.listaDeActivos.setEsPrivada(true);
-        }else this.listaDeActivos.setEsPrivada(false);
+        } else {
+            this.listaDeActivos.setEsPrivada(false);
+        }
         ListModel<String> model = jList_ActivosAñadidos.getModel();
         Set<Activo> nuevoSet = new HashSet<Activo>();
-        
+
         for (int i = 0; i < model.getSize(); i++) {
             Object o = model.getElementAt(i);
             nuevoSet.add((Activo) o);
@@ -330,20 +335,22 @@ public class ActiveListWindow extends javax.swing.JFrame {
             parentCrudWindow.loadContentOnTable();
             this.parentCrudWindow.parentMainWindow.refrescarComboDeListas();
             this.dispose();
-            
+
         } catch (Exception e) {
-            tx.rollback();       
+            tx.rollback();
             BBDD.getSession().clear();
             JOptionPane.showMessageDialog(this, "Ya existe una lista con esos datos");
             java.util.logging.Logger.getLogger(AssetWindow.class.getName()).log(java.util.logging.Level.FINE, "Ya existe una lista con estos datos: " + this.listaDeActivos, "");
         }
-        
+
     }
 
     private void activaBotonGuardado() {
-       if(jTextField_nombre.getText().length() >0)
-           jButton_guardar.setEnabled(true);
-       else jButton_guardar.setEnabled(false);
+        if (jTextField_nombre.getText().length() > 0) {
+            jButton_guardar.setEnabled(true);
+        } else {
+            jButton_guardar.setEnabled(false);
+        }
     }
 
 }
