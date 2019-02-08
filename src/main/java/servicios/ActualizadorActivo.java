@@ -39,7 +39,7 @@ public class ActualizadorActivo extends SwingWorker<String, Object> {
     @Override
     protected String doInBackground() throws Exception {
         while (!isCancelled()) {
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             if (comprobarIntervalo()) {
                 pg.pintarGrafico(lista);
             } else {

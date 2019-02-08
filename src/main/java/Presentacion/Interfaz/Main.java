@@ -67,11 +67,15 @@ public class Main extends javax.swing.JFrame {
         //tid.displayTray();
         //peticionKrakenApi();
         inicializarListaActivos();
-        
+        //gcAPI.nuevaOrden("poppop");
+        //gcAPI.cancelarOrden("OGCYE4-VOX4P-RUO2MU");
         PanelGrafico pg=new PanelGrafico();
         PanelGrafico pg2=new PanelGrafico();
         jTabbedPane_Graficos.addTab("poppop", pg);
         jTabbedPane_Graficos.addTab("Poppop2", pg2);
+        //gcAPI.getOpenOrders("pop");
+        gcAPI.cargaInicial();
+        
     }
 
     /**
@@ -428,6 +432,8 @@ public class Main extends javax.swing.JFrame {
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
         PG=(PanelGrafico)jTabbedPane_Graficos.getSelectedComponent();
         PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
+        //gcAPI.getTrade(jComboBox_selectorListas.getSelectedItem().toString());
+        //gcAPI.nuevaOrden(jComboBox_selectorListas.getSelectedItem().toString());
         if(aa!=null)
             aa.cancel(true);
         aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
@@ -763,70 +769,10 @@ public class Main extends javax.swing.JFrame {
      */
     private void inicializarListaActivos()
     {
-//        List<String> l=gcAPI.getListaActivos();
-//        for(String activo:l){
-//            jComboBox_selectorListas.addItem(activo);
-//        }
-    }
-    
-    private void peticionKrakenApi(String pair)
-    {
-        try {
-            KrakenApi api = new KrakenApi();
-            api.setKey("eFdZ+5zMcIda/AIXmxgAQleAY02CQDauk0cmRBdmR1VdN4eoo9HtWraX"); // FIXME
-            api.setSecret("CeLyCF83pNbPz8VjlGjl04RdiulpVVFCS8C/+XeaXT/3Ck8URYGuiJT4BWm3tfm9W4d0vRw/sJrBYveuf5GScg=="); // FIXME
-
-            String response;
-            Map<String, String> input = new HashMap<>();
-
-            input.clear();
-            input.put("pair",pair);
-            input.put("since","0");
-            input.put("interval","30");
-            response = api.queryPublic(Method.OHLC, input);
-            System.out.println(response);
-            JSONObject job=new JSONObject(response);
-            
-            JSONObject jobResult=job.getJSONObject("result");
-            Iterator<String> it=jobResult.keys();
-            String key;
-            JSONArray ja=null;
-            while(it.hasNext()){
-                key=it.next();
-                if(!key.equalsIgnoreCase("last"))
-                    ja=jobResult.getJSONArray(key);
-            }
-            
-            JSONArray ja2;
-            Date[] date = new Date[ja.length()];
-            double[] high = new double[ja.length()];
-            double[] low = new double[ja.length()];
-            double[] open = new double[ja.length()];
-            double[] close = new double[ja.length()];
-            double[] volume = new double[ja.length()];
-            for(int i=0;i<ja.length();i++){
-                ja2=ja.getJSONArray(i);
-                date[i]=new Date(ja2.getLong(0));
-                open[i]=ja2.getDouble(1);
-                high[i]=ja2.getDouble(2);
-                low[i]=ja2.getDouble(3);
-                close[i]=ja2.getDouble(4);
-                volume[i]=ja2.getDouble(6);
-                /*for(int j=0;j<ja2.length();j++){
-                    System.out.println(ja2.get(j).toString());
-                }*/
-            }
-            DefaultHighLowDataset data = new DefaultHighLowDataset(
-                "", date, high, low, open, close, volume);
-            /*candlestickChart=new CandlestickChartClass(jPanel_Grafico.getSize(), data);
-            jPanel_Grafico.removeAll();
-            jPanel_Grafico.setLayout(new BorderLayout());
-            jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-            jPanel_Grafico.repaint();*/
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        
+        List<String> l=gcAPI.getListaActivos();
+        for(String activo:l){
+            jComboBox_selectorListas.addItem(activo);
+        }
     }
 
     private void settings() {

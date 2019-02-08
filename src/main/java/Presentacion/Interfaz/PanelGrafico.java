@@ -12,6 +12,8 @@ import java.awt.Color;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import javax.swing.JPanel;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.labels.CrosshairLabelGenerator;
 import org.jfree.chart.panel.CrosshairOverlay;
@@ -209,6 +211,7 @@ public class PanelGrafico extends javax.swing.JPanel {
         );
 
         jComboBox_periodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1m", "5m", "15m", "1h", "4h", "1D", "7D", "15D" }));
+        jComboBox_periodo.setSelectedIndex(5);
         jComboBox_periodo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox_periodoActionPerformed(evt);
@@ -391,5 +394,18 @@ public class PanelGrafico extends javax.swing.JPanel {
             enableTrace=true;
         candlestickChart.AxisTrace(enableTrace);
         jPanel_Grafico.repaint();
+    }
+    private void TresLineas(){
+        candlestickChart.getChartPanel().addChartMouseListener(new ChartMouseListener() {
+            @Override
+            public void chartMouseClicked(ChartMouseEvent cme) {
+                
+            }
+
+            @Override
+            public void chartMouseMoved(ChartMouseEvent cme) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
     }
 }

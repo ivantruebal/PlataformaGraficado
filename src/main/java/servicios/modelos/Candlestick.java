@@ -136,6 +136,15 @@ public class Candlestick extends HibernateEntity implements Serializable {
         this.activo = activo;
     }
 
+    public BigDecimal getVolumen() {
+        return volumen;
+    }
+
+    public void setVolumen(BigDecimal volumen) {
+        this.volumen = volumen;
+    }
+
+    
     @Override
     public int getId() {
         return getIdCandlestick();
