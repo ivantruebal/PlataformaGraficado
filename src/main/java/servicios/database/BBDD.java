@@ -108,10 +108,9 @@ public class BBDD {
                     datos.add(fila.getNombre());
                     if (fila.EsPrivada()) {
                         datos.add("Privada");
-                    } else {
-                        datos.add("Pública");
+                        tabla.addRow(datos);
                     }
-                    tabla.addRow(datos);
+
                 }
                 break;
         }
@@ -131,10 +130,10 @@ public class BBDD {
             getSession().delete(entidad);
             getSession().getTransaction().commit();
             java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Borrada la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
-            
+
+        } else {
+            java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "No se puede borrada la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
         }
-        else java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "No se puede borrada la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
-            
 
     }
 
@@ -166,8 +165,7 @@ public class BBDD {
     }
 
     public static Session getSession() {
-        
-        
+
         if (session == null) {
             session = HibernateUtil.getSessionFactory().openSession();
         }

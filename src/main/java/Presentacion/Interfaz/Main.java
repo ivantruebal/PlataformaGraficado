@@ -78,11 +78,11 @@ public class Main extends javax.swing.JFrame {
         //tid.displayTray();
         //peticionKrakenApi();
         refrescarComboDeListas();
-
-        PanelGrafico pg = new PanelGrafico();
-        PanelGrafico pg2 = new PanelGrafico();
-        jTabbedPane_Graficos.addTab("poppop", pg);
-        jTabbedPane_Graficos.addTab("Poppop2", pg2);
+//
+//        PanelGrafico pg = new PanelGrafico();
+//        PanelGrafico pg2 = new PanelGrafico();
+//        jTabbedPane_Graficos.addTab("poppop", pg);
+//        jTabbedPane_Graficos.addTab("Poppop2", pg2);
     }
 
     /**
@@ -106,7 +106,7 @@ public class Main extends javax.swing.JFrame {
         jPanel_Activos = new javax.swing.JPanel();
         jComboBox_selectorListas = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable_listaActivos = new javax.swing.JTable();
+        jTable_tablaActivos = new javax.swing.JTable();
         menuBar = new javax.swing.JMenuBar();
         jMenuArchivo = new javax.swing.JMenu();
         jMenuItemNuevoActivo = new javax.swing.JMenuItem();
@@ -250,7 +250,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jTable_listaActivos.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_tablaActivos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null},
                 {null},
@@ -365,12 +365,12 @@ public class Main extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable_listaActivos.addMouseListener(new java.awt.event.MouseAdapter() {
+        jTable_tablaActivos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable_listaActivosMouseClicked(evt);
+                jTable_tablaActivosMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable_listaActivos);
+        jScrollPane1.setViewportView(jTable_tablaActivos);
 
         javax.swing.GroupLayout jPanel_ActivosLayout = new javax.swing.GroupLayout(jPanel_Activos);
         jPanel_Activos.setLayout(jPanel_ActivosLayout);
@@ -545,16 +545,7 @@ public class Main extends javax.swing.JFrame {
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
 
         refrescarListaDeActivos();
-//        PG = (PanelGrafico) jTabbedPane_Graficos.getSelectedComponent();
-//        if (PG != null) {
-//            PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
-//        }
-//        if (aa != null) {
-//            aa.cancel(true);
-//        }
-//        aa = new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
-//        aa.execute();
-        //PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
+
     }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
 
     private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
@@ -575,9 +566,10 @@ public class Main extends javax.swing.JFrame {
         new CRUDWindow("Lista De Activos", this).setVisible(true);
     }//GEN-LAST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
 
-    private void jTable_listaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_listaActivosMouseClicked
+    private void jTable_tablaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_tablaActivosMouseClicked
 
-    }//GEN-LAST:event_jTable_listaActivosMouseClicked
+        onDoubleClick(evt);
+    }//GEN-LAST:event_jTable_tablaActivosMouseClicked
 
     private void jComboBox_selectorListasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasItemStateChanged
         // TODO add your handling code here:
@@ -652,7 +644,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane_Graficos;
     private javax.swing.JTabbedPane jTabbedPane_Tools;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable_listaActivos;
+    private javax.swing.JTable jTable_tablaActivos;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 
@@ -913,7 +905,7 @@ public class Main extends javax.swing.JFrame {
             @Override
             public void run() {
                 jComboBox_selectorListas.setEnabled(false);
-                jTable_listaActivos.setEnabled(false);
+                jTable_tablaActivos.setEnabled(false);
                 Query query = BBDD.getSession().createQuery("from ListaDeActivos");
                 List<ListaDeActivos> listaDeListasDeActivos = query.list();
                 jComboBox_selectorListas.removeAllItems();
@@ -925,9 +917,8 @@ public class Main extends javax.swing.JFrame {
                 }
                 refrescarListaDeActivos();
                 jComboBox_selectorListas.setEnabled(true);
-                jTable_listaActivos.setEnabled(true);
+                jTable_tablaActivos.setEnabled(true);
             }
-
         };
         runnable.run();
     }
@@ -937,28 +928,28 @@ public class Main extends javax.swing.JFrame {
         runnable = new Runnable() {
             @Override
             public void run() {
-                jTable_listaActivos.setEnabled(false);
+                jTable_tablaActivos.setEnabled(false);
                 ListaDeActivos listaSeleccionada = (ListaDeActivos) jComboBox_selectorListas.getSelectedItem();
                 if (listaSeleccionada != null) {
                     Set<Activo> activos = listaSeleccionada.getActivos();
                     ArrayList<Activo> arrayListActivos = new ArrayList<>(activos);
                     String[] header = {"Simbolo"};
-                    Activo[][] datosActivo = new Activo[1][arrayListActivos.size()];
+                    Activo[][] datosActivo = new Activo[arrayListActivos.size()][1];
                     for (int i = 0; i < arrayListActivos.size(); i++) {
                         Activo activo = arrayListActivos.get(i);
-                        datosActivo[0][i] = activo;
+                        datosActivo[i][0] = activo;
                     }
                     DefaultTableModel defaultTableModel = new DefaultTableModel(datosActivo, header) {
                         public boolean isCellEditable(int rowIndex, int mColIndex) {
                             return false;
                         }
                     };
-                    
-                    jTable_listaActivos.setModel(defaultTableModel);
+
+                    jTable_tablaActivos.setModel(defaultTableModel);
+                } else {
+                    jTable_tablaActivos.setModel(new DefaultTableModel());
                 }
-                else
-                    jTable_listaActivos.setModel(new DefaultTableModel());
-                jTable_listaActivos.setEnabled(true);
+                jTable_tablaActivos.setEnabled(true);
             }
 
         };
@@ -1028,6 +1019,29 @@ public class Main extends javax.swing.JFrame {
     private void settings() {
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
+    }
+
+    private void onDoubleClick(java.awt.event.MouseEvent e) {
+        if (e.getClickCount() == 2 && !e.isConsumed()) {
+            e.consume();
+            //handle double click event.
+            Activo activo = (Activo) jTable_tablaActivos.getValueAt(jTable_tablaActivos.getSelectedRow(), 0);
+            if (activo != null) {
+                PanelGrafico pg = new PanelGrafico();
+                jTabbedPane_Graficos.addTab(activo.getSimbolo(), pg);
+                jTabbedPane_Graficos.setSelectedIndex(jTabbedPane_Graficos.getComponents().length-1);
+                PG = (PanelGrafico) jTabbedPane_Graficos.getSelectedComponent();
+                if (PG != null) {
+                    PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
+                }
+                if (aa != null) {
+                    aa.cancel(true);
+                }
+                aa = new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
+                aa.execute();
+                PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
+            }
+        }
     }
 
 }

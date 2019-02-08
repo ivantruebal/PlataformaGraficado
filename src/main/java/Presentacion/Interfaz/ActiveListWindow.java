@@ -43,11 +43,6 @@ public class ActiveListWindow extends javax.swing.JFrame {
         if (this.listaDeActivos != null) {
             this.esCreacion = false;
             jTextField_nombre.setText(this.listaDeActivos.getNombre());
-            if (this.listaDeActivos.EsPrivada()) {
-                jComboBox_privacidad.setSelectedIndex(0);
-            } else {
-                jComboBox_privacidad.setSelectedIndex(1);
-            }
         }
         llenaListas();
         activaBotonGuardado();
@@ -78,8 +73,6 @@ public class ActiveListWindow extends javax.swing.JFrame {
         jButton_RetirarActivo = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jTextField_nombre = new javax.swing.JTextField();
-        jComboBox_privacidad = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
         jButton_guardar = new javax.swing.JButton();
         jButton_cancelar = new javax.swing.JButton();
 
@@ -111,10 +104,6 @@ public class ActiveListWindow extends javax.swing.JFrame {
             }
         });
 
-        jComboBox_privacidad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Privada", "Publica" }));
-
-        jLabel2.setText("Privacidad:");
-
         jButton_guardar.setText("Guardar");
         jButton_guardar.setEnabled(false);
         jButton_guardar.addActionListener(new java.awt.event.ActionListener() {
@@ -144,18 +133,11 @@ public class ActiveListWindow extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox_privacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(61, 61, 61))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton_AñadirActivo, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton_RetirarActivo, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(37, 37, 37)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38))))
+                    .addComponent(jButton_AñadirActivo, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton_RetirarActivo, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(37, 37, 37)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38))
             .addGroup(layout.createSequentialGroup()
                 .addGap(100, 100, 100)
                 .addComponent(jButton_guardar)
@@ -169,9 +151,7 @@ public class ActiveListWindow extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox_privacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jTextField_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -258,9 +238,7 @@ public class ActiveListWindow extends javax.swing.JFrame {
     private javax.swing.JButton jButton_RetirarActivo;
     private javax.swing.JButton jButton_cancelar;
     private javax.swing.JButton jButton_guardar;
-    private javax.swing.JComboBox<String> jComboBox_privacidad;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JList<String> jList_ActivosAñadidos;
     private javax.swing.JList<String> jList_ActivosNoAñadidos;
     private javax.swing.JScrollPane jScrollPane1;
@@ -311,11 +289,7 @@ public class ActiveListWindow extends javax.swing.JFrame {
     private void guardarListaEnBBDD() {
 
         this.listaDeActivos.setNombre(jTextField_nombre.getText());
-        if (jComboBox_privacidad.getSelectedIndex() == 0) {
-            this.listaDeActivos.setEsPrivada(true);
-        } else {
-            this.listaDeActivos.setEsPrivada(false);
-        }
+        this.listaDeActivos.setEsPrivada(true);
         ListModel<String> model = jList_ActivosAñadidos.getModel();
         Set<Activo> nuevoSet = new HashSet<Activo>();
 
