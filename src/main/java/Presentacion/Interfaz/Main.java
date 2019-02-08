@@ -5,6 +5,7 @@
  */
 package Presentacion.Interfaz;
 
+import Presentacion.PopClickListener;
 import Presentacion.api.KrakenApi;
 import Presentacion.api.KrakenApi.Method;
 import java.awt.Dimension;
@@ -40,7 +41,7 @@ import servicios.utils.Utils;
  * @author usuario
  */
 public class Main extends javax.swing.JFrame {
-
+    
     private boolean enableTrace;
     private boolean verGraficoClicado;
     private boolean verTablaClicado;
@@ -74,6 +75,7 @@ public class Main extends javax.swing.JFrame {
         enableInternalFrameOperacionesAutoSize();
         enablePlataformaGraficadoAutoSize();
         opcionVista("Todo");
+        jTabbedPane_Graficos.addMouseListener(new PopClickListener(jTabbedPane_Graficos));
         //TrayIconDemo tid=new TrayIconDemo();
         //tid.displayTray();
         //peticionKrakenApi();
@@ -543,18 +545,10 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jInternalFrameListaInternalFrameIconified
 
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
-
+        
         refrescarListaDeActivos();
 
     }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
-
-    private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
-
-    }//GEN-LAST:event_jTabbedPane_GraficosComponentShown
-
-    private void jTabbedPane_GraficosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosFocusGained
-
-    }//GEN-LAST:event_jTabbedPane_GraficosFocusGained
 
     private void jMenuItem_Inventario_ActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_Inventario_ActivosActionPerformed
         // TODO add your handling code here:
@@ -567,13 +561,21 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
 
     private void jTable_tablaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_tablaActivosMouseClicked
-
+        
         onDoubleClick(evt);
     }//GEN-LAST:event_jTable_tablaActivosMouseClicked
 
     private void jComboBox_selectorListasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasItemStateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox_selectorListasItemStateChanged
+
+    private void jTabbedPane_GraficosComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosComponentShown
+
+    }//GEN-LAST:event_jTabbedPane_GraficosComponentShown
+
+    private void jTabbedPane_GraficosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane_GraficosFocusGained
+
+    }//GEN-LAST:event_jTabbedPane_GraficosFocusGained
 
     /**
      * @param args the command line arguments
@@ -688,17 +690,17 @@ public class Main extends javax.swing.JFrame {
                 jInternalFrameOperaciones.reshape(0, jInternalFrameLista.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height - jInternalFrameLista.getSize().height);
                 jInternalFrameLista.validate();
             }
-
+            
             @Override
             public void componentMoved(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-
+            
             @Override
             public void componentShown(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-
+            
             @Override
             public void componentHidden(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -718,17 +720,17 @@ public class Main extends javax.swing.JFrame {
                 jInternalFrameOperaciones.reshape(0, jInternalFrameGrafico.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height - jInternalFrameGrafico.getSize().height);
                 jInternalFrameGrafico.validate();
             }
-
+            
             @Override
             public void componentMoved(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-
+            
             @Override
             public void componentShown(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-
+            
             @Override
             public void componentHidden(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -748,17 +750,17 @@ public class Main extends javax.swing.JFrame {
                 jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, jInternalFrameGrafico.getSize().width, desktopPane.getSize().height - jInternalFrameOperaciones.getSize().height);
                 jInternalFrameOperaciones.validate();
             }
-
+            
             @Override
             public void componentMoved(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-
+            
             @Override
             public void componentShown(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-
+            
             @Override
             public void componentHidden(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -774,36 +776,36 @@ public class Main extends javax.swing.JFrame {
         desktopPane.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-
+                
                 jInternalFrameGrafico.setPreferredSize(fixedDimensionsInternalGrafico());
                 jInternalFrameGrafico.setSize(fixedDimensionsInternalGrafico());
-
+                
                 jInternalFrameLista.setPreferredSize(fixedDimensionsInternalLista());
                 jInternalFrameLista.setSize(fixedDimensionsInternalLista());
-
+                
                 jInternalFrameOperaciones.setPreferredSize(fixedDimensionsInternalOperaciones());
                 jInternalFrameOperaciones.setSize(fixedDimensionsInternalOperaciones());
                 jInternalFrameOperaciones.setLocation(0, jInternalFrameGrafico.getSize().height);
-
+                
                 desktopPane.validate();
             }
-
+            
             @Override
             public void componentMoved(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-
+            
             @Override
             public void componentShown(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-
+            
             @Override
             public void componentHidden(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-
+        
     }
 
     /**
@@ -922,7 +924,7 @@ public class Main extends javax.swing.JFrame {
         };
         runnable.run();
     }
-
+    
     public void refrescarListaDeActivos() {
         Runnable runnable;
         runnable = new Runnable() {
@@ -944,18 +946,18 @@ public class Main extends javax.swing.JFrame {
                             return false;
                         }
                     };
-
+                    
                     jTable_tablaActivos.setModel(defaultTableModel);
                 } else {
                     jTable_tablaActivos.setModel(new DefaultTableModel());
                 }
                 jTable_tablaActivos.setEnabled(true);
             }
-
+            
         };
         runnable.run();
     }
-
+    
     private void peticionKrakenApi(String pair) {
         try {
             KrakenApi api = new KrakenApi();
@@ -964,7 +966,7 @@ public class Main extends javax.swing.JFrame {
 
             String response;
             Map<String, String> input = new HashMap<>();
-
+            
             input.clear();
             input.put("pair", pair);
             input.put("since", "0");
@@ -972,7 +974,7 @@ public class Main extends javax.swing.JFrame {
             response = api.queryPublic(Method.OHLC, input);
             System.out.println(response);
             JSONObject job = new JSONObject(response);
-
+            
             JSONObject jobResult = job.getJSONObject("result");
             Iterator<String> it = jobResult.keys();
             String key;
@@ -983,7 +985,7 @@ public class Main extends javax.swing.JFrame {
                     ja = jobResult.getJSONArray(key);
                 }
             }
-
+            
             JSONArray ja2;
             Date[] date = new Date[ja.length()];
             double[] high = new double[ja.length()];
@@ -1013,14 +1015,14 @@ public class Main extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
-
+    
     private void settings() {
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
     }
-
+    
     private void onDoubleClick(java.awt.event.MouseEvent e) {
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             e.consume();
@@ -1029,7 +1031,7 @@ public class Main extends javax.swing.JFrame {
             if (activo != null) {
                 PanelGrafico pg = new PanelGrafico();
                 jTabbedPane_Graficos.addTab(activo.getSimbolo(), pg);
-                jTabbedPane_Graficos.setSelectedIndex(jTabbedPane_Graficos.getComponents().length-1);
+                jTabbedPane_Graficos.setSelectedIndex(jTabbedPane_Graficos.getComponents().length - 1);
                 PG = (PanelGrafico) jTabbedPane_Graficos.getSelectedComponent();
                 if (PG != null) {
                     PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
@@ -1043,5 +1045,5 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }
-
+    
 }

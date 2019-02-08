@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.labels.CrosshairLabelGenerator;
 import org.jfree.chart.panel.CrosshairOverlay;
@@ -32,6 +33,7 @@ public class PanelGrafico extends javax.swing.JPanel {
     private String periodo;
     final CrosshairOverlay crosshairOverlay;
     final Crosshair yCrosshair;
+    
     /**
      * Creates new form PanelGrafico
      */
@@ -351,14 +353,14 @@ public class PanelGrafico extends javax.swing.JPanel {
      * @param lista 
      */
     public void pintarGrafico(String lista){
-        data = gcAPI.getDatosActivo(lista,periodo);
-        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
-        crosshair();
-        jPanel_Grafico.removeAll();
-        jPanel_Grafico.setLayout(new BorderLayout());
-        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-        jPanel_Grafico.repaint();
-        autoScale();
+//        data = gcAPI.getDatosActivo(lista,periodo);
+//        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
+//        crosshair();
+//        jPanel_Grafico.removeAll();
+//        jPanel_Grafico.setLayout(new BorderLayout());
+//        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
+//        jPanel_Grafico.repaint();
+//        autoScale();
     }
     /**
      * Método que se encarga de modificar el ultimo dato, si la api devulve un nuevo valor, este es agregado.
@@ -398,4 +400,5 @@ public class PanelGrafico extends javax.swing.JPanel {
         candlestickChart.AxisTrace(enableTrace);
         jPanel_Grafico.repaint();
     }
+    
 }
