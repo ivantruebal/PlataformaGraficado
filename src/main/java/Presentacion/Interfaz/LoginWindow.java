@@ -27,11 +27,10 @@ public class LoginWindow extends javax.swing.JFrame {
      * Creates new form NewJFrame
      */
     public LoginWindow() {
-        initComponents();
-        BBDD.getSession();
-        BBDD.cargaInicial();
+        inicializarSesionBBDD();
+        initComponents();        
         settings();
-        
+
     }
 
     /**
@@ -239,9 +238,9 @@ public class LoginWindow extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 LoginWindow loginWindow = new LoginWindow();
-                
+
                 loginWindow.setVisible(true);
-                
+
             }
         });
     }
@@ -265,29 +264,29 @@ public class LoginWindow extends javax.swing.JFrame {
         this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
         this.setLocationRelativeTo(null);
-        this.setUndecorated(true);        
-        this.getRootPane().setBorder(BorderFactory.createLineBorder(Color.BLACK));   
+        this.setUndecorated(true);
+        this.getRootPane().setBorder(BorderFactory.createLineBorder(Color.BLACK));
         this.jPasswordField_password.setOpaque(true);
         this.jTextField_nombreUsuario.setOpaque(true);
         this.pack();
     }
-    
+
     private void onLogin() {
         try {
             if (BBDD.comprobarCredencialesDeUsuario(jTextField_nombreUsuario.getText(), new String(jPasswordField_password.getPassword()))) {
                 new Main().setVisible(true);
                 this.setVisible(false);
             } else {
-                jLabel_textoLoginIncorrecto.setText("El nombre de usuario o contraseña son incorrectos");                
+                jLabel_textoLoginIncorrecto.setText("El nombre de usuario o contraseña son incorrectos");
                 resaltaCampoPasswordEnRojo();
                 jPasswordField_password.setText("");
             }
         } catch (NoResultException e) {
             Utils.mostrarErrorGenerico(e);
         }
-        
+
     }
-    
+
     private void resaltaCampoPasswordEnRojo() {
         final Color colorBackup = jPasswordField_password.getBackground();
         jPasswordField_password.setBackground(Color.RED);
@@ -303,14 +302,24 @@ public class LoginWindow extends javax.swing.JFrame {
             }
         }).start();
     }
-    
+
     private void onEnterKeyPressLogin(KeyEvent evt) {
         if (evt.getKeyChar() == '\n') {
             onLogin();
         }
     }
-    
+
     private void onRegister() {
         new RegisterWindow().setVisible(true);
+    }
+
+    private void inicializarSesionBBDD() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                BBDD.getSession();
+            }
+        };
+        runnable.run();
     }
 }

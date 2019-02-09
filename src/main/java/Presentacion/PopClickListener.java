@@ -51,9 +51,9 @@ public class PopClickListener extends MouseAdapter {
         
         jMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                if (SwingUtilities.isLeftMouseButton(e)) {
+                if (SwingUtilities.isRightMouseButton(e)) {
                     jTabbedPane.remove(jTabbedPane.getSelectedComponent());
-//                }
+                }
             }
         });
         menu.add(jMenuItem);

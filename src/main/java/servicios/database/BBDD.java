@@ -367,9 +367,5 @@ public class BBDD {
         }
     }
 
-    public static void cargaInicial() {
-//        getSession().createQuery("ALTER TABLE `plataforma-graficado`.`candlestick` \n"
-//                + "ADD UNIQUE  `idActivo_timestamp_UNIQUE` (`idActivo`, `timestamp`) ;");
-    }
 
 }
