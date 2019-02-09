@@ -49,7 +49,7 @@ public class CandlestickChart extends JPanel {
     }
 
     public CandlestickChart(Dimension dimension, DefaultHighLowDataset dataset) {
-        this.data=dataset;
+        this.data = dataset;
         chart = ChartFactory.createCandlestickChart("", "", "", dataset, false);
         chart.getXYPlot().setDomainPannable(false);
         chartPanel = new ChartPanel(chart);
@@ -59,7 +59,6 @@ public class CandlestickChart extends JPanel {
         chartPanel.setFillZoomRectangle(false);
         chartPanel.setPreferredSize(dimension);
         chartPanel.setVisible(true);
-        
         super.add(chartPanel, BorderLayout.CENTER);
     }
 
@@ -96,24 +95,26 @@ public class CandlestickChart extends JPanel {
         calendar.set(year, month - 1, date);
         return calendar.getTime();
     }
-    
+
     /**
      * Método que activa las AxisTrace del grafico
-     * @param activar 
+     *
+     * @param activar
      */
-    public void AxisTrace(boolean activar)
-    {
+    public void AxisTrace(boolean activar) {
         chartPanel.setVerticalAxisTrace(activar);
         chartPanel.setHorizontalAxisTrace(activar);
     }
 
-    public ChartPanel getChartPanel(){
+    public ChartPanel getChartPanel() {
         return this.chartPanel;
     }
-    public JFreeChart getChart(){
+
+    public JFreeChart getChart() {
         return this.chart;
     }
-    private void autorange(){
+
+    private void autorange() {
         chartPanel.addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent mwe) {
@@ -121,40 +122,36 @@ public class CandlestickChart extends JPanel {
             }
         });
     }
-    private double getLowestLow(){
-        data=(DefaultHighLowDataset)chartPanel.getChart().getXYPlot().getDataset();
+
+    private double getLowestLow() {
+        data = (DefaultHighLowDataset) chartPanel.getChart().getXYPlot().getDataset();
         double lowest;
-        lowest = data.getLowValue(0,0);
-        for(int i=1;i<data.getItemCount(0);i++){
-            if(data.getLowValue(0,i) < lowest){
-                lowest = data.getLowValue(0,i);
+        lowest = data.getLowValue(0, 0);
+        for (int i = 1; i < data.getItemCount(0); i++) {
+            if (data.getLowValue(0, i) < lowest) {
+                lowest = data.getLowValue(0, i);
             }
         }
         return lowest;
     }
 
-    private double getHighestHigh(){
-        data=(DefaultHighLowDataset)chartPanel.getChart().getXYPlot().getDataset();
+    private double getHighestHigh() {
+        data = (DefaultHighLowDataset) chartPanel.getChart().getXYPlot().getDataset();
         double highest;
-        highest = data.getHighValue(0,0);
-        for(int i=1;i<data.getItemCount(0);i++){
-            if(data.getLowValue(0,i) > highest){
-                highest = data.getHighValue(0,i);
+        highest = data.getHighValue(0, 0);
+        for (int i = 1; i < data.getItemCount(0); i++) {
+            if (data.getLowValue(0, i) > highest) {
+                highest = data.getHighValue(0, i);
             }
         }
         return highest;
     }
-    private void autoScale(){
-        double low=getLowestLow();
-        double high=getHighestHigh();
-        double range=high-low;
-        range*=0.1;
-        chartPanel.getChart().getXYPlot().getRangeAxis().setRange(low-range, high+range);
+
+    private void autoScale() {
+        double low = getLowestLow();
+        double high = getHighestHigh();
+        double range = high - low;
+        range *= 0.1;
+        chartPanel.getChart().getXYPlot().getRangeAxis().setRange(low - range, high + range);
     }
-//    public static void main(String args[]) {
-//        CandlestickChart chart = new CandlestickChart("Candle Stick Chart");
-//        chart.pack();
-//        RefineryUtilities.centerFrameOnScreen(chart);
-//        chart.setVisible(true);
-//    }
 }

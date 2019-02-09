@@ -36,19 +36,14 @@ public class PopClickListener extends MouseAdapter {
         }
     }
 
+    /**
+     * Metodo que crea, muestra y añade funcionalidad al menu contextual utilizado para cerrar tabs
+     * @param e 
+     */
     private void doPop(MouseEvent e) {
         JPopupMenu menu = new JPopupMenu();
         menu.removeAll();
         JMenuItem jMenuItem = new JMenuItem("Cerrar");
-//        menu.addMouseListener(new java.awt.event.MouseAdapter() {
-//            public void mouseClicked(java.awt.event.MouseEvent evt) {
-////                if (SwingUtilities.isLeftMouseButton(e)) {                    
-//                    jTabbedPane.remove(jTabbedPane.getSelectedComponent());
-////                }
-//            }
-//        });
-        
-        
         jMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (SwingUtilities.isRightMouseButton(e)) {

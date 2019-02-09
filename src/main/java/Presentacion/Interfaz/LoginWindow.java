@@ -30,7 +30,6 @@ public class LoginWindow extends javax.swing.JFrame {
         inicializarSesionBBDD();
         initComponents();        
         settings();
-
     }
 
     /**
