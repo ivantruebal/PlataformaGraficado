@@ -8,6 +8,7 @@ package Presentacion.Interfaz;
 import Presentacion.PopClickListener;
 import Presentacion.api.KrakenApi;
 import Presentacion.api.KrakenApi.Method;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -26,6 +27,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.jfree.data.xy.DefaultHighLowDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,7 +36,9 @@ import servicios.ActualizadorActivo;
 import servicios.GestorConexionAPI;
 import servicios.database.BBDD;
 import servicios.modelos.Activo;
+import servicios.modelos.Analisis;
 import servicios.modelos.ListaDeActivos;
+import servicios.modelos.Usuario;
 import servicios.utils.Utils;
 
 /**
@@ -41,7 +46,7 @@ import servicios.utils.Utils;
  * @author usuario
  */
 public class Main extends javax.swing.JFrame {
-    
+
     private boolean enableTrace;
     private boolean verGraficoClicado;
     private boolean verTablaClicado;
@@ -54,7 +59,6 @@ public class Main extends javax.swing.JFrame {
     private double newyPoint;
     private String estadoVista;
     private GestorConexionAPI gcAPI;
-    private PanelGrafico PG;
     private ActualizadorActivo aa;
 
     /**
@@ -75,16 +79,12 @@ public class Main extends javax.swing.JFrame {
         enableInternalFrameOperacionesAutoSize();
         enablePlataformaGraficadoAutoSize();
         opcionVista("Todo");
-        jTabbedPane_Graficos.addMouseListener(new PopClickListener(jTabbedPane_Graficos));
+        jTabbedPane_Graficos.addMouseListener(new PopClickListener(jTabbedPane_Graficos, aa));
         //TrayIconDemo tid=new TrayIconDemo();
         //tid.displayTray();
         //peticionKrakenApi();
         refrescarComboDeListas();
-//
-//        PanelGrafico pg = new PanelGrafico();
-//        PanelGrafico pg2 = new PanelGrafico();
-//        jTabbedPane_Graficos.addTab("poppop", pg);
-//        jTabbedPane_Graficos.addTab("Poppop2", pg2);
+        cargaAnalisisDelUsuario();
     }
 
     /**
@@ -545,7 +545,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jInternalFrameListaInternalFrameIconified
 
     private void jComboBox_selectorListasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_selectorListasActionPerformed
-        
+
         refrescarListaDeActivos();
 
     }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
@@ -561,7 +561,6 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem_Inventario_listaDeActivosActionPerformed
 
     private void jTable_tablaActivosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_tablaActivosMouseClicked
-        
         onDoubleClick(evt);
     }//GEN-LAST:event_jTable_tablaActivosMouseClicked
 
@@ -690,17 +689,17 @@ public class Main extends javax.swing.JFrame {
                 jInternalFrameOperaciones.reshape(0, jInternalFrameLista.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height - jInternalFrameLista.getSize().height);
                 jInternalFrameLista.validate();
             }
-            
+
             @Override
             public void componentMoved(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
+
             @Override
             public void componentShown(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
+
             @Override
             public void componentHidden(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -720,17 +719,17 @@ public class Main extends javax.swing.JFrame {
                 jInternalFrameOperaciones.reshape(0, jInternalFrameGrafico.getSize().height, desktopPane.getSize().width, desktopPane.getSize().height - jInternalFrameGrafico.getSize().height);
                 jInternalFrameGrafico.validate();
             }
-            
+
             @Override
             public void componentMoved(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
+
             @Override
             public void componentShown(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
+
             @Override
             public void componentHidden(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -750,17 +749,17 @@ public class Main extends javax.swing.JFrame {
                 jInternalFrameGrafico.reshape(jInternalFrameLista.getSize().width, 0, jInternalFrameGrafico.getSize().width, desktopPane.getSize().height - jInternalFrameOperaciones.getSize().height);
                 jInternalFrameOperaciones.validate();
             }
-            
+
             @Override
             public void componentMoved(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
+
             @Override
             public void componentShown(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
+
             @Override
             public void componentHidden(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -776,36 +775,36 @@ public class Main extends javax.swing.JFrame {
         desktopPane.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-                
+
                 jInternalFrameGrafico.setPreferredSize(fixedDimensionsInternalGrafico());
                 jInternalFrameGrafico.setSize(fixedDimensionsInternalGrafico());
-                
+
                 jInternalFrameLista.setPreferredSize(fixedDimensionsInternalLista());
                 jInternalFrameLista.setSize(fixedDimensionsInternalLista());
-                
+
                 jInternalFrameOperaciones.setPreferredSize(fixedDimensionsInternalOperaciones());
                 jInternalFrameOperaciones.setSize(fixedDimensionsInternalOperaciones());
                 jInternalFrameOperaciones.setLocation(0, jInternalFrameGrafico.getSize().height);
-                
+
                 desktopPane.validate();
             }
-            
+
             @Override
             public void componentMoved(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
+
             @Override
             public void componentShown(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            
+
             @Override
             public void componentHidden(ComponentEvent ce) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        
+
     }
 
     /**
@@ -924,7 +923,7 @@ public class Main extends javax.swing.JFrame {
         };
         runnable.run();
     }
-    
+
     public void refrescarListaDeActivos() {
         Runnable runnable;
         runnable = new Runnable() {
@@ -946,18 +945,18 @@ public class Main extends javax.swing.JFrame {
                             return false;
                         }
                     };
-                    
+
                     jTable_tablaActivos.setModel(defaultTableModel);
                 } else {
                     jTable_tablaActivos.setModel(new DefaultTableModel());
                 }
                 jTable_tablaActivos.setEnabled(true);
             }
-            
+
         };
         runnable.run();
     }
-    
+
     private void peticionKrakenApi(String pair) {
         try {
             KrakenApi api = new KrakenApi();
@@ -966,7 +965,7 @@ public class Main extends javax.swing.JFrame {
 
             String response;
             Map<String, String> input = new HashMap<>();
-            
+
             input.clear();
             input.put("pair", pair);
             input.put("since", "0");
@@ -974,7 +973,7 @@ public class Main extends javax.swing.JFrame {
             response = api.queryPublic(Method.OHLC, input);
             System.out.println(response);
             JSONObject job = new JSONObject(response);
-            
+
             JSONObject jobResult = job.getJSONObject("result");
             Iterator<String> it = jobResult.keys();
             String key;
@@ -985,7 +984,7 @@ public class Main extends javax.swing.JFrame {
                     ja = jobResult.getJSONArray(key);
                 }
             }
-            
+
             JSONArray ja2;
             Date[] date = new Date[ja.length()];
             double[] high = new double[ja.length()];
@@ -1015,35 +1014,80 @@ public class Main extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
-    
+
     private void settings() {
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon("src/main/resources/pictures/LogoPlataformaGraficado_sin_titulo.png").getImage());
     }
-    
+
     private void onDoubleClick(java.awt.event.MouseEvent e) {
         if (e.getClickCount() == 2 && !e.isConsumed()) {
             e.consume();
             //handle double click event.
             Activo activo = (Activo) jTable_tablaActivos.getValueAt(jTable_tablaActivos.getSelectedRow(), 0);
             if (activo != null) {
-                PanelGrafico pg = new PanelGrafico();
-                jTabbedPane_Graficos.addTab(activo.getSimbolo(), pg);
-                jTabbedPane_Graficos.setSelectedIndex(jTabbedPane_Graficos.getComponents().length - 1);
-                PG = (PanelGrafico) jTabbedPane_Graficos.getSelectedComponent();
-                if (PG != null) {
-                    PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
+                Analisis analisis = crearAnalisisYguardarEnBBDD(activo);
+                if (analisis != null) {
+                    mostrarAnalisisDeUnActivoEnUnTab(analisis);
                 }
-                if (aa != null) {
-                    aa.cancel(true);
-                }
-                aa = new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
-                aa.execute();
-                PG.pintarGrafico(jComboBox_selectorListas.getSelectedItem().toString());
             }
         }
     }
-    
+
+    /**
+     * Metodo que crea un analisis
+     *
+     * @param analisis activo a mostrar
+     */
+    private void mostrarAnalisisDeUnActivoEnUnTab(Analisis analisis) {
+        PanelGrafico pg = new PanelGrafico(analisis);
+        jTabbedPane_Graficos.addTab(analisis.getActivo().getNombre(), pg);
+        jTabbedPane_Graficos.setSelectedIndex(jTabbedPane_Graficos.getComponents().length - 1);
+        pg.pintarGrafico();
+    }
+
+    public void borrarTabsDeUnActivo(Activo activo) {
+        for (Component panelGrafico : jTabbedPane_Graficos.getComponents()) {
+            if (panelGrafico instanceof PanelGrafico) {
+                if (((PanelGrafico) panelGrafico).getAnalisis().getActivo().getIdActivo() == activo.getIdActivo()) {
+                    jTabbedPane_Graficos.remove(panelGrafico);
+                }
+            }
+        }
+    }
+
+    public PanelGrafico getPanelGraficoActual() {
+        return (PanelGrafico) jTabbedPane_Graficos.getSelectedComponent();
+    }
+
+    private void cargaAnalisisDelUsuario() {
+        Set<Analisis> setAnalisis = BBDD.getUsuarioActual().getSetAnalisis();
+        if (setAnalisis.size() > 0) {
+            ArrayList<Analisis> arrayList = new ArrayList<>(setAnalisis);
+            for (Analisis analisis : arrayList) {
+                mostrarAnalisisDeUnActivoEnUnTab(analisis);
+            }
+        }
+
+    }
+
+    private Analisis crearAnalisisYguardarEnBBDD(Activo activo) {
+        Session session = BBDD.getSession();
+        Transaction tx = session.beginTransaction();
+        Analisis analisis = null;
+        try {
+            analisis = new Analisis(activo, BBDD.getUsuarioActual());
+            session.saveOrUpdate(analisis);
+            tx.commit();
+            session.clear();
+            return analisis;
+        } catch (Exception e) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, e);
+            tx.rollback();
+            session.clear();
+            return null;
+        }
+    }
 }

@@ -95,10 +95,10 @@ public class NewMDIApplication extends javax.swing.JFrame {
         //peticionKrakenApi();
         inicializarListaActivos();
         
-        PanelGrafico pg=new PanelGrafico();
-        PanelGrafico pg2=new PanelGrafico();
-        jTabbedPane_Graficos.addTab("poppop", pg);
-        jTabbedPane_Graficos.addTab("Poppop2", pg2);
+//        PanelGrafico pg=new PanelGrafico();
+//        PanelGrafico pg2=new PanelGrafico();
+//        jTabbedPane_Graficos.addTab("poppop", pg);
+//        jTabbedPane_Graficos.addTab("Poppop2", pg2);
     }
 
     /**
@@ -433,7 +433,7 @@ public class NewMDIApplication extends javax.swing.JFrame {
         PG=(PanelGrafico)jTabbedPane_Graficos.getSelectedComponent();
         if(aa!=null)
             aa.cancel(true);
-        aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
+//        aa=new ActualizadorActivo(PG, jComboBox_selectorListas.getSelectedItem().toString());
         aa.execute();
     }//GEN-LAST:event_jComboBox_selectorListasActionPerformed
 

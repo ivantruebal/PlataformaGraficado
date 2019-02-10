@@ -7,14 +7,21 @@ package Presentacion.Interfaz;
 
 import java.awt.Container;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import servicios.database.BBDD;
 import static servicios.database.BBDD.getSession;
 import servicios.modelos.Activo;
+import servicios.modelos.Analisis;
 import servicios.modelos.HibernateEntity;
 import servicios.modelos.ListaDeActivos;
 import servicios.utils.Utils;
@@ -254,13 +261,61 @@ public class CRUDWindow extends javax.swing.JFrame {
         this.setTitle(tipoEntidad);
     }
 
+    
     private void borradoEntidadDeTabla() {
         final Object entidad = getEntidadSeleccionada();
-        BBDD.borradoEntidadDeTabla((HibernateEntity) entidad);
-        ((DefaultTableModel)this.jTable_entidades.getModel()).removeRow(jTable_entidades.getSelectedRow());
-        listaEntidades.remove(entidad);
-        this.parentMainWindow.refrescarComboDeListas();
+        Session session = BBDD.getSession();
+        Transaction tx = session.beginTransaction();
+        Runnable runnable = new Runnable() {
+            public void run() {
+                try {
+                    if (entidad instanceof Activo) {
+                        ArrayList<Analisis> analisis = new ArrayList(((Activo) entidad).getAnalisis());
+                        for (Analisis analisis1 : analisis) {
+                            session.delete(analisis1);
+                        }
+                        BBDD.getSession().merge(entidad);
+                        List<ListaDeActivos> list = session.createQuery("from ListaDeActivos").list();
+                        for (ListaDeActivos listaDeActivos : list) {
+                            listaDeActivos.getActivos().remove(this);
+                        }
+                        getParentMainWindow().borrarTabsDeUnActivo(((Activo) entidad));
+                    }                    
+                    ((DefaultTableModel) getjTable_entidades().getModel()).removeRow(getjTable_entidades().getSelectedRow());
+                    getListaEntidades().remove(entidad);
+                    getParentMainWindow().refrescarComboDeListas();
+                    session.delete(entidad);
+                    tx.commit();
+                    session.clear();
+                } catch (Exception e) {
+                    Logger.getLogger(CRUDWindow.class.getName()).log(Level.SEVERE, null, e);
+                    tx.rollback();
+                    session.clear();
+                }
+            }
+        };
+        runnable.run();
         
+    }
+
+    public List getListaEntidades() {
+        return listaEntidades;
+    }
+
+    public Main getParentMainWindow() {
+        return parentMainWindow;
+    }
+
+    public void setParentMainWindow(Main parentMainWindow) {
+        this.parentMainWindow = parentMainWindow;
+    }
+
+    public JTable getjTable_entidades() {
+        return jTable_entidades;
+    }
+
+    public void setjTable_entidades(JTable jTable_entidades) {
+        this.jTable_entidades = jTable_entidades;
     }
 
     private void abrirVistaDetalleEntidad(Object entidad) {

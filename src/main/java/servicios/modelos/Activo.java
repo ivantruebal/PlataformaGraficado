@@ -6,6 +6,8 @@
 package servicios.modelos;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
@@ -21,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import servicios.database.BBDD;
 
 /**
  *
@@ -44,14 +47,36 @@ public class Activo extends HibernateEntity implements Serializable {
     private String notas;
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activo")
     private Set<Candlestick> candlestickSet;
-    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activos")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "activo")
     private Set<Analisis> analisis;
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY, mappedBy = "activos")    
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER, mappedBy = "activos")
     private Set<ListaDeActivos> listasDeActivos;
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "activo")
     private Set<Operaciones> operaciones;
+   
+    public Set<Analisis> getAnalisis() {
+        return analisis;
+    }
 
-    public static String[] columnasMostrablesEnTablaCRUD = {"ID", "Nombre", "Simbolo", "Nota"};
+    public void setAnalisis(Set<Analisis> analisis) {
+        this.analisis = analisis;
+    }
+
+    public Set<ListaDeActivos> getListasDeActivos() {
+        return listasDeActivos;
+    }
+
+    public void setListasDeActivos(Set<ListaDeActivos> listasDeActivos) {
+        this.listasDeActivos = listasDeActivos;
+    }
+
+    public Set<Operaciones> getOperaciones() {
+        return operaciones;
+    }
+
+    public void setOperaciones(Set<Operaciones> operaciones) {
+        this.operaciones = operaciones;
+    }
 
     public Activo() {
     }

@@ -13,12 +13,17 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import org.hibernate.Transaction;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.labels.CrosshairLabelGenerator;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.data.xy.DefaultHighLowDataset;
 import servicios.GestorConexionAPI;
+import servicios.database.BBDD;
+import servicios.modelos.Activo;
+import servicios.modelos.Analisis;
+import servicios.modelos.Usuario;
 
 /**
  *
@@ -33,108 +38,117 @@ public class PanelGrafico extends javax.swing.JPanel {
     private String periodo;
     final CrosshairOverlay crosshairOverlay;
     final Crosshair yCrosshair;
-    
+    private Analisis analisis;
+
     /**
-     * Creates new form PanelGrafico
+     * Crea un nuevo panel grafico
+     *
+     * @param activo activo que será mostrado en el grafico
      */
-    public PanelGrafico() {
+    public PanelGrafico(Analisis analisis) {
         initComponents();
         enablePanelGraficoAutoSize();
-        this.candlestickChart=new CandlestickChart(jPanel_Grafico.getSize());
-        this.gcAPI=new GestorConexionAPI();
-        this.enableTrace=false;
+        this.candlestickChart = new CandlestickChart(jPanel_Grafico.getSize());
+        this.gcAPI = new GestorConexionAPI();
+        this.enableTrace = false;
         jPanel_Grafico.removeAll();
         jPanel_Grafico.setLayout(new BorderLayout());
         jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
         jPanel_Grafico.repaint();
-        this.crosshairOverlay=new CrosshairOverlay();
+        this.crosshairOverlay = new CrosshairOverlay();
         this.yCrosshair = new Crosshair(Double.NaN, Color.DARK_GRAY, new BasicStroke(0f));
         this.yCrosshair.setLabelVisible(true);
         this.crosshairOverlay.addRangeCrosshair(yCrosshair);
         this.candlestickChart.getChartPanel().addOverlay(crosshairOverlay);
-        seleccionPeriodo();     
+        this.analisis = analisis;
+        seleccionPeriodo();
     }
-    private double getLowestLow(){
+
+    private double getLowestLow() {
         double lowest;
-        lowest = data.getLowValue(0,0);
-        for(int i=1;i<data.getItemCount(0);i++){
-            if(data.getLowValue(0,i) < lowest){
-                lowest = data.getLowValue(0,i);
+        lowest = data.getLowValue(0, 0);
+        for (int i = 1; i < data.getItemCount(0); i++) {
+            if (data.getLowValue(0, i) < lowest) {
+                lowest = data.getLowValue(0, i);
             }
         }
         return lowest;
     }
 
-    private double getHighestHigh(){
+    private double getHighestHigh() {
         double highest;
-        highest = data.getHighValue(0,0);
-        for(int i=1;i<data.getItemCount(0);i++){
-            if(data.getLowValue(0,i) > highest){
-                highest = data.getHighValue(0,i);
+        highest = data.getHighValue(0, 0);
+        for (int i = 1; i < data.getItemCount(0); i++) {
+            if (data.getLowValue(0, i) > highest) {
+                highest = data.getHighValue(0, i);
             }
         }
 
         return highest;
-    } 
-    
+    }
+
     /**
-     * Método que segun el valor indicado en el jComboBox_periodo le da un palor al atributo periodo
+     * Método que segun el valor indicado en el jComboBox_periodo le da un palor
+     * al atributo periodo
      */
-    private void seleccionPeriodo(){
-        switch(jComboBox_periodo.getSelectedIndex()){
+    private void seleccionPeriodo() {
+        switch (jComboBox_periodo.getSelectedIndex()) {
             case 0:
-                this.periodo="1";
+                this.periodo = "1";
                 break;
             case 1:
-                this.periodo="5";
+                this.periodo = "5";
                 break;
             case 2:
-                this.periodo="15";
+                this.periodo = "15";
                 break;
             case 3:
-                this.periodo="60";
+                this.periodo = "60";
                 break;
             case 4:
-                this.periodo="240";
+                this.periodo = "240";
                 break;
             case 5:
-                this.periodo="1440";
+                this.periodo = "1440";
                 break;
             case 6:
-                this.periodo="10080";
+                this.periodo = "10080";
                 break;
             case 7:
-                this.periodo="21600";
+                this.periodo = "21600";
                 break;
         }
     }
-    
+
     /**
      * Método que devuelve el valor del periodo en formato String
+     *
      * @return cadena de texto que indica los segundos del periodo
      */
-    public String getPeriodo(){
+    public String getPeriodo() {
         return this.periodo;
     }
 
     public CandlestickChart getCandlestickChart() {
         return candlestickChart;
     }
+
     /**
      * Método que devuelve el panel grafico del componente
-     * @return 
+     *
+     * @return
      */
     public JPanel getjPanel_Grafico() {
         return jPanel_Grafico;
     }
-    private void autoScale(){
-        double low=getLowestLow();
-        double high=getHighestHigh();
-        double range=high-low;
-        range*=0.1;
-        candlestickChart.getChart().getXYPlot().getRangeAxis().setRange(low-range, high+range);
+
+    private void autoScale() {
+        double low = getLowestLow();
+        double high = getHighestHigh();
+        double range = high - low;
+        range *= 0.1;
+        candlestickChart.getChart().getXYPlot().getRangeAxis().setRange(low - range, high + range);
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -313,13 +327,14 @@ public class PanelGrafico extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
     /**
-     * Añade un componentListener al jPanel_grafico para que se redimension cada vez que cambiamos el tamaño de la ventana
+     * Añade un componentListener al jPanel_grafico para que se redimension cada
+     * vez que cambiamos el tamaño de la ventana
      */
-    private void enablePanelGraficoAutoSize(){
+    private void enablePanelGraficoAutoSize() {
         jPanel_Grafico.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent ce) {
-                ChartPanel cp = (ChartPanel)candlestickChart.getComponent(0);
+                ChartPanel cp = (ChartPanel) candlestickChart.getComponent(0);
                 cp.setPreferredSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
                 cp.setSize(new java.awt.Dimension(candlestickChart.getWidth(), candlestickChart.getHeight()));
                 // frame.invalidate();
@@ -342,13 +357,14 @@ public class PanelGrafico extends javax.swing.JPanel {
             }
         });
     }
-    
+
     /**
      * Pinta un grafico he inicia un hilo en el que va tomando datos
-     * @param lista 
+     *
+     * @param lista
      */
-    public void pintarGrafico(String lista){
-//        data = gcAPI.getDatosActivo(lista,periodo);
+    public void pintarGrafico() {
+//        data = gcAPI.getDatosActivo(analisis.getActivo().getSimbolo(), periodo);
 //        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
 //        crosshair();
 //        jPanel_Grafico.removeAll();
@@ -357,13 +373,15 @@ public class PanelGrafico extends javax.swing.JPanel {
 //        jPanel_Grafico.repaint();
 //        autoScale();
     }
+
     /**
-     * Método que se encarga de modificar el ultimo dato, si la api devulve un nuevo valor, este es agregado.
-     * @param lista 
+     * Método que se encarga de modificar el ultimo dato, si la api devulve un
+     * nuevo valor, este es agregado.
+     *
      */
-    public void pintarUltimoDato(String lista){
-        DefaultHighLowDataset d=data;
-        data = gcAPI.getUltimoDato(d, lista,periodo);
+    public void pintarUltimoDato() {
+        DefaultHighLowDataset d = data;
+        data = gcAPI.getUltimoDato(d, analisis.getActivo().getSimbolo(), periodo);
         candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
         crosshair();
         jPanel_Grafico.removeAll();
@@ -372,28 +390,35 @@ public class PanelGrafico extends javax.swing.JPanel {
         jPanel_Grafico.repaint();
         //autoScale();
     }
+
     /**
-     * Método que pinta una linea en el eje y que que coincide con el valor close del ultimo candlestick.
+     * Método que pinta una linea en el eje y que que coincide con el valor
+     * close del ultimo candlestick.
      */
-    private void crosshair(){
-        yCrosshair.setValue(data.getCloseValue(0, data.getItemCount(0)-1));
+    private void crosshair() {
+        yCrosshair.setValue(data.getCloseValue(0, data.getItemCount(0) - 1));
         yCrosshair.setLabelGenerator(new CrosshairLabelGenerator() {
             @Override
             public String generateLabel(Crosshair crshr) {
-                return data.getCloseValue(0, data.getItemCount(0)-1)+"";
+                return data.getCloseValue(0, data.getItemCount(0) - 1) + "";
             }
         });
     }
+
     /**
      * Método que activa las lineas de trazao en el gráfico.
      */
-    private void enableAxisTrance(){
-        if(enableTrace)
-            enableTrace=false;
-        else
-            enableTrace=true;
+    private void enableAxisTrance() {
+        if (enableTrace) {
+            enableTrace = false;
+        } else {
+            enableTrace = true;
+        }
         candlestickChart.AxisTrace(enableTrace);
         jPanel_Grafico.repaint();
     }
-    
+
+    public Analisis getAnalisis() {
+        return analisis;
+    }
 }

@@ -15,12 +15,10 @@ import javax.swing.SwingWorker;
 public class ActualizadorActivo extends SwingWorker<String, Object> {
 
     private PanelGrafico pg;
-    private String lista;
     private int intervalo;
 
-    public ActualizadorActivo(PanelGrafico pg, String lista) {
+    public ActualizadorActivo(PanelGrafico pg) {
         this.pg = pg;
-        this.lista = lista;
         this.intervalo = intervaloToInt();
     }
 
@@ -41,13 +39,20 @@ public class ActualizadorActivo extends SwingWorker<String, Object> {
         while (!isCancelled()) {
             Thread.sleep(5000);
             if (comprobarIntervalo()) {
-                pg.pintarGrafico(lista);
+                pg.pintarGrafico();
             } else {
-                pg.pintarUltimoDato(lista);
+                pg.pintarUltimoDato();
             }
         }
-        return lista;
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
+    }
+
+    public PanelGrafico getPg() {
+        return pg;
+    }
+
+    public void setPg(PanelGrafico pg) {
+        this.pg = pg;
     }
 
 }

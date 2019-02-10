@@ -6,6 +6,7 @@
 package servicios.modelos;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -27,27 +29,23 @@ import javax.persistence.Table;
 @Table(name = "analisis")
 public class Analisis extends HibernateEntity implements Serializable {
 
-    
     @Id
     @Column
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idAnalisis;
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
-    @JoinTable(
-            name = "Analisis_has_activos",
-            joinColumns = {
-                @JoinColumn(name = "idAnalisis")},
-            inverseJoinColumns = {
-                @JoinColumn(name = "idActivo")}
-    )
-    Set<Activo> activos;
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "idActivo", nullable = false)
+    private Activo activo;
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUsuario", nullable = false)
+    private Usuario usuario;
 
     public Analisis() {
     }
 
-    public Analisis(int idAnalisis, Set<Activo> activos) {
-        this.idAnalisis = idAnalisis;
-        this.activos = activos;
+    public Analisis(Activo activos, Usuario usuario) {
+        this.activo = activos;
+        this.usuario = usuario;
     }
 
     public int getIdAnalisis() {
@@ -58,17 +56,30 @@ public class Analisis extends HibernateEntity implements Serializable {
         this.idAnalisis = idAnalisis;
     }
 
-    public Set<Activo> getActivos() {
-        return activos;
-    }
-
-    public void setActivos(Set<Activo> activos) {
-        this.activos = activos;
-    }
-
     @Override
     public int getId() {
         return getIdAnalisis();
+    }
+
+    public Activo getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Activo activo) {
+        this.activo = activo;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    @Override
+    public String toString() {
+        return "Analisis{" + "idAnalisis=" + idAnalisis + ", activos=" + activo + ", usuario=" + usuario + '}';
     }
 
 }

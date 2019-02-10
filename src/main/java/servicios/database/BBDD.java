@@ -124,19 +124,6 @@ public class BBDD {
         return list;
     }
 
-    public static void borradoEntidadDeTabla(HibernateEntity entidad) {
-        if (compruebaSiExisteEntidadPorID(entidad)) {
-            getSession().beginTransaction();
-            getSession().delete(entidad);
-            getSession().getTransaction().commit();
-            java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Borrada la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
-
-        } else {
-            java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "No se puede borrada la entidad tipo " + entidad.getClass() + " con id " + entidad.getId(), "");
-        }
-
-    }
-
     /**
      * Metodo que devuelve true si existe dicha entidad en BBDD
      *
@@ -365,6 +352,12 @@ public class BBDD {
             transaction.rollback();
             throw e;
         }
+        
+        
+    }
+
+    public static Usuario getUsuarioActual() {
+        return usuarioActual;
     }
 
 

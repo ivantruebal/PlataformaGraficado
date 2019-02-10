@@ -46,7 +46,7 @@ public class Candlestick extends HibernateEntity implements Serializable {
     private BigDecimal volumen;
     @Column(nullable = false)
     private Calendar timestamp;
-    @ManyToOne(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH,fetch = FetchType.LAZY)
     @JoinColumn(name = "idActivo", nullable = false)
     private Activo activo;
 
