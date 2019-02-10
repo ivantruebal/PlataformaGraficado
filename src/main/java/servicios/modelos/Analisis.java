@@ -73,10 +73,6 @@ public class Analisis extends HibernateEntity implements Serializable {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
     @Override
     public String toString() {
         return "Analisis{" + "idAnalisis=" + idAnalisis + ", activos=" + activo + ", usuario=" + usuario + '}';
