@@ -48,6 +48,8 @@ Contributor(s):
     <property name="hibernate.hbm2ddl.auto">update</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.format_sql">true</property>
+    <property name="connection.autocommit">true</property>
+    <property name="hibernate.enable_lazy_load_no_trans">true</property>
     <mapping class="servicios.modelos.Candlestick"/>
     <mapping class="servicios.modelos.Activo"/>
     <mapping class="servicios.modelos.Usuario"/>

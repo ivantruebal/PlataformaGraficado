@@ -5,6 +5,7 @@
  */
 package servicios.database;
 
+import Presentacion.Interfaz.UnDefinedHeadersException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -216,149 +217,121 @@ public class BBDD {
 
     }
 
-    public static boolean generarColeccionDeCandlestickApartirDeFicheroCSV(String rutaFichero, String caracterDeSeparacion, Activo activo, String patronFecha) throws UnDefinedHeadersException, ParseException {
-        Transaction transaction = getSession().beginTransaction();
-        File ficheroCSV = new File(rutaFichero);
-        BufferedReader br = null;
-        String line = "";
-        int[] indiceColumnas = new int[6];
-        indiceColumnas[0] = -1;
-        indiceColumnas[1] = -1;
-        indiceColumnas[2] = -1;
-        indiceColumnas[3] = -1;
-        indiceColumnas[4] = -1;
-        indiceColumnas[5] = -1;
-        Set<Candlestick> candlestickList = null;
-        candlestickList = new HashSet<>();
-        boolean columnasDefinidas = false, cierreDefinido = false, fechaDefinida = false;
-        if (activo != null) {
-            try {
-                br = new BufferedReader(new FileReader(ficheroCSV));
-                while ((line = br.readLine()) != null) {
-                    String[] data;
-                    //Saltamos las lineas vacias
-                    if (!line.equalsIgnoreCase("")) {
-                        data = line.split(caracterDeSeparacion);
-                        //Obtenemos el orden de las columnas is estas estan nombradas como espera el software
-                        if (!columnasDefinidas) {
-                            for (int indice = 0; indice < data.length; indice++) {
-                                String columna = data[indice].trim();
-                                if (columna.equalsIgnoreCase(Indice.OPEN.name())) {
-                                    indiceColumnas[Indice.OPEN.ordinal()] = indice;
-                                }
-                                if (columna.equalsIgnoreCase(Indice.HIGH.name())) {
-                                    indiceColumnas[Indice.HIGH.ordinal()] = indice;
-                                }
-                                if (columna.equalsIgnoreCase(Indice.LOW.name())) {
-                                    indiceColumnas[Indice.LOW.ordinal()] = indice;
-                                }
-                                if (columna.equalsIgnoreCase(Indice.CLOSE.name())) {
-                                    indiceColumnas[Indice.CLOSE.ordinal()] = indice;
-                                    cierreDefinido = true;
-                                }
-                                if (columna.equalsIgnoreCase(Indice.DATE.name())) {
-                                    indiceColumnas[Indice.DATE.ordinal()] = indice;
-                                    fechaDefinida = true;
-                                }
-                                if (columna.equalsIgnoreCase(Indice.VOLUME.name())) {
-                                    indiceColumnas[Indice.VOLUME.ordinal()] = indice;
-                                }
-                            }
-                            //Si estan definidas las columnas minimas, se sigue con la lectura
-                            if (cierreDefinido && fechaDefinida) {
-                                columnasDefinidas = true;
-                            } else {
-                                throw new UnDefinedHeadersException("Las encabezados de las columnas del fichero CSV no estan bien definidas");
-                            }
+//    public static boolean generarColeccionDeCandlestickApartirDeFicheroCSV(String rutaFichero, String caracterDeSeparacion, Activo activo, String patronFecha) throws UnDefinedHeadersException, ParseException {
+//        Transaction transaction = getSession().beginTransaction();
+//        File ficheroCSV = new File(rutaFichero);
+//        BufferedReader br = null;
+//        String line = "";
+//        int[] indiceColumnas = new int[6];
+//        indiceColumnas[0] = -1;
+//        indiceColumnas[1] = -1;
+//        indiceColumnas[2] = -1;
+//        indiceColumnas[3] = -1;
+//        indiceColumnas[4] = -1;
+//        indiceColumnas[5] = -1;
+//        Set<Candlestick> candlestickList = null;
+//        candlestickList = new HashSet<>();
+//        boolean columnasDefinidas = false, cierreDefinido = false, fechaDefinida = false;
+//        if (activo != null) {
+//            try {
+//                br = new BufferedReader(new FileReader(ficheroCSV));
+//                while ((line = br.readLine()) != null) {
+//                    String[] data;
+//                    //Saltamos las lineas vacias
+//                    if (!line.equalsIgnoreCase("")) {
+//                        data = line.split(caracterDeSeparacion);
+//                        //Obtenemos el orden de las columnas is estas estan nombradas como espera el software
+//                        if (!columnasDefinidas) {
+//                            for (int indice = 0; indice < data.length; indice++) {
+//                                String columna = data[indice].trim();
+//                                if (columna.equalsIgnoreCase(Indice.OPEN.name())) {
+//                                    indiceColumnas[Indice.OPEN.ordinal()] = indice;
+//                                }
+//                                if (columna.equalsIgnoreCase(Indice.HIGH.name())) {
+//                                    indiceColumnas[Indice.HIGH.ordinal()] = indice;
+//                                }
+//                                if (columna.equalsIgnoreCase(Indice.LOW.name())) {
+//                                    indiceColumnas[Indice.LOW.ordinal()] = indice;
+//                                }
+//                                if (columna.equalsIgnoreCase(Indice.CLOSE.name())) {
+//                                    indiceColumnas[Indice.CLOSE.ordinal()] = indice;
+//                                    cierreDefinido = true;
+//                                }
+//                                if (columna.equalsIgnoreCase(Indice.DATE.name())) {
+//                                    indiceColumnas[Indice.DATE.ordinal()] = indice;
+//                                    fechaDefinida = true;
+//                                }
+//                                if (columna.equalsIgnoreCase(Indice.VOLUME.name())) {
+//                                    indiceColumnas[Indice.VOLUME.ordinal()] = indice;
+//                                }
+//                            }
+//                            //Si estan definidas las columnas minimas, se sigue con la lectura
+//                            if (cierreDefinido && fechaDefinida) {
+//                                columnasDefinidas = true;
+//                            } else {
+//                                throw new UnDefinedHeadersException("Las encabezados de las columnas del fichero CSV no estan bien definidas");
+//                            }
+//
+//                        } else {
+//
+//                            BigDecimal open;
+//                            if (indiceColumnas[Indice.OPEN.ordinal()] != -1) {
+//                                open = new BigDecimal(data[indiceColumnas[Indice.OPEN.ordinal()]]);
+//                            } else {
+//                                open = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
+//                            }
+//                            BigDecimal high;
+//                            if (indiceColumnas[Indice.HIGH.ordinal()] != -1) {
+//                                high = new BigDecimal(data[indiceColumnas[Indice.HIGH.ordinal()]]);
+//                            } else {
+//                                high = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
+//                            }
+//                            BigDecimal low;
+//                            if (indiceColumnas[Indice.LOW.ordinal()] != -1) {
+//                                low = new BigDecimal(data[indiceColumnas[Indice.LOW.ordinal()]]);
+//                            } else {
+//                                low = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
+//                            }
+//                            BigDecimal close;
+//                            close = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
+//                            BigDecimal volumen;
+//                            if (indiceColumnas[Indice.VOLUME.ordinal()] != -1) {
+//                                volumen = new BigDecimal(data[indiceColumnas[Indice.VOLUME.ordinal()]]);
+//                            } else {
+//                                volumen = new BigDecimal(0);
+//                            }
+//
+//                            Calendar calendar = Calendar.getInstance();
+//                            SimpleDateFormat sdf = new SimpleDateFormat(patronFecha);
+//                            calendar.setTime(sdf.parse(data[indiceColumnas[Indice.DATE.ordinal()]]));
+//                            Candlestick candlestick = new Candlestick(open, high, low, close, calendar, volumen, activo);
+//                            candlestickList.add(candlestick);
+//                        }
+//                    }
+//                }
+//                activo.setCandlestickSet(candlestickList);
+//                getSession().save(activo);
+//                transaction.commit();
+//                return true;
+//
+//            } catch (FileNotFoundException ex) {
+//                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(Level.SEVERE, null, ex);
+//                transaction.rollback();
+//            } catch (IOException ex) {
+//                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(Level.SEVERE, null, ex);
+//            } finally {
+////                session.close();
+//            }
+//        }
+//
+//        java.util.logging.Logger.getLogger(BBDD.class.getName()).log(Level.SEVERE, null, "El activo es nulo");
+//        return false;
+//    }
 
-                        } else {
-
-                            BigDecimal open;
-                            if (indiceColumnas[Indice.OPEN.ordinal()] != -1) {
-                                open = new BigDecimal(data[indiceColumnas[Indice.OPEN.ordinal()]]);
-                            } else {
-                                open = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
-                            }
-                            BigDecimal high;
-                            if (indiceColumnas[Indice.HIGH.ordinal()] != -1) {
-                                high = new BigDecimal(data[indiceColumnas[Indice.HIGH.ordinal()]]);
-                            } else {
-                                high = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
-                            }
-                            BigDecimal low;
-                            if (indiceColumnas[Indice.LOW.ordinal()] != -1) {
-                                low = new BigDecimal(data[indiceColumnas[Indice.LOW.ordinal()]]);
-                            } else {
-                                low = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
-                            }
-                            BigDecimal close;
-                            close = new BigDecimal(data[indiceColumnas[Indice.CLOSE.ordinal()]]);
-                            BigDecimal volumen;
-                            if (indiceColumnas[Indice.VOLUME.ordinal()] != -1) {
-                                volumen = new BigDecimal(data[indiceColumnas[Indice.VOLUME.ordinal()]]);
-                            } else {
-                                volumen = new BigDecimal(0);
-                            }
-
-                            Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat sdf = new SimpleDateFormat(patronFecha);
-                            calendar.setTime(sdf.parse(data[indiceColumnas[Indice.DATE.ordinal()]]));
-                            Candlestick candlestick = new Candlestick(open, high, low, close, calendar, volumen, activo);
-                            candlestickList.add(candlestick);
-                        }
-                    }
-                }
-                activo.setCandlestickSet(candlestickList);
-                getSession().save(activo);
-                transaction.commit();
-                return true;
-
-            } catch (FileNotFoundException ex) {
-                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(Level.SEVERE, null, ex);
-                transaction.rollback();
-            } catch (IOException ex) {
-                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-//                session.close();
-            }
-        }
-
-        java.util.logging.Logger.getLogger(BBDD.class.getName()).log(Level.SEVERE, null, "El activo es nulo");
-        return false;
-    }
-
-    public static Activo compruebaSiExisteActivoYcrealo(String nombre, String simbolo, String notas) {
-        Transaction transaction = null;
-        try {
-            Session openSession = getSession();
-            transaction = openSession.beginTransaction();
-            Query createQuery = openSession.createQuery("from Activo a where a.simbolo = :simbolo");
-            createQuery.setParameter("simbolo", simbolo);
-            List list = createQuery.list();
-            if (list.size() > 0) {
-                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINEST, "Activo {0} existe", simbolo);
-                transaction.commit();
-                return (Activo) list.get(0);
-            } else {
-                java.util.logging.Logger.getLogger(BBDD.class.getName()).log(java.util.logging.Level.FINE, "Activo {0} no existe", simbolo);
-                Activo activo = new Activo(nombre, simbolo, notas);
-                openSession.save(activo);
-                openSession.flush();
-                transaction.commit();
-                return activo;
-            }
-
-        } catch (javax.persistence.NoResultException e) {
-            transaction.rollback();
-            throw e;
-        }
-        
-        
-    }
+    
 
     public static Usuario getUsuarioActual() {
         return usuarioActual;
     }
-
 
 }

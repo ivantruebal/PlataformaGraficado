@@ -112,7 +112,6 @@ public class Main extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         jMenuArchivo = new javax.swing.JMenu();
         jMenuItemNuevoActivo = new javax.swing.JMenuItem();
-        jMenuItemImportarDatos = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem_Inventario_Activos = new javax.swing.JMenuItem();
         jMenuItem_Inventario_listaDeActivos = new javax.swing.JMenuItem();
@@ -412,16 +411,13 @@ public class Main extends javax.swing.JFrame {
 
         jMenuArchivo.setText("Archivo");
 
-        jMenuItemNuevoActivo.setText("Nuevo Activo");
+        jMenuItemNuevoActivo.setText("Importar Datos");
         jMenuItemNuevoActivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemNuevoActivoActionPerformed(evt);
             }
         });
         jMenuArchivo.add(jMenuItemNuevoActivo);
-
-        jMenuItemImportarDatos.setText("Importar Datos");
-        jMenuArchivo.add(jMenuItemImportarDatos);
 
         menuBar.add(jMenuArchivo);
 
@@ -537,7 +533,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemGrafListActionPerformed
 
     private void jMenuItemNuevoActivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNuevoActivoActionPerformed
-        nuevoActivo();
+        abrirImportCSV();
     }//GEN-LAST:event_jMenuItemNuevoActivoActionPerformed
 
     private void jInternalFrameListaInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_jInternalFrameListaInternalFrameIconified
@@ -631,7 +627,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemGrafList;
     private javax.swing.JMenuItem jMenuItemGrafOp;
     private javax.swing.JMenuItem jMenuItemGrafico;
-    private javax.swing.JMenuItem jMenuItemImportarDatos;
     private javax.swing.JMenuItem jMenuItemNuevoActivo;
     private javax.swing.JMenuItem jMenuItemOperaciones;
     private javax.swing.JMenuItem jMenuItemTodo;
@@ -893,7 +888,7 @@ public class Main extends javax.swing.JFrame {
     /**
      * Metodo que abre un panel para realizar la importacion de un nuevo activo
      */
-    private void nuevoActivo() {
+    private void abrirImportCSV() {
         new Presentacion.Interfaz.CSVImportWindow().setVisible(true);
     }
 

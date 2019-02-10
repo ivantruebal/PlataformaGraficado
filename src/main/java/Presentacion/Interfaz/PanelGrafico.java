@@ -11,6 +11,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import org.hibernate.Transaction;
@@ -43,12 +45,15 @@ public class PanelGrafico extends javax.swing.JPanel {
     /**
      * Crea un nuevo panel grafico
      *
-     * @param activo activo que será mostrado en el grafico
+     * @param analisis analisis que se mostrará en el panel grafico
+     *
      */
     public PanelGrafico(Analisis analisis) {
         initComponents();
         enablePanelGraficoAutoSize();
-        this.candlestickChart = new CandlestickChart(jPanel_Grafico.getSize());
+        this.analisis = analisis;
+        this.data = this.analisis.getActivo().getData();
+        this.candlestickChart = new CandlestickChart(jPanel_Grafico.getSize(), this.data);
         this.gcAPI = new GestorConexionAPI();
         this.enableTrace = false;
         jPanel_Grafico.removeAll();
@@ -60,19 +65,23 @@ public class PanelGrafico extends javax.swing.JPanel {
         this.yCrosshair.setLabelVisible(true);
         this.crosshairOverlay.addRangeCrosshair(yCrosshair);
         this.candlestickChart.getChartPanel().addOverlay(crosshairOverlay);
-        this.analisis = analisis;
         seleccionPeriodo();
     }
 
     private double getLowestLow() {
-        double lowest;
-        lowest = data.getLowValue(0, 0);
-        for (int i = 1; i < data.getItemCount(0); i++) {
-            if (data.getLowValue(0, i) < lowest) {
-                lowest = data.getLowValue(0, i);
+        try {
+            double lowest;
+            lowest = data.getLowValue(0, 0);
+            for (int i = 1; i < data.getItemCount(0); i++) {
+                if (data.getLowValue(0, i) < lowest) {
+                    lowest = data.getLowValue(0, i);
+                }
             }
+            return lowest;
+        } catch (Exception e) {
+            Logger.getLogger(PanelGrafico.class.getName()).log(Level.SEVERE, null, e);
+            return 0.0;
         }
-        return lowest;
     }
 
     private double getHighestHigh() {
@@ -143,11 +152,14 @@ public class PanelGrafico extends javax.swing.JPanel {
     }
 
     private void autoScale() {
-        double low = getLowestLow();
-        double high = getHighestHigh();
-        double range = high - low;
-        range *= 0.1;
-        candlestickChart.getChart().getXYPlot().getRangeAxis().setRange(low - range, high + range);
+        if (data != null && data.getItemCount(0) > 0) {
+            double low = getLowestLow();
+            double high = getHighestHigh();
+            double range = high - low;
+            range *= 0.1;
+            candlestickChart.getChart().getXYPlot().getRangeAxis().setRange(low - range, high + range);
+        }
+
     }
 
     /**
@@ -365,13 +377,16 @@ public class PanelGrafico extends javax.swing.JPanel {
      */
     public void pintarGrafico() {
 //        data = gcAPI.getDatosActivo(analisis.getActivo().getSimbolo(), periodo);
-//        candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
-//        crosshair();
-//        jPanel_Grafico.removeAll();
-//        jPanel_Grafico.setLayout(new BorderLayout());
-//        jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
-//        jPanel_Grafico.repaint();
-//        autoScale();
+        if (data != null) {
+            candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
+            crosshair();
+            jPanel_Grafico.removeAll();
+            jPanel_Grafico.setLayout(new BorderLayout());
+            jPanel_Grafico.add(candlestickChart, BorderLayout.CENTER);
+            jPanel_Grafico.repaint();
+            autoScale();
+        }
+
     }
 
     /**
@@ -381,7 +396,7 @@ public class PanelGrafico extends javax.swing.JPanel {
      */
     public void pintarUltimoDato() {
         DefaultHighLowDataset d = data;
-        data = gcAPI.getUltimoDato(d, analisis.getActivo().getSimbolo(), periodo);
+//        data = gcAPI.getUltimoDato(d, analisis.getActivo().getSimbolo(), periodo);
         candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
         crosshair();
         jPanel_Grafico.removeAll();
@@ -396,13 +411,16 @@ public class PanelGrafico extends javax.swing.JPanel {
      * close del ultimo candlestick.
      */
     private void crosshair() {
-        yCrosshair.setValue(data.getCloseValue(0, data.getItemCount(0) - 1));
-        yCrosshair.setLabelGenerator(new CrosshairLabelGenerator() {
-            @Override
-            public String generateLabel(Crosshair crshr) {
-                return data.getCloseValue(0, data.getItemCount(0) - 1) + "";
-            }
-        });
+        final int index = data.getItemCount(0) - 1;
+        if (index > 0) {
+            yCrosshair.setValue(data.getCloseValue(0, index));
+            yCrosshair.setLabelGenerator(new CrosshairLabelGenerator() {
+                @Override
+                public String generateLabel(Crosshair crshr) {
+                    return data.getCloseValue(0, data.getItemCount(0) - 1) + "";
+                }
+            });
+        }
     }
 
     /**

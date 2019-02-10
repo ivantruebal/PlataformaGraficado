@@ -11,16 +11,11 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemNuevoActivo">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Nuevo Activo"/>
+                <Property name="text" type="java.lang.String" value="Importar Datos"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemNuevoActivoActionPerformed"/>
               </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemImportarDatos">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Importar Datos"/>
-              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
