@@ -70,9 +70,6 @@ public class CSVImportWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jTextField_caracterDeSeparacion = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea_Notas = new javax.swing.JTextArea();
-        jLabel4 = new javax.swing.JLabel();
         jTextField_rutaFicheroCSV = new javax.swing.JTextField();
         jButton_explorarArchivos = new javax.swing.JButton();
         jTextField_patronFecha = new javax.swing.JTextField();
@@ -80,8 +77,8 @@ public class CSVImportWindow extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton_abrirAyuda = new javax.swing.JButton();
         jComboBox_activos = new javax.swing.JComboBox<>();
-        jButton_guardar = new javax.swing.JButton();
         jButton_Cancelar = new javax.swing.JButton();
+        jButton_guardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,12 +99,6 @@ public class CSVImportWindow extends javax.swing.JFrame {
                 jTextField_caracterDeSeparacionKeyReleased(evt);
             }
         });
-
-        jTextArea_Notas.setColumns(20);
-        jTextArea_Notas.setRows(5);
-        jScrollPane1.setViewportView(jTextArea_Notas);
-
-        jLabel4.setText("Notas:");
 
         jTextField_rutaFicheroCSV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,6 +143,21 @@ public class CSVImportWindow extends javax.swing.JFrame {
             }
         });
 
+        jButton_Cancelar.setText("Cancelar");
+        jButton_Cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CancelarActionPerformed(evt);
+            }
+        });
+
+        jButton_guardar.setText("Guardar");
+        jButton_guardar.setEnabled(false);
+        jButton_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_guardarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -167,8 +173,6 @@ public class CSVImportWindow extends javax.swing.JFrame {
                                 .addComponent(jTextField_patronFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton_abrirAyuda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel4)
-                            .addComponent(jScrollPane1)
                             .addComponent(jLabel3)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
@@ -179,7 +183,11 @@ public class CSVImportWindow extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(18, 18, 18)
                                         .addComponent(jComboBox_activos, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(137, 137, 137)))
+                                .addGap(137, 137, 137))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton_guardar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton_Cancelar)))
                         .addContainerGap(20, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField_rutaFicheroCSV)
@@ -198,7 +206,7 @@ public class CSVImportWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jTextField_caracterDeSeparacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(8, 8, 8)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -211,26 +219,11 @@ public class CSVImportWindow extends javax.swing.JFrame {
                     .addComponent(jTextField_patronFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton_abrirAyuda))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton_guardar)
+                    .addComponent(jButton_Cancelar))
+                .addGap(185, 185, 185))
         );
-
-        jButton_guardar.setText("Guardar");
-        jButton_guardar.setEnabled(false);
-        jButton_guardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_guardarActionPerformed(evt);
-            }
-        });
-
-        jButton_Cancelar.setText("Cancelar");
-        jButton_Cancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_CancelarActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -239,22 +232,10 @@ public class CSVImportWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jButton_guardar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton_Cancelar)
-                .addGap(22, 22, 22))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton_guardar)
-                    .addComponent(jButton_Cancelar))
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -356,12 +337,9 @@ public class CSVImportWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox<Activo> jComboBox_activos;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea_Notas;
     private javax.swing.JTextField jTextField_caracterDeSeparacion;
     private javax.swing.JTextField jTextField_patronFecha;
     private javax.swing.JTextField jTextField_rutaFicheroCSV;
@@ -583,8 +561,6 @@ public class CSVImportWindow extends javax.swing.JFrame {
 
     private void cargarComboActivos() {
         Session session = BBDD.getSession();
-        String nombre, simbolo, notas;
-        notas = jTextArea_Notas.getText();
         Query createQuery = session.createQuery("from Activo");
         List<Activo> list = createQuery.list();
         for (Activo activo : list) {

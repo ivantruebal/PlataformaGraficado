@@ -27,7 +27,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "candlestick", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"timestamp"})})
+    @UniqueConstraint(columnNames = {"timestamp", "idActivo"})})
 public class Candlestick extends HibernateEntity implements Serializable {
 
     @Id

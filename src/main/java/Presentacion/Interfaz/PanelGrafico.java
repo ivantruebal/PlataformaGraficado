@@ -9,23 +9,29 @@ import Presentacion.CandlestickChart;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import org.hibernate.Transaction;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.labels.CrosshairLabelGenerator;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.data.xy.DefaultHighLowDataset;
 import servicios.GestorConexionAPI;
-import servicios.database.BBDD;
-import servicios.modelos.Activo;
 import servicios.modelos.Analisis;
-import servicios.modelos.Usuario;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.util.ShapeUtilities;
+import servicios.database.BBDD;
+import servicios.modelos.Forma2D;
+import servicios.modelos.Punto2D;
 
 /**
  *
@@ -41,6 +47,9 @@ public class PanelGrafico extends javax.swing.JPanel {
     final CrosshairOverlay crosshairOverlay;
     final Crosshair yCrosshair;
     private Analisis analisis;
+    private int contador;
+    private ChartMouseListener mouseListenerCreaciónDeLinea;
+    private Forma2D forma2D;
 
     /**
      * Crea un nuevo panel grafico
@@ -65,7 +74,9 @@ public class PanelGrafico extends javax.swing.JPanel {
         this.yCrosshair.setLabelVisible(true);
         this.crosshairOverlay.addRangeCrosshair(yCrosshair);
         this.candlestickChart.getChartPanel().addOverlay(crosshairOverlay);
+        this.contador = 0;
         seleccionPeriodo();
+
     }
 
     private double getLowestLow() {
@@ -187,6 +198,11 @@ public class PanelGrafico extends javax.swing.JPanel {
         jComboBox2 = new javax.swing.JComboBox<>();
 
         jLabel1.setText("Linea");
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel1MouseReleased(evt);
+            }
+        });
 
         jLabel2.setText("jLabel2");
 
@@ -321,6 +337,111 @@ public class PanelGrafico extends javax.swing.JPanel {
         seleccionPeriodo();
     }//GEN-LAST:event_jComboBox_periodoActionPerformed
 
+    private void jLabel1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseReleased
+        añadirListenerParaCrearForma2dAlGrafico("Linea");
+    }//GEN-LAST:event_jLabel1MouseReleased
+
+    /**
+     * Metodo que se encarga de activar el dibujado y guardarlos en BBDD
+     *
+     * @param tipoForma
+     */
+    private void añadirListenerParaCrearForma2dAlGrafico(String tipoForma) {
+        final ChartPanel chartPanel = candlestickChart.getChartPanel();
+
+        this.mouseListenerCreaciónDeLinea = new ChartMouseListener() {
+
+            @Override
+            public void chartMouseClicked(ChartMouseEvent cme) {
+                int numPuntos = 0;
+                switch (tipoForma) {
+                    case "Linea":
+                        numPuntos = 2;
+                        break;
+                    case "Rectangulo":
+                        numPuntos = 2;
+                        break;
+                }
+                try {
+                    if (contador < numPuntos) {
+                        if (contador == 0) {
+                            if (!BBDD.getSession().getTransaction().isActive()) {
+                                BBDD.getSession().beginTransaction();
+                            } else {
+                                BBDD.getSession().getTransaction().rollback();
+                            }
+                            forma2D = new Forma2D(analisis, tipoForma);
+                            BBDD.getSession().save(forma2D);
+                        }
+
+                        Punto2D crearPunto2d = crearPunto2d(cme, forma2D);
+                        BBDD.getSession().save(crearPunto2d);
+                        if (contador == numPuntos - 1) {
+                            contador = 0;
+//                        mostrarForma(forma2D);
+                            forma2D = null;
+                            BBDD.getSession().getTransaction().commit();
+                            BBDD.getSession().clear();
+                            desactivarListenersDelRatonDelGrafico();
+                        }
+                        contador++;
+                    }
+                } catch (Exception e) {
+                    Logger.getLogger(PanelGrafico.class.getName()).log(Level.SEVERE, null, e);
+                    if (BBDD.getSession().getTransaction().isActive()) {
+                        BBDD.getSession().getTransaction().rollback();
+                    }
+                }
+            }
+
+            private Punto2D crearPunto2d(ChartMouseEvent cme, Forma2D forma2D1) {
+                Point2D po = chartPanel.translateScreenToJava2D(cme.getTrigger().getPoint());
+                Rectangle2D plotArea = chartPanel.getScreenDataArea();
+                XYPlot plot = (XYPlot) chartPanel.getChart().getPlot(); // your plot
+                double chartX = plot.getDomainAxis().java2DToValue(po.getX(), plotArea, plot.getDomainAxisEdge());
+                double chartY = plot.getRangeAxis().java2DToValue(po.getY(), plotArea, plot.getRangeAxisEdge());
+                return new Punto2D(chartX, chartY, forma2D1);
+
+            }
+
+            @Override
+            public void chartMouseMoved(ChartMouseEvent cme) {
+
+            }
+            // TODO add your handling code here:
+
+        };
+        chartPanel.addChartMouseListener(this.mouseListenerCreaciónDeLinea);
+        System.out.println("Activada la creacion de linea");
+    }
+
+    private void mostrarForma(Forma2D forma2D) {
+
+        XYPlot plot = (XYPlot) candlestickChart.getChartPanel().getChart().getPlot();
+
+        switch (forma2D.getTipoForma()) {
+            case "Linea":
+                
+                break;
+            case "Rectangulo":
+                
+                break;
+        }
+    }
+
+    
+
+    
+
+    
+
+    private void desactivarListenersDelRatonDelGrafico() {
+        candlestickChart.getChartPanel().removeChartMouseListener(this.mouseListenerCreaciónDeLinea);
+        System.out.println("Desactivada la creacion de linea");
+        System.out.println("Creada linea");
+
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -439,4 +560,5 @@ public class PanelGrafico extends javax.swing.JPanel {
     public Analisis getAnalisis() {
         return analisis;
     }
+
 }

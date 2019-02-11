@@ -60,6 +60,7 @@ public class LoginWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Usuario:");
 
+        jTextField_nombreUsuario.setText("root");
         jTextField_nombreUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField_nombreUsuarioKeyPressed(evt);
@@ -68,6 +69,12 @@ public class LoginWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Password:");
 
+        jPasswordField_password.setText("12345");
+        jPasswordField_password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField_passwordActionPerformed(evt);
+            }
+        });
         jPasswordField_password.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jPasswordField_passwordKeyPressed(evt);
@@ -204,6 +211,10 @@ public class LoginWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         onRegister();
     }//GEN-LAST:event_jButton_registrarseActionPerformed
+
+    private void jPasswordField_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_passwordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField_passwordActionPerformed
 
     /**
      * @param args the command line arguments

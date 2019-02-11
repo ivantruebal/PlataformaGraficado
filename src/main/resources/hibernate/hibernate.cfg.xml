@@ -56,5 +56,7 @@ Contributor(s):
     <mapping class="servicios.modelos.Analisis"/>
     <mapping class="servicios.modelos.Operaciones"/>
     <mapping class="servicios.modelos.ListaDeActivos"/>
+    <mapping class="servicios.modelos.Forma2D"/>
+    <mapping class="servicios.modelos.Punto2D"/>
   </session-factory>
 </hibernate-configuration>
