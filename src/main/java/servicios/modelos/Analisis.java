@@ -7,6 +7,7 @@ package servicios.modelos;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -41,7 +42,7 @@ public class Analisis extends HibernateEntity implements Serializable {
     @JoinColumn(name = "idUsuario", nullable = false)
     private Usuario usuario;
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "analisis")
-    private Set<Forma2D> forma2D;
+    private List<Forma2D> forma2D;
 
     public Analisis() {
     }

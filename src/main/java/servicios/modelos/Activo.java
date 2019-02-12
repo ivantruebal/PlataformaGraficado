@@ -150,29 +150,34 @@ public class Activo extends HibernateEntity implements Serializable {
     @Transactional
     public DefaultHighLowDataset getData()
     {
-        
+        DefaultHighLowDataset defaultHighLowDataset = null;
         Set<Candlestick> candlestickSet1 = getCandlestickSet();
-        int size = candlestickSet1.size();
-        Date[] date = new Date[size];
-        double[] high = new double[size];
-        double[] low = new double[size];
-        double[] open = new double[size];
-        double[] close = new double[size];
-        double[] volume = new double[size];
-        if(candlestickSet1 != null && size > 0)
-        {
-            Object[] candlestickArray = candlestickSet1.toArray();
-            for (int i = 0; i < candlestickArray.length; i++) {
-                Candlestick candlestick = (Candlestick) candlestickArray[i];
-                date[i]=candlestick.getTimestamp().getTime();
-                high[i] = candlestick.getHigh().doubleValue();
-                low[i] = candlestick.getLow().doubleValue();
-                open[i] = candlestick.getOpen().doubleValue();
-                close[i] = candlestick.getClose().doubleValue();
-                volume[i] = candlestick.getVolumen().doubleValue();                
+        if(candlestickSet1 != null){
+            int size = candlestickSet1.size();
+            Date[] date = new Date[size];
+            double[] high = new double[size];
+            double[] low = new double[size];
+            double[] open = new double[size];
+            double[] close = new double[size];
+            double[] volume = new double[size];
+            if(size > 0)
+            {
+                Object[] candlestickArray = candlestickSet1.toArray();
+                for (int i = 0; i < candlestickArray.length; i++) {
+                    Candlestick candlestick = (Candlestick) candlestickArray[i];
+                    date[i]=candlestick.getTimestamp().getTime();
+                    high[i] = candlestick.getHigh().doubleValue();
+                    low[i] = candlestick.getLow().doubleValue();
+                    open[i] = candlestick.getOpen().doubleValue();
+                    close[i] = candlestick.getClose().doubleValue();
+                    volume[i] = candlestick.getVolumen().doubleValue();                
+                }
             }
-        }       
-        return new DefaultHighLowDataset("", date, high, low, open, close, volume);
+            defaultHighLowDataset = new DefaultHighLowDataset("", date, high, low, open, close, volume);
+        }
+        
+        return defaultHighLowDataset;
     }
+     
 
 }

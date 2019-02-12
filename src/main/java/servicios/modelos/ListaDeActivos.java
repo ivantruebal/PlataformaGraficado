@@ -6,7 +6,9 @@
 package servicios.modelos;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,7 +41,7 @@ public class ListaDeActivos extends HibernateEntity implements Serializable {
     @Column(nullable = false)
     private boolean esPrivada;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "listaDeActivos")
-    Set<Usuario> usuarios = new HashSet<>();
+    List<Usuario> usuarios = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.DETACH,fetch = FetchType.LAZY)
     @JoinTable(
             name = "lista_de_activos_has_activos",
@@ -85,11 +87,11 @@ public class ListaDeActivos extends HibernateEntity implements Serializable {
         this.esPrivada = esPrivada;
     }
 
-    public Set<Usuario> getUsuarios() {
+    public List<Usuario> getUsuarios() {
         return usuarios;
     }
 
-    public void setUsuarios(Set<Usuario> usuarios) {
+    public void setUsuarios(List<Usuario> usuarios) {
         this.usuarios = usuarios;
     }
 

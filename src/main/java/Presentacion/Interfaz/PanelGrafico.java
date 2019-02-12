@@ -24,6 +24,7 @@ import servicios.modelos.Analisis;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Date;
+import java.util.List;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
@@ -32,6 +33,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.util.ShapeUtilities;
 import servicios.database.BBDD;
 import servicios.modelos.Forma2D;
+import servicios.modelos.ListaDeActivos;
 import servicios.modelos.Punto2D;
 
 /**
@@ -517,13 +519,14 @@ public class PanelGrafico extends javax.swing.JPanel {
 
     private Date getFechaMayor() {
         Date fechaMayor=new Date();
-        fechaMayor = data.getXDate(0, 0);
-        for (int i = 1; i < data.getItemCount(0); i++) {
-            if (data.getXDate(0, i).getTime() > fechaMayor.getTime()) {
-                fechaMayor = data.getXDate(0, i);
+        if(data.getItemCount(0)>0){
+            fechaMayor = data.getXDate(0, 0);
+            for (int i = 1; i < data.getItemCount(0); i++) {
+                if (data.getXDate(0, i).getTime() > fechaMayor.getTime()) {
+                    fechaMayor = data.getXDate(0, i);
+                }
             }
         }
-
         return fechaMayor;
     }
     /**
@@ -546,11 +549,11 @@ public class PanelGrafico extends javax.swing.JPanel {
             if (data.getXDate(0, i).getTime() == fecha.getTime()) {
                 yCrosshair.setValue(data.getCloseValue(0, i));
                 yCrosshair.setLabelGenerator(new CrosshairLabelGenerator() {
-                @Override
-                public String generateLabel(Crosshair crshr) {
-                    return data.getCloseValue(0, data.getItemCount(0) - 1) + "";
-                }
-            });
+                    @Override
+                    public String generateLabel(Crosshair crshr) {
+                        return data.getCloseValue(0, data.getItemCount(0) - 1) + "";
+                    }
+                });
             }
         }
         

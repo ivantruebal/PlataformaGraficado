@@ -1061,7 +1061,7 @@ public class Main extends javax.swing.JFrame {
         Usuario usuarioActual = BBDD.getUsuarioActual();
         if (usuarioActual != null) {
             Set<Analisis> setAnalisis = usuarioActual.getSetAnalisis();
-            if (setAnalisis.size() > 0) {
+            if (setAnalisis != null && setAnalisis.size() > 0) {
                 ArrayList<Analisis> arrayList = new ArrayList<>(setAnalisis);
                 for (Analisis analisis : arrayList) {
                     mostrarAnalisisDeUnActivoEnUnTab(analisis);
