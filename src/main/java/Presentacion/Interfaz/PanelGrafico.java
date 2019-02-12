@@ -23,6 +23,7 @@ import servicios.GestorConexionAPI;
 import servicios.modelos.Analisis;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Date;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
@@ -514,12 +515,23 @@ public class PanelGrafico extends javax.swing.JPanel {
         //autoScale();
     }
 
+    private Date getFechaMayor() {
+        Date fechaMayor=new Date();
+        fechaMayor = data.getXDate(0, 0);
+        for (int i = 1; i < data.getItemCount(0); i++) {
+            if (data.getXDate(0, i).getTime() > fechaMayor.getTime()) {
+                fechaMayor = data.getXDate(0, i);
+            }
+        }
+
+        return fechaMayor;
+    }
     /**
      * Método que pinta una linea en el eje y que que coincide con el valor
      * close del ultimo candlestick.
      */
     private void crosshair() {
-        final int index = data.getItemCount(0) - 1;
+        /*final int index = data.getItemCount(0) - 1;
         if (index > 0) {
             yCrosshair.setValue(data.getCloseValue(0, index));
             yCrosshair.setLabelGenerator(new CrosshairLabelGenerator() {
@@ -528,7 +540,20 @@ public class PanelGrafico extends javax.swing.JPanel {
                     return data.getCloseValue(0, data.getItemCount(0) - 1) + "";
                 }
             });
+        }*/
+        Date fecha=getFechaMayor();
+        for (int i = 1; i < data.getItemCount(0); i++) {
+            if (data.getXDate(0, i).getTime() == fecha.getTime()) {
+                yCrosshair.setValue(data.getCloseValue(0, i));
+                yCrosshair.setLabelGenerator(new CrosshairLabelGenerator() {
+                @Override
+                public String generateLabel(Crosshair crshr) {
+                    return data.getCloseValue(0, data.getItemCount(0) - 1) + "";
+                }
+            });
+            }
         }
+        
     }
     //Comentario de prueba
 
