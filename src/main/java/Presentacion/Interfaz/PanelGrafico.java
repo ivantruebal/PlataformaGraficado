@@ -530,6 +530,7 @@ public class PanelGrafico extends javax.swing.JPanel {
             });
         }
     }
+    //Comentario de prueba
 
     /**
      * Método que activa las lineas de trazao en el gráfico.
