@@ -415,19 +415,7 @@ public class PanelGrafico extends javax.swing.JPanel {
         System.out.println("Activada la creacion de linea");
     }
 
-    private void mostrarForma(Forma2D forma2D) {
-
-        XYPlot plot = (XYPlot) candlestickChart.getChartPanel().getChart().getPlot();
-
-        switch (forma2D.getTipoForma()) {
-            case "Linea":
-                
-                break;
-            case "Rectangulo":
-                
-                break;
-        }
-    }
+   
 
     
 
@@ -497,7 +485,6 @@ public class PanelGrafico extends javax.swing.JPanel {
      * @param lista
      */
     public void pintarGrafico() {
-//        data = gcAPI.getDatosActivo(analisis.getActivo().getSimbolo(), periodo);
         if (data != null) {
             candlestickChart.getChartPanel().getChart().getXYPlot().setDataset(data);
             crosshair();
